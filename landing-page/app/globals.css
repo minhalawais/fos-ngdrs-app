@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+@theme {
+  /* Custom Colors */
+  --color-background: #fbfcfc;
+  --color-foreground: #055b65;
+
+  --color-primary-DEFAULT: #1bd488;
+  --color-primary-foreground: #ffffff;
+  --color-primary-50: #eafbf3;
+  --color-primary-100: #cbf7df;
+  --color-primary-200: #9eeec5;
+  --color-primary-300: #65e0a6;
+  --color-primary-400: #1bd488;
+  --color-primary-500: #12b872;
+  --color-primary-600: #09955a;
+  --color-primary-700: #08774a;
+  --color-primary-800: #095e3d;
+  --color-primary-900: #084d34;
+
+  --color-brand-dark: #055b65;
+  --color-brand-teal: #45828b;
+  --color-brand-soft: #b2c9c5;
+  --color-brand-surface: #e0e5e9;
+  --color-brand-canvas: #fbfcfc;
+
+  /* Fonts */
+  --font-heading: var(--font-jakarta), sans-serif;
+  --font-body: var(--font-inter), sans-serif;
+
+  /* Backgrounds */
+  --image-subtle-grid: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23055b65' fill-opacity='0.03' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-brand-canvas);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-brand-soft);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-brand-teal);
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: var(--color-foreground);
+  background: var(--color-background);
+}
+
+/* Utilities */
+@utility text-balance {
+  text-wrap: balance;
+}
