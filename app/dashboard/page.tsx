@@ -68,8 +68,8 @@ export default function DashboardPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <h1 className="text-4xl md:text-5xl font-heading font-black text-brand-dark tracking-tight mb-2">
-                        Integrated GBV & TFGBV Monitoring Dashboard
+                    <h1 className="text-4xl white-space-nowrap md:text-5xl font-heading font-black text-brand-dark tracking-tight mb-2">
+                        National GBV & TFGBV Monitoring Dashboard
                     </h1>
                 </motion.div>
 

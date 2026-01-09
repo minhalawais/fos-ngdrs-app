@@ -13,7 +13,7 @@ import { generateKPIs, generateCrimeTrends, generateServiceGaps, generatePlatfor
 import { motion } from "framer-motion";
 import { clsx } from "clsx";
 import {
-    Activity, TrendingDown, AlertCircle, Landmark, Shield, HeartHandshake, Phone, Smartphone, Gavel, Globe, FileSearch, Monitor
+    Activity, TrendingDown, AlertCircle, Landmark, Shield, HeartHandshake, Phone, Smartphone, Gavel, Globe, FileSearch, Monitor, Building2
 } from "lucide-react";
 
 // Trapezoid Funnel Data
@@ -173,24 +173,75 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 // Icon Helper
+// Brand Icons Component with original colors
+const BrandIcon = ({ name, size = 16 }: { name: string; size?: number }) => {
+    const n = name.toLowerCase();
+
+    if (n.includes("meta") || n.includes("facebook")) {
+        return (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="#0866FF">
+                <path d="M23.998 12c0-6.628-5.372-12-11.999-12C5.372 0 0 5.372 0 12c0 5.988 4.388 10.952 10.124 11.852v-8.384H7.078v-3.469h3.046V9.356c0-3.008 1.792-4.669 4.532-4.669 1.313 0 2.686.234 2.686.234v2.953H15.83c-1.49 0-1.955.925-1.955 1.874v2.25h3.328l-.532 3.469h-2.796v8.384c5.736-.9 10.124-5.864 10.124-11.852z" />
+            </svg>
+        );
+    }
+    if (n.includes("tiktok")) {
+        return (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="#000000">
+                <path d="M19.589 6.686a4.793 4.793 0 0 1-3.77-4.245V2h-3.445v13.672a2.896 2.896 0 0 1-5.201 1.743l-.002-.001.002.001a2.895 2.895 0 0 1 3.183-4.51v-3.5a6.329 6.329 0 0 0-5.394 10.692 6.33 6.33 0 0 0 10.857-4.424V8.687a8.182 8.182 0 0 0 4.773 1.526V6.79a4.831 4.831 0 0 1-1.003-.104z" />
+            </svg>
+        );
+    }
+    if (n.includes("twitter") || n.includes(" x")) {
+        return (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="#000000">
+                <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
+            </svg>
+        );
+    }
+    if (n.includes("youtube")) {
+        return (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="#FF0000">
+                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+            </svg>
+        );
+    }
+    if (n.includes("whatsapp")) {
+        return (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="#25D366">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z" />
+            </svg>
+        );
+    }
+
+    // Default fallback to Lucide component
+    return name.includes("Online") || name.includes("Digital") ? <Globe size={size} /> : <Monitor size={size} />;
+};
+
 // Icon Helper
 const getChannelIcon = (name: string) => {
-    if (name.includes("Police")) return <Shield size={16} />;
+    // Check for platforms first
+    if (name.includes("Meta") || name.includes("Facebook") || name.includes("TikTok") || name.includes("X (Twitter)") || name.includes("YouTube") || name.includes("WhatsApp")) {
+        return <BrandIcon name={name} size={16} />;
+    }
+
+    if (name.includes("Police") && !name.includes("App")) return <Building2 size={16} />; // Station = Building
     if (name.includes("WPC")) return <HeartHandshake size={16} />;
     if (name.includes("Helpline")) return <Phone size={16} />;
     if (name.includes("App")) return <Smartphone size={16} />;
     if (name.includes("Court") || name.includes("Magistrate")) return <Gavel size={16} />;
     if (name.includes("FIA")) return <FileSearch size={16} />;
     if (name.includes("NCCIA")) return <Monitor size={16} />; // Cyber Agency
-    if (name.includes("Online")) return <Globe size={16} />;
+    if (name.includes("Online") || name.includes("Complaint Form")) return <Globe size={16} />;
+    if (name.includes("Email")) return <Monitor size={16} />;
     return <Landmark size={16} />;
 };
+
 
 // Custom Axis Tick
 const CustomAxisTick = ({ x, y, payload }: any) => {
     return (
         <g transform={`translate(${x},${y})`}>
-            <foreignObject x={-155} y={-16} width={150} height={32}>
+            <foreignObject x={-165} y={-16} width={160} height={32}>
                 <div className="flex items-center justify-end gap-3 h-full text-[10px] font-bold text-brand-dark/80">
                     <span className="text-right leading-3 whitespace-normal flex-1">{payload.value}</span>
                     <div className="w-8 h-8 rounded-lg bg-white shadow-sm border border-brand-teal/20 flex items-center justify-center text-brand-teal flex-shrink-0 group-hover:bg-brand-teal group-hover:text-white transition-colors">
@@ -224,7 +275,6 @@ export function ChartCard({ title, subtitle, children, className }: { title: str
                 <div className="flex items-start justify-between mb-6">
                     <div>
                         <h3 className="text-lg font-bold text-brand-dark">{title}</h3>
-                        {subtitle && <p className="text-xs text-brand-teal mt-1">{subtitle}</p>}
                     </div>
                     <div className="w-8 h-8 rounded-lg bg-brand-surface/50 flex items-center justify-center opacity-50 group-hover:opacity-100 transition-opacity">
                         <Activity size={16} className="text-brand-teal" />
@@ -325,11 +375,11 @@ export default function OverviewSection() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
                 {/* Detailed Dual-Pillar Analysis - Vertical Stack */}
-                <ChartCard title="Case Analysis" subtitle="GBV (Top) vs TFGBV (Bottom)" className="lg:col-span-1">
+                <ChartCard title="Category Wise Breakdown" subtitle="GBV (Top) vs TFGBV (Bottom)" className="lg:col-span-1">
                     <div className="flex flex-col gap-8 h-[600px]">
                         {/* GBV Donut Chart */}
                         <div className="flex-1 flex flex-col items-center justify-center relative border-b border-dashed border-gray-200 pb-4">
-                            <h4 className="absolute top-0 w-full text-center text-xs font-bold text-brand-teal uppercase tracking-wider z-10 opacity-70">Traditional GBV</h4>
+                            <h4 className="absolute top-0 w-full text-left text-xs font-bold text-brand-teal uppercase tracking-wider z-10 opacity-70">GBV</h4>
                             <div className="w-full h-full min-h-0 pt-6">
                                 <ResponsiveContainer width="100%" height="100%">
                                     <PieChart>
@@ -374,7 +424,7 @@ export default function OverviewSection() {
 
                         {/* TFGBV Donut Chart */}
                         <div className="flex-1 flex flex-col items-center justify-center relative">
-                            <h4 className="absolute top-0 w-full text-center text-xs font-bold text-brand-teal uppercase tracking-wider z-10 opacity-70">Digital Threats</h4>
+                            <h4 className="absolute top-0 w-full text-left text-xs font-bold text-brand-teal uppercase tracking-wider z-10 opacity-70">TFGBV</h4>
                             <div className="w-full h-full min-h-0 pt-6">
                                 <ResponsiveContainer width="100%" height="100%">
                                     <PieChart>
@@ -469,7 +519,7 @@ export default function OverviewSection() {
                                     >
                                         <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e5e7eb" />
                                         <XAxis type="number" fontSize={10} axisLine={false} tickLine={false} hide />
-                                        <YAxis dataKey="name" type="category" width={150} tick={<CustomAxisTick />} tickLine={false} axisLine={false} />
+                                        <YAxis dataKey="name" type="category" width={170} tick={<CustomAxisTick />} tickLine={false} axisLine={false} />
                                         <Tooltip content={<CustomTooltip />} cursor={{ fill: 'transparent' }} />
                                         <Bar dataKey="value" radius={[0, 4, 4, 0]}>
                                             <LabelList dataKey="value" position="right" fontSize={10} fontWeight="bold" formatter={(val: any) => {
@@ -499,7 +549,7 @@ export default function OverviewSection() {
                                     >
                                         <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e5e7eb" />
                                         <XAxis type="number" fontSize={10} axisLine={false} tickLine={false} hide />
-                                        <YAxis dataKey="name" type="category" fontSize={10} fontWeight={600} width={90} tickLine={false} axisLine={false} stroke={BRAND_COLORS.dark} />
+                                        <YAxis dataKey="name" type="category" width={170} tick={<CustomAxisTick />} tickLine={false} axisLine={false} />
                                         <Tooltip content={<CustomTooltip />} cursor={{ fill: 'transparent' }} />
                                         <Bar dataKey="complaints" name="Complaints" fill={BRAND_COLORS.teal} radius={[0, 4, 4, 0]}>
                                             <LabelList dataKey="complaints" position="right" fontSize={10} fontWeight="bold" />

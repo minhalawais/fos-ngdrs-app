@@ -57,11 +57,11 @@ export const generateCrimeTrends = () => [
 ];
 
 export const generatePlatformStats = () => [
-    { name: "Meta (FB/Insta)", complaints: 1450, takedownPct: 88, responseTime: 12, score: 92 },
-    { name: "TikTok", complaints: 2100, takedownPct: 75, responseTime: 24, score: 78 },
-    { name: "X (Twitter)", complaints: 650, takedownPct: 45, responseTime: 48, score: 55 },
-    { name: "YouTube", complaints: 320, takedownPct: 95, responseTime: 8, score: 96 },
-    { name: "WhatsApp", complaints: 3100, takedownPct: 15, responseTime: 72, score: 30 },
+    { name: "Meta (FB/Insta)", complaints: 1450, takedownPct: 88, responseTime: 12, score: 92, color: "#0866FF" },
+    { name: "TikTok", complaints: 2100, takedownPct: 75, responseTime: 24, score: 78, color: "#000000" },
+    { name: "X (Twitter)", complaints: 650, takedownPct: 45, responseTime: 48, score: 55, color: "#14171A" },
+    { name: "YouTube", complaints: 320, takedownPct: 95, responseTime: 8, score: 96, color: "#FF0000" },
+    { name: "WhatsApp", complaints: 3100, takedownPct: 15, responseTime: 72, score: 30, color: "#25D366" },
 ];
 
 export const generateDistrictData = (): DistrictData[] => [
