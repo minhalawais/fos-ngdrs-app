@@ -19,7 +19,7 @@ export default function KPICard({ data }: { data: KPI }) {
 
     return (
         <div className={clsx(
-            "relative bg-white rounded-2xl border shadow-sm transition-all duration-300",
+            "relative bg-white rounded-2xl border shadow-sm transition-all duration-300 h-full flex flex-col",
             "hover:shadow-xl hover:-translate-y-1 hover:border-primary-500/20",
             "overflow-hidden group",
             data.alert ? "border-red-200" : "border-brand-surface/80"
@@ -55,18 +55,37 @@ export default function KPICard({ data }: { data: KPI }) {
                     <h3 className="text-4xl font-heading font-black text-brand-dark tracking-tight">{data.value}</h3>
                 </div>
 
-                <div className="flex items-center gap-3">
-                    <div className={clsx(
-                        "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold",
-                        trendColor
-                    )}>
-                        {isPositive && <TrendingUp size={12} />}
-                        {isNegative && <TrendingDown size={12} />}
-                        {isNeutral && <Minus size={12} />}
-                        <span>{data.trend > 0 ? "+" : ""}{data.trend}%</span>
+                {data.subStats ? (
+                    <div className="grid grid-cols-2 gap-3 mt-4 pt-3 border-t border-brand-surface/60">
+                        {data.subStats.map((stat, i) => (
+                            <div key={i} className="relative pl-3">
+                                <div className={clsx(
+                                    "absolute left-0 top-1 bottom-1 w-1 rounded-full",
+                                    stat.color ? stat.color.replace('text-', 'bg-').replace('600', '500') : "bg-brand-teal"
+                                )} />
+                                <div className="flex flex-col">
+                                    <span className={clsx("text-lg font-black tracking-tight leading-none", stat.color || "text-brand-teal")}>
+                                        {stat.value}
+                                    </span>
+                                    <span className="text-[10px] text-brand-teal/60 font-bold uppercase tracking-wider mt-1">{stat.label}</span>
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                    <span className="text-xs text-brand-soft font-medium">{data.trendLabel}</span>
-                </div>
+                ) : (
+                    <div className="flex items-center gap-3">
+                        <div className={clsx(
+                            "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold",
+                            trendColor
+                        )}>
+                            {isPositive && <TrendingUp size={12} />}
+                            {isNegative && <TrendingDown size={12} />}
+                            {isNeutral && <Minus size={12} />}
+                            <span>{data.trend > 0 ? "+" : ""}{data.trend}%</span>
+                        </div>
+                        <span className="text-xs text-brand-soft font-medium">{data.trendLabel}</span>
+                    </div>
+                )}
             </div>
         </div>
     );

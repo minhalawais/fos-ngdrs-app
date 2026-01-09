@@ -9,10 +9,23 @@ const data = generateDistrictData();
 
 export default function DistrictMap({ filter }: { filter?: string }) {
     const position: [number, number] = [30.3753, 69.3451]; // Centered on Pakistan
+    // Approx bounds for Pakistan to prevent panning away
+    const bounds: [[number, number], [number, number]] = [
+        [23.6, 60.8], // Southwest
+        [37.1, 77.9]  // Northeast
+    ];
 
     return (
         <div className="h-[600px] w-full rounded-xl overflow-hidden border border-brand-surface shadow-md relative z-0">
-            <MapContainer center={position} zoom={5} scrollWheelZoom={true} style={{ height: "100%", width: "100%" }}>
+            <MapContainer
+                center={position}
+                zoom={6}
+                minZoom={5}
+                maxBounds={bounds}
+                maxBoundsViscosity={1.0}
+                scrollWheelZoom={true}
+                style={{ height: "100%", width: "100%" }}
+            >
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"

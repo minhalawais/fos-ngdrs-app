@@ -1,6 +1,8 @@
-#fbfcfc
-#e0e5e9
-#b2c9c5
-#1bd488
-#45828b
-#055b65
+Role,Hex Code,Usage
+Primary (Brand),#659CBF,"Action buttons, active states, and primary logos."
+Secondary,#6EA969,"Success messages, ""Go"" actions, and growth metrics."
+Accent/Warning,#D3A255,"Highlights, warnings, or ""Pro"" tier features."
+Accent/Error,#EE8A7D,"Error states, delete buttons, or urgent alerts."
+Background,#FBFBFB,Main app background (clean and off-white).
+Surface/Card,#EB9D84,Use sparingly for decorative cards or soft sidebars.
+Deep Accent,#BC5F75,Important notifications or unique navigational elements.

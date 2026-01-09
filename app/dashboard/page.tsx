@@ -1,238 +1,164 @@
-
 "use client";
 
-import {
-    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-    LineChart, Line, PieChart, Pie, Cell, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Area, AreaChart
-} from 'recharts';
-import KPICard from "@/components/dashboard/KPICard";
-import { generateKPIs, generateCrimeTrends, generateServiceGaps, generatePlatformStats } from "@/lib/mock-data";
+import { useState } from "react";
+import { Filter, Calendar, MapPin, ChevronDown, Check } from "lucide-react";
 import { motion } from "framer-motion";
 import { clsx } from "clsx";
-import { Activity, Shield, AlertTriangle, TrendingUp } from "lucide-react";
 
-const kpis = generateKPIs();
-const crimeTrends = generateCrimeTrends();
-const serviceGaps = generateServiceGaps();
-const platformStats = generatePlatformStats();
+// Section Imports
+import OverviewSection from "@/components/dashboard/sections/OverviewSection";
+import ProcessIndicatorsSection from "@/components/dashboard/sections/ProcessIndicatorsSection";
+import GeospatialSection from "@/components/dashboard/sections/GeospatialSection";
+import JusticeSection from "@/components/dashboard/sections/JusticeSection";
+import ServicesSection from "@/components/dashboard/sections/ServicesSection";
+import PlatformSection from "@/components/dashboard/sections/PlatformSection";
+import ComplianceSection from "@/components/dashboard/sections/ComplianceSection";
 
-// Colors
-const BRAND_COLORS = {
-    primary: "#1bd488",
-    teal: "#45828b",
-    dark: "#055b65",
-    soft: "#b2c9c5",
-    red: "#ef4444",
-    amber: "#f59e0b"
-};
+function FilterDropdown({ label, icon: Icon, options, value, onChange }: any) {
+    const [isOpen, setIsOpen] = useState(false);
 
-// Transform crime trends for stacked bar
-const stackedCrimeData = crimeTrends.map(month => ({
-    name: month.month,
-    Physical: month.Physical,
-    Sexual: month.Sexual,
-    Digital: month.Digital,
-    Economic: month.Economic
-}));
-
-// Custom Tooltip Component
-const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-        return (
-            <div className="bg-brand-dark text-white px-4 py-3 rounded-xl shadow-xl border border-white/10">
-                <p className="text-xs text-brand-teal font-semibold mb-2">{label}</p>
-                {payload.map((entry: any, index: number) => (
-                    <div key={index} className="flex items-center gap-2 text-sm">
-                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
-                        <span className="text-white/70">{entry.name}:</span>
-                        <span className="font-bold">{entry.value}</span>
-                    </div>
-                ))}
-            </div>
-        );
-    }
-    return null;
-};
-
-// Chart Card Wrapper Component
-function ChartCard({ title, subtitle, children, className }: { title: string; subtitle?: string; children: React.ReactNode; className?: string }) {
     return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className={clsx(
-                "bg-white rounded-2xl border border-brand-surface/80 shadow-sm",
-                "hover:shadow-lg hover:border-primary-500/10 transition-all duration-300",
-                "overflow-hidden group",
-                className
-            )}
-        >
-            {/* Subtle top border gradient */}
-            <div className="h-0.5 bg-gradient-to-r from-primary-500/50 via-brand-teal/30 to-transparent" />
-
-            <div className="p-6">
-                <div className="flex items-start justify-between mb-6">
-                    <div>
-                        <h3 className="text-lg font-bold text-brand-dark">{title}</h3>
-                        {subtitle && <p className="text-xs text-brand-teal mt-1">{subtitle}</p>}
-                    </div>
-                    <div className="w-8 h-8 rounded-lg bg-brand-surface/50 flex items-center justify-center opacity-50 group-hover:opacity-100 transition-opacity">
-                        <Activity size={16} className="text-brand-teal" />
-                    </div>
+        <div className="relative">
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="flex items-center gap-2 px-4 py-2 bg-white border border-brand-surface rounded-xl text-sm font-medium text-brand-dark hover:border-brand-teal/50 hover:shadow-sm transition-all min-w-[160px] justify-between"
+            >
+                <div className="flex items-center gap-2 text-brand-teal">
+                    <Icon size={16} />
+                    <span className="text-brand-dark">{value || label}</span>
                 </div>
-                {children}
-            </div>
-        </motion.div>
+                <ChevronDown size={14} className={clsx("transition-transform text-brand-teal/70", isOpen ? "rotate-180" : "")} />
+            </button>
+
+            {isOpen && (
+                <>
+                    <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
+                    <div className="absolute top-full mt-2 left-0 w-56 bg-white border border-brand-surface rounded-xl shadow-xl z-20 py-1 overflow-hidden">
+                        <div className="px-3 py-2 bg-brand-surface/20 border-b border-brand-surface text-xs font-bold text-brand-teal uppercase tracking-wider">
+                            Select {label}
+                        </div>
+                        {options.map((opt: string) => (
+                            <button
+                                key={opt}
+                                onClick={() => { onChange(opt); setIsOpen(false); }}
+                                className="w-full text-left px-4 py-2.5 text-sm font-medium text-brand-dark hover:bg-brand-surface/50 hover:text-primary-600 flex items-center justify-between group transition-colors"
+                            >
+                                {opt}
+                                {value === opt && <Check size={14} className="text-primary-500" />}
+                            </button>
+                        ))}
+                    </div>
+                </>
+            )}
+        </div>
     );
 }
 
-export default function NationalOverview() {
+export default function DashboardPage() {
+    const [dateRange, setDateRange] = useState("Last 30 Days");
+    const [province, setProvince] = useState("All Provinces");
+    const [violenceType, setViolenceType] = useState("All Categories");
+
     return (
         <div className="space-y-8">
-            {/* Page Header */}
-            <div className="flex items-end justify-between">
-                <div>
-                    <div className="flex items-center gap-2 mb-2">
-                        <div className="px-3 py-1 bg-primary-500/10 rounded-full border border-primary-500/20">
-                            <span className="text-xs font-bold text-primary-600 uppercase tracking-wider">Command Center</span>
-                        </div>
-                        <div className="w-2 h-2 rounded-full bg-primary-500 animate-pulse" />
-                        <span className="text-xs text-brand-teal font-medium">Live</span>
+            {/* Header & Filters Section */}
+            <div className="flex flex-col items-center justify-center text-center space-y-4 max-w-4xl mx-auto pt-8">
+                <motion.div
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                >
+                    <h1 className="text-4xl md:text-5xl font-heading font-black text-brand-dark tracking-tight mb-2">
+                        Integrated GBV & TFGBV Monitoring Dashboard
+                    </h1>
+                </motion.div>
+
+                {/* Filters Bar */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.1 }}
+                    className="flex flex-wrap items-center justify-center gap-3 p-2 bg-brand-surface/30 backdrop-blur-sm border border-brand-surface rounded-2xl w-full max-w-3xl relative z-50"
+                >
+                    <div className="flex items-center gap-2 px-3 text-brand-teal font-bold text-sm uppercase tracking-wider hidden md:flex">
+                        <Filter size={16} />
+                        Filters:
                     </div>
-                    <h1 className="text-3xl font-heading font-bold text-brand-dark">National Overview</h1>
-                    <p className="text-brand-teal/80 mt-1">Real-time Safety Matrix • All Provinces</p>
-                </div>
-                <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-brand-surface/30 rounded-xl border border-brand-surface">
-                    <Shield size={16} className="text-brand-teal" />
-                    <span className="text-sm font-medium text-brand-dark">Data Integrity: <span className="text-primary-600 font-bold">Verified</span></span>
-                </div>
+
+                    <FilterDropdown
+                        label="Period"
+                        icon={Calendar}
+                        value={dateRange}
+                        onChange={setDateRange}
+                        options={["Last 7 Days", "Last 30 Days", "Last Quarter", "YTD 2026", "Custom Range"]}
+                    />
+
+                    <FilterDropdown
+                        label="Province"
+                        icon={MapPin}
+                        value={province}
+                        onChange={setProvince}
+                        options={["All Provinces", "Punjab", "Sindh", "Khyber Pakhtunkhwa", "Balochistan", "Islamabad (ICT)", "Gilgit-Baltistan", "AJK"]}
+                    />
+
+                    <FilterDropdown
+                        label="Violence Type"
+                        icon={Filter}
+                        value={violenceType}
+                        onChange={setViolenceType}
+                        options={[
+                            "All Categories",
+                            "GB-PH: Physical Violence",
+                            "GB-SX: Sexual Violence",
+                            "GB-EC: Economic Abuse",
+                            "GB-PY: Psychological",
+                            "GB-FM: Forced Marriage",
+                            "GB-TR: Trafficking",
+                            "GB-FE: Femicide",
+                            "TF-A1: Cyberstalking",
+                            "TF-A2: Doxxing",
+                            "TF-A3: Image-based Abuse",
+                            "TF-A4: Deepfake Sexual Content",
+                            "TF-A5: AI Voice Cloning",
+                            "TF-A6: Online Mob Harassment",
+                            "TF-A7: Sextortion",
+                            "TF-A8: GPS Stalking"
+                        ]}
+                    />
+
+                    <button className="px-5 py-2 bg-brand-dark hover:bg-brand-teal text-white font-bold rounded-xl text-sm shadow-md hover:shadow-lg transition-all ml-auto">
+                        Apply
+                    </button>
+                </motion.div>
             </div>
 
-            {/* KPI Row */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {kpis.map((kpi, i) => (
-                    <motion.div
-                        key={kpi.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3, delay: i * 0.1 }}
-                    >
-                        <KPICard data={kpi} />
-                    </motion.div>
-                ))}
-            </div>
+            {/* Main Content Sections */}
+            <div className="space-y-8 lg:space-y-12 pb-12">
+                <OverviewSection />
 
-            {/* Charts Row 1: Trends & Distribution */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Main Trend Area Chart */}
-                <ChartCard title="Monthly Case Trends" subtitle="Year-to-Date Progression" className="lg:col-span-2">
-                    <div className="h-[350px]">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={crimeTrends}>
-                                <defs>
-                                    <linearGradient id="colorPhysical" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor={BRAND_COLORS.teal} stopOpacity={0.3} />
-                                        <stop offset="95%" stopColor={BRAND_COLORS.teal} stopOpacity={0} />
-                                    </linearGradient>
-                                    <linearGradient id="colorDigital" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor={BRAND_COLORS.primary} stopOpacity={0.3} />
-                                        <stop offset="95%" stopColor={BRAND_COLORS.primary} stopOpacity={0} />
-                                    </linearGradient>
-                                    <linearGradient id="colorSexual" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor={BRAND_COLORS.red} stopOpacity={0.2} />
-                                        <stop offset="95%" stopColor={BRAND_COLORS.red} stopOpacity={0} />
-                                    </linearGradient>
-                                </defs>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-                                <XAxis dataKey="month" stroke={BRAND_COLORS.teal} fontSize={11} tickLine={false} axisLine={false} />
-                                <YAxis stroke={BRAND_COLORS.teal} fontSize={11} tickLine={false} axisLine={false} />
-                                <Tooltip content={<CustomTooltip />} />
-                                <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px' }} />
-                                <Area type="monotone" dataKey="Physical" stroke={BRAND_COLORS.teal} strokeWidth={2} fillOpacity={1} fill="url(#colorPhysical)" />
-                                <Area type="monotone" dataKey="Digital" stroke={BRAND_COLORS.primary} strokeWidth={2} fillOpacity={1} fill="url(#colorDigital)" />
-                                <Area type="monotone" dataKey="Sexual" stroke={BRAND_COLORS.red} strokeWidth={2} fillOpacity={1} fill="url(#colorSexual)" />
-                            </AreaChart>
-                        </ResponsiveContainer>
-                    </div>
-                </ChartCard>
+                <div className="w-full h-px bg-gradient-to-r from-transparent via-brand-surface to-transparent" />
 
-                {/* Stacked Bar Distribution */}
-                <ChartCard title="Distribution by Type" subtitle="Quarterly Breakdown">
-                    <div className="h-[350px]">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={stackedCrimeData} layout="vertical" barSize={16}>
-                                <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e5e7eb" />
-                                <XAxis type="number" hide />
-                                <YAxis dataKey="name" type="category" stroke={BRAND_COLORS.teal} fontSize={11} tickLine={false} axisLine={false} width={35} />
-                                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'transparent' }} />
-                                <Bar dataKey="Physical" stackId="a" fill={BRAND_COLORS.teal} radius={[0, 0, 0, 0]} />
-                                <Bar dataKey="Sexual" stackId="a" fill={BRAND_COLORS.red} />
-                                <Bar dataKey="Digital" stackId="a" fill={BRAND_COLORS.primary} radius={[0, 4, 4, 0]} />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </div>
-                </ChartCard>
-            </div>
+                <ProcessIndicatorsSection />
 
-            {/* Charts Row 2: Service Gaps & Platforms */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Radar Chart: Service Gaps */}
-                <ChartCard title="Service Provision Gaps" subtitle="Requested vs Provided Services">
-                    <div className="h-[320px]">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <RadarChart cx="50%" cy="50%" outerRadius="75%" data={serviceGaps}>
-                                <PolarGrid stroke="#e5e7eb" />
-                                <PolarAngleAxis dataKey="subject" tick={{ fill: BRAND_COLORS.teal, fontSize: 11, fontWeight: 500 }} />
-                                <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
-                                <Radar name="Requested" dataKey="B" stroke={BRAND_COLORS.teal} fill={BRAND_COLORS.teal} fillOpacity={0.15} strokeWidth={2} />
-                                <Radar name="Provided" dataKey="A" stroke={BRAND_COLORS.primary} fill={BRAND_COLORS.primary} fillOpacity={0.4} strokeWidth={2} />
-                                <Legend iconType="circle" />
-                                <Tooltip content={<CustomTooltip />} />
-                            </RadarChart>
-                        </ResponsiveContainer>
-                    </div>
-                </ChartCard>
+                <div className="w-full h-px bg-gradient-to-r from-transparent via-brand-surface to-transparent" />
 
-                {/* Platform Compliance - Enhanced Progress Bars */}
-                <ChartCard title="Platform Compliance Scores" subtitle="TFGBV Response Metrics">
-                    <div className="space-y-5">
-                        {platformStats.sort((a, b) => b.score - a.score).map((p, i) => (
-                            <div key={p.name} className="group">
-                                <div className="flex justify-between text-sm mb-2">
-                                    <div className="flex items-center gap-2">
-                                        <div className={clsx(
-                                            "w-2 h-2 rounded-full",
-                                            p.score > 80 ? "bg-primary-500" : p.score > 50 ? "bg-amber-400" : "bg-red-500"
-                                        )} />
-                                        <span className="font-semibold text-brand-dark">{p.name}</span>
-                                    </div>
-                                    <span className={clsx(
-                                        "font-black tabular-nums",
-                                        p.score > 80 ? "text-primary-600" : p.score > 50 ? "text-amber-500" : "text-red-500"
-                                    )}>
-                                        {p.score}%
-                                    </span>
-                                </div>
-                                <div className="h-3 w-full bg-brand-surface/50 rounded-full overflow-hidden relative">
-                                    {/* Shimmer Effect */}
-                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-                                    <motion.div
-                                        initial={{ width: 0 }}
-                                        animate={{ width: `${p.score}%` }}
-                                        transition={{ duration: 1, delay: i * 0.1, ease: "easeOut" }}
-                                        className={clsx(
-                                            "h-full rounded-full relative",
-                                            p.score > 80 ? "bg-gradient-to-r from-primary-500 to-primary-400" :
-                                                p.score > 50 ? "bg-gradient-to-r from-amber-500 to-amber-400" :
-                                                    "bg-gradient-to-r from-red-500 to-red-400"
-                                        )}
-                                    />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </ChartCard>
+                <GeospatialSection />
+
+                <div className="w-full h-px bg-gradient-to-r from-transparent via-brand-surface to-transparent" />
+
+                <JusticeSection />
+
+                <div className="w-full h-px bg-gradient-to-r from-transparent via-brand-surface to-transparent" />
+
+                <ServicesSection />
+
+                <div className="w-full h-px bg-gradient-to-r from-transparent via-brand-surface to-transparent" />
+
+                <PlatformSection />
+
+                <div className="w-full h-px bg-gradient-to-r from-transparent via-brand-surface to-transparent" />
+
+                <ComplianceSection />
             </div>
         </div>
     );

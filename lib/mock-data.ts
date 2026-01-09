@@ -13,6 +13,7 @@ export interface KPI {
     trendLabel: string;
     status: "up" | "down" | "neutral";
     alert?: boolean;
+    subStats?: { label: string; value: string; color?: string }[];
 }
 
 export interface DistrictData {
@@ -29,7 +30,18 @@ export interface DistrictData {
 
 // Generators
 export const generateKPIs = (): KPI[] => [
-    { id: "kpi-1", label: "Total Cases (YTD)", value: "12,450", trend: 12.5, trendLabel: "vs last month", status: "up" },
+    {
+        id: "kpi-1",
+        label: "Total Cases (YTD)",
+        value: "12,450",
+        trend: 12.5,
+        trendLabel: "vs last month",
+        status: "up",
+        subStats: [
+            { label: "GBV", value: "8,200", color: "text-brand-teal" },
+            { label: "TFGBV", value: "4,250", color: "text-indigo-600" }
+        ]
+    },
     { id: "kpi-2", label: "Conviction Rate", value: "3.2%", trend: -0.5, trendLabel: "vs last month", status: "down", alert: true },
     { id: "kpi-3", label: "Red Zone Districts", value: "14", trend: 2, trendLabel: "New this week", status: "up", alert: true },
     { id: "kpi-4", label: "Active Shelters", value: "185", trend: 0, trendLabel: "Stable", status: "neutral" },
@@ -128,6 +140,51 @@ export const generateAIThreats = () => {
     }));
 };
 
+// Detailed Breakdown Data for Overview Section
+export const generateDetailedBreakdown = () => {
+    return {
+        gbv: [
+            { code: "GB-PH", label: "Physical Violence", value: 3450, color: "#ef4444" },
+            { code: "GB-SX", label: "Sexual Violence", value: 1240, color: "#f97316" },
+            { code: "GB-PY", label: "Psychological Abuse", value: 2100, color: "#f59e0b" },
+            { code: "GB-EC", label: "Economic Abuse", value: 890, color: "#10b981" },
+            { code: "GB-FM", label: "Forced Marriage", value: 430, color: "#06b6d4" },
+            { code: "GB-TR", label: "Trafficking", value: 120, color: "#6366f1" },
+            { code: "GB-FE", label: "Femicide", value: 45, color: "#9f1239" },
+        ],
+        tfgbv: [
+            { code: "TF-A1", label: "Cyberstalking", value: 1850, risk: "High", color: "#055b65" },
+            { code: "TF-A7", label: "Sextortion", value: 920, risk: "Critical", color: "#ef4444" },
+            { code: "TF-A3", label: "Image-based Abuse", value: 850, risk: "Critical", color: "#f97316" },
+            { code: "TF-A6", label: "Online Mob Harassment", value: 640, risk: "Medium", color: "#f59e0b" },
+            { code: "TF-A4", label: "Deepfake Sexual Content", value: 420, risk: "Critical", color: "#1bd488" },
+            { code: "TF-A2", label: "Doxxing", value: 310, risk: "High", color: "#45828b" },
+            { code: "TF-A5", label: "Voice Cloning", value: 150, risk: "Critical", color: "#6366f1" },
+        ]
+    };
+};
+
+// Reporting Channels Data
+// Reporting Channels Data
+export const generateReportingChannelData = () => {
+    return {
+        gbv: [
+            { name: "Police Station", value: 2450, color: "#055b65" },
+            { name: "WPC Centers", value: 1800, color: "#1bd488" },
+            { name: "Helpline 1099", value: 1200, color: "#f59e0b" },
+            { name: "Punjab Police App", value: 350, color: "#45828b" },
+            { name: "Courts", value: 890, color: "#9f1239" },
+        ],
+        tfgbv: [
+            { name: "FIA Cyber Crime", value: 1890, color: "#055b65" },
+            { name: "NCCIA Website", value: 4500, color: "#ef4444" },
+            { name: "Online Portal", value: 2100, color: "#f97316" },
+            { name: "Helpline 1991", value: 950, color: "#f59e0b" },
+            { name: "Direct Email", value: 420, color: "#45828b" },
+        ]
+    };
+};
+
 export const generateRiskData = () => {
     return [
         { level: "Extreme (Immediate Threat)", count: 142, color: "#ef4444", desc: "Weapon involvement, stalking, death threats" },
@@ -135,3 +192,11 @@ export const generateRiskData = () => {
         { level: "Medium (Monitoring)", count: 890, color: "#eab308", desc: " Verbal abuse, online harassment" },
     ];
 };
+// Closure/Attrition Reasons
+export const generateClosureReasons = () => [
+    { reason: "Compromise/Sulh", count: 450 },
+    { reason: "Lack of Evidence", count: 320 },
+    { reason: "Witness Hostility", count: 210 },
+    { reason: "Procedural Delay", count: 180 },
+    { reason: "Survivor Withdrawal", count: 150 },
+];
