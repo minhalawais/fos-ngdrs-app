@@ -7,6 +7,7 @@ import { clsx } from "clsx";
 
 // Section Imports
 import OverviewSection from "@/components/dashboard/sections/OverviewSection";
+import DemographicsSection from "@/components/dashboard/sections/DemographicsSection";
 import ProcessIndicatorsSection from "@/components/dashboard/sections/ProcessIndicatorsSection";
 import GeospatialSection from "@/components/dashboard/sections/GeospatialSection";
 import JusticeSection from "@/components/dashboard/sections/JusticeSection";
@@ -68,7 +69,7 @@ export default function DashboardPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <h1 className="text-4xl white-space-nowrap md:text-5xl font-heading font-black text-brand-dark tracking-tight mb-2">
+                    <h1 className="text-4xl md:text-5xl font-heading font-black text-brand-dark tracking-tight mb-2" style={{ whiteSpace: 'nowrap' }}>
                         National GBV & TFGBV Monitoring Dashboard
                     </h1>
                 </motion.div>
@@ -133,31 +134,14 @@ export default function DashboardPage() {
             </div>
 
             {/* Main Content Sections */}
-            <div className="space-y-8 lg:space-y-12 pb-12">
+            <div className="space-y-8 pb-12">
                 <OverviewSection />
-
-                <div className="w-full h-px bg-gradient-to-r from-transparent via-brand-surface to-transparent" />
-
+                <DemographicsSection />
                 <ProcessIndicatorsSection />
-
-                <div className="w-full h-px bg-gradient-to-r from-transparent via-brand-surface to-transparent" />
-
                 <GeospatialSection />
-
-                <div className="w-full h-px bg-gradient-to-r from-transparent via-brand-surface to-transparent" />
-
                 <JusticeSection />
-
-                <div className="w-full h-px bg-gradient-to-r from-transparent via-brand-surface to-transparent" />
-
                 <ServicesSection />
-
-                <div className="w-full h-px bg-gradient-to-r from-transparent via-brand-surface to-transparent" />
-
                 <PlatformSection />
-
-                <div className="w-full h-px bg-gradient-to-r from-transparent via-brand-surface to-transparent" />
-
                 <ComplianceSection />
             </div>
         </div>

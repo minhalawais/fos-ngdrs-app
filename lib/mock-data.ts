@@ -44,7 +44,7 @@ export const generateKPIs = (): KPI[] => [
     },
     { id: "kpi-2", label: "Conviction Rate", value: "3.2%", trend: -0.5, trendLabel: "vs last month", status: "down", alert: true },
     { id: "kpi-3", label: "Red Zone Districts", value: "14", trend: 2, trendLabel: "New this week", status: "up", alert: true },
-    { id: "kpi-4", label: "Active Shelters", value: "185", trend: 0, trendLabel: "Stable", status: "neutral" },
+    { id: "kpi-4", label: "Prevention & Awareness Actions", value: "185", trend: 0, trendLabel: "Stable", status: "neutral" },
 ];
 
 export const generateCrimeTrends = () => [
@@ -199,4 +199,47 @@ export const generateClosureReasons = () => [
     { reason: "Witness Hostility", count: 210 },
     { reason: "Procedural Delay", count: 180 },
     { reason: "Survivor Withdrawal", count: 150 },
+];
+
+export const generateDistrictHotspots = () => [
+    { category: "Domestic Violence", districts: ["Mardan", "Dera Ghazi Khan", "Jacobabad"] },
+    { category: "Cyber Harassment", districts: ["Swat", "Peshawar", "Islamabad"] },
+    { category: "Workplace", districts: ["Faisalabad", "Karachi Central"] }
+];
+
+export const generateShelterPrograms = () => [
+    { name: "Youth Digital Resilience Bootcamps", count: 42 },
+    { name: "Safe Schools, Safe Futures Programme", count: 78 },
+    { name: "Workplace GBV Awareness Sessions", count: 156 },
+    { name: "Grievance Redressal Mechanism Implementation", count: 34 },
+];
+
+// Demographic Breakdowns for Stacked Bar Charts
+export const generatePerpetratorTypeData = () => [
+    { name: "Intimate Partner", value: 3200, color: "#1bd488" },
+    { name: "Family", value: 2800, color: "#45828b" },
+    { name: "Acquaintance", value: 1500, color: "#055b65" },
+    { name: "Stranger", value: 1200, color: "#f97316" },
+    { name: "Employer", value: 850, color: "#8b5cf6" },
+    { name: "Official", value: 620, color: "#ec4899" },
+    { name: "Digital Anonymous", value: 1830, color: "#6366f1" },
+];
+
+export const generateLocationTypeData = () => [
+    { name: "Home", value: 4200, color: "#1bd488" },
+    { name: "Street", value: 1800, color: "#45828b" },
+    { name: "School", value: 650, color: "#055b65" },
+    { name: "University", value: 480, color: "#f97316" },
+    { name: "Workplace", value: 1100, color: "#8b5cf6" },
+    { name: "Public Transport", value: 720, color: "#ec4899" },
+    { name: "Police Station", value: 180, color: "#ef4444" },
+    { name: "Court", value: 120, color: "#eab308" },
+    { name: "Online Platform", value: 1750, color: "#6366f1" },
+];
+
+export const generateSurvivorAgeData = () => [
+    { name: "Minor (0-17)", value: 2100, color: "#ef4444" },
+    { name: "Youth (18-24)", value: 4500, color: "#f97316" },
+    { name: "Adult (25+)", value: 4800, color: "#1bd488" },
+    { name: "Senior (60+)", value: 600, color: "#45828b" },
 ];

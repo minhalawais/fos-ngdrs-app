@@ -9,7 +9,7 @@ import {
 } from 'recharts';
 import { useState, useEffect } from 'react';
 import KPICard from "@/components/dashboard/KPICard";
-import { generateKPIs, generateCrimeTrends, generateServiceGaps, generatePlatformStats, generateDetailedBreakdown, generateReportingChannelData, generateClosureReasons, generateFunnelData } from "@/lib/mock-data";
+import { generateKPIs, generateCrimeTrends, generateServiceGaps, generatePlatformStats, generateDetailedBreakdown, generateReportingChannelData, generateClosureReasons, generateFunnelData, generateDistrictHotspots, generateShelterPrograms } from "@/lib/mock-data";
 import { motion } from "framer-motion";
 import { clsx } from "clsx";
 import {
@@ -133,6 +133,8 @@ const serviceGaps = generateServiceGaps();
 const platformStats = generatePlatformStats();
 const detailedBreakdown = generateDetailedBreakdown();
 const reportingChannels = generateReportingChannelData();
+const districtHotspots = generateDistrictHotspots();
+const shelterPrograms = generateShelterPrograms();
 
 // Colors
 const BRAND_COLORS = {
@@ -171,6 +173,136 @@ const CustomTooltip = ({ active, payload, label }: any) => {
     }
     return null;
 };
+
+// Interactive Donut Chart Component
+function InteractiveDonutChart({
+    data,
+    title
+}: {
+    data: { label: string; value: number; color: string }[];
+    title: string;
+}) {
+    const [activeIndex, setActiveIndex] = useState<number | null>(null);
+    const [hiddenItems, setHiddenItems] = useState<Set<string>>(new Set());
+
+    const visibleData = data.filter(item => !hiddenItems.has(item.label));
+    const total = visibleData.reduce((sum, item) => sum + item.value, 0);
+
+    const handleLegendClick = (label: string) => {
+        const newHidden = new Set(hiddenItems);
+        if (newHidden.has(label)) {
+            newHidden.delete(label);
+        } else if (newHidden.size < data.length - 1) {
+            newHidden.add(label);
+        }
+        setHiddenItems(newHidden);
+    };
+
+    const onPieEnter = (_: any, index: number) => setActiveIndex(index);
+    const onPieLeave = () => setActiveIndex(null);
+
+    return (
+        <div className="h-full flex flex-col">
+            <h4 className="text-xs font-bold text-brand-teal uppercase tracking-wider opacity-70 mb-2 shrink-0">{title}</h4>
+            <div className="flex-1 flex items-center min-h-0">
+                {/* Chart */}
+                <div className="flex-1 h-[200px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                            <Pie
+                                data={visibleData}
+                                cx="50%"
+                                cy="50%"
+                                innerRadius={50}
+                                outerRadius={activeIndex !== null ? 85 : 75}
+                                paddingAngle={2}
+                                dataKey="value"
+                                nameKey="label"
+                                onMouseEnter={onPieEnter}
+                                onMouseLeave={onPieLeave}
+                                animationDuration={300}
+                                label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
+                                    const RADIAN = Math.PI / 180;
+                                    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+                                    const x = cx + radius * Math.cos(-(midAngle || 0) * RADIAN);
+                                    const y = cy + radius * Math.sin(-(midAngle || 0) * RADIAN);
+                                    return (percent || 0) > 0.08 ? (
+                                        <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" fontSize={9} fontWeight="bold">
+                                            {`${((percent || 0) * 100).toFixed(0)}%`}
+                                        </text>
+                                    ) : null;
+                                }}
+                                labelLine={false}
+                            >
+                                {visibleData.map((entry, index) => (
+                                    <Cell
+                                        key={`cell-${index}`}
+                                        fill={entry.color}
+                                        stroke="none"
+                                        style={{
+                                            filter: activeIndex === index ? 'brightness(1.2) drop-shadow(0 4px 8px rgba(0,0,0,0.2))' : 'brightness(1)',
+                                            transform: activeIndex === index ? 'scale(1.05)' : 'scale(1)',
+                                            transformOrigin: 'center',
+                                            transition: 'all 0.2s ease'
+                                        }}
+                                    />
+                                ))}
+                            </Pie>
+                            <Tooltip
+                                content={({ active, payload }) => {
+                                    if (active && payload && payload.length) {
+                                        const item = payload[0].payload;
+                                        const pct = ((item.value / total) * 100).toFixed(1);
+                                        return (
+                                            <div className="bg-white/95 backdrop-blur-sm border border-brand-surface rounded-xl px-3 py-2 shadow-xl">
+                                                <p className="text-xs font-bold text-brand-dark">{item.label}</p>
+                                                <p className="text-[10px] text-brand-teal">
+                                                    {item.value.toLocaleString()} ({pct}%)
+                                                </p>
+                                            </div>
+                                        );
+                                    }
+                                    return null;
+                                }}
+                            />
+                        </PieChart>
+                    </ResponsiveContainer>
+                </div>
+
+                {/* Custom Legend */}
+                <div className="w-28 flex flex-col gap-1.5 pl-2">
+                    {data.map((item, idx) => {
+                        const isHidden = hiddenItems.has(item.label);
+                        const pct = !isHidden ? ((item.value / total) * 100).toFixed(0) : '—';
+                        return (
+                            <button
+                                key={idx}
+                                onClick={() => handleLegendClick(item.label)}
+                                onMouseEnter={() => !isHidden && setActiveIndex(visibleData.findIndex(d => d.label === item.label))}
+                                onMouseLeave={() => setActiveIndex(null)}
+                                className={clsx(
+                                    "flex items-center gap-1.5 text-left transition-all duration-200",
+                                    isHidden ? "opacity-40" : "opacity-100 hover:scale-105"
+                                )}
+                            >
+                                <div
+                                    className="w-2 h-2 rounded-full shrink-0"
+                                    style={{ backgroundColor: isHidden ? '#ccc' : item.color }}
+                                />
+                                <span className={clsx(
+                                    "text-[9px] font-medium leading-tight",
+                                    isHidden ? "text-gray-400 line-through" : "text-brand-dark/70"
+                                )}>
+                                    {item.label}
+                                </span>
+                            </button>
+                        );
+                    })}
+                </div>
+            </div>
+        </div>
+    );
+}
 
 // Icon Helper
 // Brand Icons Component with original colors
@@ -254,7 +386,7 @@ const CustomAxisTick = ({ x, y, payload }: any) => {
 };
 
 // Chart Card Wrapper Component - Reusable within this section or globally if exported
-export function ChartCard({ title, subtitle, children, className }: { title: string; subtitle?: string; children: React.ReactNode; className?: string }) {
+export function ChartCard({ title, subtitle, children, className, padding = "p-6" }: { title: string; subtitle?: string; children: React.ReactNode; className?: string; padding?: string }) {
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -264,14 +396,14 @@ export function ChartCard({ title, subtitle, children, className }: { title: str
             className={clsx(
                 "bg-white rounded-2xl border border-brand-surface/80 shadow-sm",
                 "hover:shadow-lg hover:border-primary-500/10 transition-all duration-300",
-                "overflow-hidden group",
+                "overflow-hidden group flex flex-col",
                 className
             )}
         >
             {/* Subtle top border gradient */}
-            <div className="h-0.5 bg-gradient-to-r from-primary-500/50 via-brand-teal/30 to-transparent" />
+            <div className="h-0.5 bg-gradient-to-r from-primary-500/50 via-brand-teal/30 to-transparent shrink-0" />
 
-            <div className="p-6">
+            <div className={`${padding} flex-1 flex flex-col min-h-0`}>
                 <div className="flex items-start justify-between mb-6">
                     <div>
                         <h3 className="text-lg font-bold text-brand-dark">{title}</h3>
@@ -314,12 +446,12 @@ export default function OverviewSection() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.3, delay: i * 0.1 }}
-                                className="h-full"
+                                className="h-[200px]"
                             >
                                 <div className="relative bg-white rounded-2xl border border-red-200 shadow-sm overflow-hidden h-full flex flex-col group hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                                     <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-500 to-red-400" />
 
-                                    <div className="p-5 flex-1 flex flex-col justify-between">
+                                    <div className="p-5 flex flex-col">
                                         {/* Top Stats */}
                                         <div className="flex justify-between items-start mb-4">
                                             <div className="flex items-center gap-3">
@@ -343,11 +475,114 @@ export default function OverviewSection() {
 
                                         {/* Embedded Attrition List */}
                                         <div className="space-y-2">
-                                            <p className="text-[10px] font-bold text-brand-teal uppercase tracking-wider mb-1 opacity-80">Top Attrition Factors</p>
                                             {closureReasons.slice(0, 3).map((r: { reason: string; count: number }, idx: number) => (
                                                 <div key={idx} className="flex justify-between items-center text-xs">
                                                     <span className="text-brand-dark/70 font-medium truncate pr-2">{r.reason}</span>
                                                     <span className="font-bold text-brand-dark bg-brand-surface/50 px-1.5 py-0.5 rounded-[4px] text-[10px] whitespace-nowrap">{r.count}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        );
+                    }
+
+                    if (kpi.id === 'kpi-3') { // Red Zone Districts
+                        return (
+                            <motion.div
+                                key={kpi.id}
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ duration: 0.3, delay: i * 0.1 }}
+                                className="h-[200px]"
+                            >
+                                <div className="bg-white rounded-2xl border border-red-200 shadow-sm h-full overflow-hidden hover:shadow-md transition-shadow relative group">
+                                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-600 to-red-400" />
+
+                                    <div className="p-5 flex flex-col">
+                                        {/* Top Stats */}
+                                        <div className="flex justify-between items-start mb-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center text-red-600">
+                                                    <AlertCircle size={20} />
+                                                </div>
+                                                <div>
+                                                    <span className="text-xs font-bold text-brand-teal uppercase tracking-wider block">{kpi.label}</span>
+                                                    <div className="flex items-baseline gap-2">
+                                                        <span className="text-2xl font-black text-brand-dark tracking-tight">{kpi.value}</span>
+                                                        <span className="text-[10px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded flex items-center gap-0.5">
+                                                            <TrendingDown size={10} className="rotate-180" /> {Math.abs(kpi.trend)} {kpi.trendLabel}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Divider */}
+                                        <div className="w-full h-px bg-brand-surface mb-3" />
+
+                                        {/* Embedded District Hotspots */}
+                                        <div className="space-y-2">
+                                            {districtHotspots.map((h, idx) => (
+                                                <div key={idx} className="flex justify-between items-center text-xs">
+                                                    <span className="text-brand-dark/70 font-medium truncate pr-2">{h.category}</span>
+                                                    <div className="flex flex-wrap justify-end gap-1">
+                                                        {h.districts.map((d, dIdx) => (
+                                                            <span key={dIdx} className="bg-red-50 text-red-700 px-1.5 py-0.5 rounded-[3px] text-[10px] border border-red-100 whitespace-nowrap">
+                                                                {d}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        );
+                    }
+
+                    if (kpi.id === 'kpi-4') { // Active Shelters
+                        return (
+                            <motion.div
+                                key={kpi.id}
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ duration: 0.3, delay: i * 0.1 }}
+                                className="h-[200px]"
+                            >
+                                <div className="bg-white rounded-2xl border border-primary-200 shadow-sm h-full overflow-hidden hover:shadow-md transition-shadow relative group">
+                                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-500 to-brand-teal" />
+
+                                    <div className="p-5 flex flex-col h-full">
+                                        {/* Top Stats */}
+                                        <div className="flex justify-between items-start mb-3">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 rounded-xl bg-primary-100 flex items-center justify-center text-primary-600">
+                                                    <HeartHandshake size={20} />
+                                                </div>
+                                                <div>
+                                                    <span className="text-xs font-bold text-brand-teal uppercase tracking-wider block">{kpi.label}</span>
+                                                    <div className="flex items-baseline gap-2">
+                                                        <span className="text-2xl font-black text-brand-dark tracking-tight">{kpi.value}</span>
+                                                        <span className="text-[10px] font-bold text-primary-600 bg-primary-50 px-1.5 py-0.5 rounded flex items-center gap-0.5">
+                                                            {kpi.trendLabel}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Divider */}
+                                        <div className="w-full h-px bg-brand-surface mb-2" />
+
+                                        {/* Embedded Programs List */}
+                                        <div className="space-y-1.5 flex-1 overflow-auto">
+                                            {shelterPrograms.map((p, idx) => (
+                                                <div key={idx} className="flex justify-between items-center text-xs">
+                                                    <span className="text-brand-dark/70 font-medium truncate pr-2">{p.name}</span>
+                                                    <span className="font-bold text-brand-dark bg-primary-50 px-1.5 py-0.5 rounded-[4px] text-[10px] whitespace-nowrap">{p.count}</span>
                                                 </div>
                                             ))}
                                         </div>
@@ -363,7 +598,7 @@ export default function OverviewSection() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.3, delay: i * 0.1 }}
-                            className="h-full"
+                            className="h-[200px]"
                         >
                             <KPICard data={kpi} />
                         </motion.div>
@@ -375,96 +610,22 @@ export default function OverviewSection() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
                 {/* Detailed Dual-Pillar Analysis - Vertical Stack */}
-                <ChartCard title="Category Wise Breakdown" subtitle="GBV (Top) vs TFGBV (Bottom)" className="lg:col-span-1">
-                    <div className="flex flex-col gap-8 h-[600px]">
+                <ChartCard title="Category Wise Breakdown" subtitle="GBV vs TFGBV Distribution" className="lg:col-span-1">
+                    <div className="flex flex-col gap-4 h-[600px]">
                         {/* GBV Donut Chart */}
-                        <div className="flex-1 flex flex-col items-center justify-center relative border-b border-dashed border-gray-200 pb-4">
-                            <h4 className="absolute top-0 w-full text-left text-xs font-bold text-brand-teal uppercase tracking-wider z-10 opacity-70">GBV</h4>
-                            <div className="w-full h-full min-h-0 pt-6">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <PieChart>
-                                        <Pie
-                                            data={detailedBreakdown.gbv}
-                                            cx="50%"
-                                            cy="50%"
-                                            innerRadius={60}
-                                            outerRadius={90}
-                                            paddingAngle={2}
-                                            dataKey="value"
-                                            nameKey="label"
-                                            label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
-                                                const RADIAN = Math.PI / 180;
-                                                const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-                                                const x = cx + radius * Math.cos(-(midAngle || 0) * RADIAN);
-                                                const y = cy + radius * Math.sin(-(midAngle || 0) * RADIAN);
-                                                return (percent || 0) > 0.1 ? (
-                                                    <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" fontSize={10} fontWeight="bold">
-                                                        {`${((percent || 0) * 100).toFixed(0)}%`}
-                                                    </text>
-                                                ) : null;
-                                            }}
-                                            labelLine={false}
-                                        >
-                                            {detailedBreakdown.gbv.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={entry.color} stroke="none" />
-                                            ))}
-                                        </Pie>
-                                        <Tooltip content={<CustomTooltip />} />
-                                        <Legend
-                                            iconType="circle"
-                                            layout="vertical"
-                                            verticalAlign="middle"
-                                            align="right"
-                                            wrapperStyle={{ fontSize: '10px', fontWeight: 500 }}
-                                        />
-                                    </PieChart>
-                                </ResponsiveContainer>
-                            </div>
+                        <div className="flex-1 border-b border-dashed border-gray-200 pb-2">
+                            <InteractiveDonutChart
+                                data={detailedBreakdown.gbv}
+                                title="GBV Categories"
+                            />
                         </div>
 
                         {/* TFGBV Donut Chart */}
-                        <div className="flex-1 flex flex-col items-center justify-center relative">
-                            <h4 className="absolute top-0 w-full text-left text-xs font-bold text-brand-teal uppercase tracking-wider z-10 opacity-70">TFGBV</h4>
-                            <div className="w-full h-full min-h-0 pt-6">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <PieChart>
-                                        <Pie
-                                            data={detailedBreakdown.tfgbv}
-                                            cx="50%"
-                                            cy="50%"
-                                            innerRadius={60}
-                                            outerRadius={90}
-                                            paddingAngle={2}
-                                            dataKey="value"
-                                            nameKey="label"
-                                            label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
-                                                const RADIAN = Math.PI / 180;
-                                                const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-                                                const x = cx + radius * Math.cos(-(midAngle || 0) * RADIAN);
-                                                const y = cy + radius * Math.sin(-(midAngle || 0) * RADIAN);
-                                                return (percent || 0) > 0.1 ? (
-                                                    <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" fontSize={10} fontWeight="bold">
-                                                        {`${((percent || 0) * 100).toFixed(0)}%`}
-                                                    </text>
-                                                ) : null;
-                                            }}
-                                            labelLine={false}
-                                        >
-                                            {detailedBreakdown.tfgbv.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={(entry as any).color || BRAND_COLORS.teal} stroke="none" />
-                                            ))}
-                                        </Pie>
-                                        <Tooltip content={<CustomTooltip />} />
-                                        <Legend
-                                            iconType="circle"
-                                            layout="vertical"
-                                            verticalAlign="middle"
-                                            align="right"
-                                            wrapperStyle={{ fontSize: '10px', fontWeight: 500 }}
-                                        />
-                                    </PieChart>
-                                </ResponsiveContainer>
-                            </div>
+                        <div className="flex-1">
+                            <InteractiveDonutChart
+                                data={detailedBreakdown.tfgbv}
+                                title="TFGBV Categories"
+                            />
                         </div>
                     </div>
                 </ChartCard>
@@ -481,13 +642,12 @@ export default function OverviewSection() {
                 </ChartCard>
 
                 {/* Right Column: Reporting Channels & Social Media Stack */}
-                <ChartCard title="Reporting Channels" subtitle="" className="lg:col-span-1">
-                    <div className="flex flex-col h-[600px]">
+                <div className="lg:col-span-1 flex flex-col gap-4 h-[705px]">
 
-                        {/* Top Section: Reporting Channels */}
-                        <div className="flex-1 flex flex-col border-b border-dashed border-gray-200 pb-4">
-                            <div className="flex justify-between items-center mb-2">
-                                <h4 className="text-xs font-bold text-brand-teal uppercase tracking-wider opacity-70"></h4>
+                    {/* Reporting Channels Card */}
+                    <ChartCard title="Reporting Channels" subtitle="" className="flex-1" padding="p-3">
+                        <div className="flex flex-col h-full">
+                            <div className="flex justify-end mb-1">
                                 <div className="flex bg-brand-surface/30 rounded-lg p-1 gap-1">
                                     <button
                                         onClick={() => setChannelTab('gbv')}
@@ -535,10 +695,11 @@ export default function OverviewSection() {
                                 </ResponsiveContainer>
                             </div>
                         </div>
+                    </ChartCard>
 
-                        {/* Bottom Section: Social Media Breakdown */}
-                        <div className="flex-1 flex flex-col pt-4">
-                            <h4 className="text-xs font-bold text-brand-teal uppercase tracking-wider opacity-70 mb-2">TFGBV Platforms</h4>
+                    {/* TFGBV Platforms Card */}
+                    <ChartCard title="TFGBV Platforms" subtitle="Social Media Breakdown" className="flex-1" padding="p-3">
+                        <div className="flex flex-col h-full">
                             <div className="flex-1 min-h-0">
                                 <ResponsiveContainer width="100%" height="100%">
                                     <BarChart
@@ -558,9 +719,8 @@ export default function OverviewSection() {
                                 </ResponsiveContainer>
                             </div>
                         </div>
-
-                    </div>
-                </ChartCard>
+                    </ChartCard>
+                </div>
             </div>
         </section>
     );
