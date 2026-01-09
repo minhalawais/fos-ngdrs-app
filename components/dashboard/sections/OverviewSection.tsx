@@ -12,7 +12,9 @@ import KPICard from "@/components/dashboard/KPICard";
 import { generateKPIs, generateCrimeTrends, generateServiceGaps, generatePlatformStats, generateDetailedBreakdown, generateReportingChannelData, generateClosureReasons, generateFunnelData } from "@/lib/mock-data";
 import { motion } from "framer-motion";
 import { clsx } from "clsx";
-import { Activity, TrendingDown, AlertCircle } from "lucide-react";
+import {
+    Activity, TrendingDown, AlertCircle, Landmark, Shield, HeartHandshake, Phone, Smartphone, Gavel, Globe, FileSearch, Monitor
+} from "lucide-react";
 
 // Trapezoid Funnel Data
 const funnelData = generateFunnelData();
@@ -168,6 +170,36 @@ const CustomTooltip = ({ active, payload, label }: any) => {
         );
     }
     return null;
+};
+
+// Icon Helper
+// Icon Helper
+const getChannelIcon = (name: string) => {
+    if (name.includes("Police")) return <Shield size={16} />;
+    if (name.includes("WPC")) return <HeartHandshake size={16} />;
+    if (name.includes("Helpline")) return <Phone size={16} />;
+    if (name.includes("App")) return <Smartphone size={16} />;
+    if (name.includes("Court") || name.includes("Magistrate")) return <Gavel size={16} />;
+    if (name.includes("FIA")) return <FileSearch size={16} />;
+    if (name.includes("NCCIA")) return <Monitor size={16} />; // Cyber Agency
+    if (name.includes("Online")) return <Globe size={16} />;
+    return <Landmark size={16} />;
+};
+
+// Custom Axis Tick
+const CustomAxisTick = ({ x, y, payload }: any) => {
+    return (
+        <g transform={`translate(${x},${y})`}>
+            <foreignObject x={-155} y={-16} width={150} height={32}>
+                <div className="flex items-center justify-end gap-3 h-full text-[10px] font-bold text-brand-dark/80">
+                    <span className="text-right leading-3 whitespace-normal flex-1">{payload.value}</span>
+                    <div className="w-8 h-8 rounded-lg bg-white shadow-sm border border-brand-teal/20 flex items-center justify-center text-brand-teal flex-shrink-0 group-hover:bg-brand-teal group-hover:text-white transition-colors">
+                        {getChannelIcon(payload.value)}
+                    </div>
+                </div>
+            </foreignObject>
+        </g>
+    );
 };
 
 // Chart Card Wrapper Component - Reusable within this section or globally if exported
@@ -398,57 +430,85 @@ export default function OverviewSection() {
                     </div>
                 </ChartCard>
 
-                {/* Reporting Channels Stacked Bar */}
-                <ChartCard title="Reporting Channels" subtitle="Source Breakdown" className="lg:col-span-1">
-                    <div className="h-[600px] flex flex-col">
-                        <div className="flex justify-end mb-4">
-                            <div className="flex bg-brand-surface/30 rounded-lg p-1 gap-1">
-                                <button
-                                    onClick={() => setChannelTab('gbv')}
-                                    className={clsx(
-                                        "px-3 py-1 text-[10px] font-bold uppercase rounded-md transition-all",
-                                        channelTab === 'gbv' ? "bg-brand-dark text-white shadow-sm" : "text-brand-teal hover:bg-brand-surface/40"
-                                    )}
-                                >
-                                    GBV
-                                </button>
-                                <button
-                                    onClick={() => setChannelTab('tfgbv')}
-                                    className={clsx(
-                                        "px-3 py-1 text-[10px] font-bold uppercase rounded-md transition-all",
-                                        channelTab === 'tfgbv' ? "bg-brand-dark text-white shadow-sm" : "text-brand-teal hover:bg-brand-surface/40"
-                                    )}
-                                >
-                                    TFGBV
-                                </button>
+                {/* Right Column: Reporting Channels & Social Media Stack */}
+                <ChartCard title="Reporting Channels" subtitle="" className="lg:col-span-1">
+                    <div className="flex flex-col h-[600px]">
+
+                        {/* Top Section: Reporting Channels */}
+                        <div className="flex-1 flex flex-col border-b border-dashed border-gray-200 pb-4">
+                            <div className="flex justify-between items-center mb-2">
+                                <h4 className="text-xs font-bold text-brand-teal uppercase tracking-wider opacity-70"></h4>
+                                <div className="flex bg-brand-surface/30 rounded-lg p-1 gap-1">
+                                    <button
+                                        onClick={() => setChannelTab('gbv')}
+                                        className={clsx(
+                                            "px-2 py-0.5 text-[10px] font-bold uppercase rounded-md transition-all",
+                                            channelTab === 'gbv' ? "bg-brand-dark text-white shadow-sm" : "text-brand-teal hover:bg-brand-surface/40"
+                                        )}
+                                    >
+                                        GBV
+                                    </button>
+                                    <button
+                                        onClick={() => setChannelTab('tfgbv')}
+                                        className={clsx(
+                                            "px-2 py-0.5 text-[10px] font-bold uppercase rounded-md transition-all",
+                                            channelTab === 'tfgbv' ? "bg-brand-dark text-white shadow-sm" : "text-brand-teal hover:bg-brand-surface/40"
+                                        )}
+                                    >
+                                        TFGBV
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="flex-1 min-h-0">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart
+                                        data={channelTab === 'gbv' ? reportingChannels.gbv : reportingChannels.tfgbv}
+                                        layout="vertical"
+                                        margin={{ left: 0, right: 30, top: 0, bottom: 0 }}
+                                        barSize={20}
+                                    >
+                                        <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e5e7eb" />
+                                        <XAxis type="number" fontSize={10} axisLine={false} tickLine={false} hide />
+                                        <YAxis dataKey="name" type="category" width={150} tick={<CustomAxisTick />} tickLine={false} axisLine={false} />
+                                        <Tooltip content={<CustomTooltip />} cursor={{ fill: 'transparent' }} />
+                                        <Bar dataKey="value" radius={[0, 4, 4, 0]}>
+                                            <LabelList dataKey="value" position="right" fontSize={10} fontWeight="bold" formatter={(val: any) => {
+                                                const currentData = channelTab === 'gbv' ? reportingChannels.gbv : reportingChannels.tfgbv;
+                                                const total = currentData.reduce((sum, item) => sum + item.value, 0);
+                                                return `${((Number(val) / total) * 100).toFixed(0)}%`;
+                                            }} />
+                                            {(channelTab === 'gbv' ? reportingChannels.gbv : reportingChannels.tfgbv).map((entry, index) => (
+                                                <Cell key={`cell-${index}`} fill={entry.color} />
+                                            ))}
+                                        </Bar>
+                                    </BarChart>
+                                </ResponsiveContainer>
                             </div>
                         </div>
-                        <div className="h-[300px]">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <BarChart
-                                    data={channelTab === 'gbv' ? reportingChannels.gbv : reportingChannels.tfgbv}
-                                    layout="vertical"
-                                    margin={{ left: 0, right: 30, top: 0, bottom: 0 }}
-                                    barSize={30}
-                                >
-                                    <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e5e7eb" />
-                                    <XAxis type="number" fontSize={10} axisLine={false} tickLine={false} hide />
-                                    <YAxis dataKey="name" type="category" fontSize={10} fontWeight={600} width={90} tickLine={false} axisLine={false} stroke={BRAND_COLORS.dark} />
-                                    <Tooltip content={<CustomTooltip />} cursor={{ fill: 'transparent' }} />
-                                    <Bar dataKey="value" radius={[0, 4, 4, 0]}>
-                                        <LabelList dataKey="value" position="right" fontSize={10} fontWeight="bold" formatter={(val: any) => {
-                                            const currentData = channelTab === 'gbv' ? reportingChannels.gbv : reportingChannels.tfgbv;
-                                            const total = currentData.reduce((sum, item) => sum + item.value, 0);
-                                            return `${((Number(val) / total) * 100).toFixed(0)}%`;
-                                        }} />
-                                        {(channelTab === 'gbv' ? reportingChannels.gbv : reportingChannels.tfgbv).map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={entry.color} />
-                                        ))}
-                                    </Bar>
-                                </BarChart>
-                            </ResponsiveContainer>
+
+                        {/* Bottom Section: Social Media Breakdown */}
+                        <div className="flex-1 flex flex-col pt-4">
+                            <h4 className="text-xs font-bold text-brand-teal uppercase tracking-wider opacity-70 mb-2">TFGBV Platforms</h4>
+                            <div className="flex-1 min-h-0">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart
+                                        data={platformStats}
+                                        layout="vertical"
+                                        margin={{ left: 0, right: 30, top: 0, bottom: 0 }}
+                                        barSize={20}
+                                    >
+                                        <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e5e7eb" />
+                                        <XAxis type="number" fontSize={10} axisLine={false} tickLine={false} hide />
+                                        <YAxis dataKey="name" type="category" fontSize={10} fontWeight={600} width={90} tickLine={false} axisLine={false} stroke={BRAND_COLORS.dark} />
+                                        <Tooltip content={<CustomTooltip />} cursor={{ fill: 'transparent' }} />
+                                        <Bar dataKey="complaints" name="Complaints" fill={BRAND_COLORS.teal} radius={[0, 4, 4, 0]}>
+                                            <LabelList dataKey="complaints" position="right" fontSize={10} fontWeight="bold" />
+                                        </Bar>
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </div>
                         </div>
-                        <div className="flex-1" />
+
                     </div>
                 </ChartCard>
             </div>

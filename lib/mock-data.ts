@@ -170,17 +170,17 @@ export const generateReportingChannelData = () => {
     return {
         gbv: [
             { name: "Police Station", value: 2450, color: "#055b65" },
-            { name: "WPC Centers", value: 1800, color: "#1bd488" },
-            { name: "Helpline 1099", value: 1200, color: "#f59e0b" },
-            { name: "Punjab Police App", value: 350, color: "#45828b" },
-            { name: "Courts", value: 890, color: "#9f1239" },
+            { name: "Women Protection Center (WPC)", value: 1800, color: "#1bd488" },
+            { name: "Ministry of Human Rights Helpline", value: 1200, color: "#f59e0b" },
+            { name: "Punjab Police Pakistan App", value: 350, color: "#45828b" },
+            { name: "Judicial Magistrate / Courts", value: 890, color: "#9f1239" },
         ],
         tfgbv: [
-            { name: "FIA Cyber Crime", value: 1890, color: "#055b65" },
-            { name: "NCCIA Website", value: 4500, color: "#ef4444" },
-            { name: "Online Portal", value: 2100, color: "#f97316" },
+            { name: "Federal Investigation Agency (FIA)", value: 1890, color: "#055b65" },
+            { name: "NCCIA (Cyber Crime Agency)", value: 4500, color: "#ef4444" },
+            { name: "Online Complaint Form", value: 2100, color: "#f97316" },
             { name: "Helpline 1991", value: 950, color: "#f59e0b" },
-            { name: "Direct Email", value: 420, color: "#45828b" },
+            { name: "Direct Email / Walk-in", value: 420, color: "#45828b" },
         ]
     };
 };
