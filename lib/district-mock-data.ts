@@ -12,67 +12,73 @@ const generateCaseId = (caseType: string, sequence: number): string => {
 // ============================================
 // GBV STAGES (Physical, Sexual, Femicide, etc.)
 // ============================================
+// ============================================
+// GBV STAGES (Physical, Sexual, Femicide, etc.)
+// ============================================
+// ============================================
+// GBV STAGES (Physical, Sexual, Femicide, etc.)
+// ============================================
 export const GBV_STAGES = [
     {
         code: 'COMPLAINT_RECEIVED',
         name: 'Complaint Received',
         required: true,
         order: 1,
+        description: 'The initial intake process involves the formal recording of the survivor’s grievance via multiple designated channels, including the 24/7 Helpline 1099, direct walk-ins at Women Protection Centers, or the NCSW Mobile App. During this stage, critical biodata is captured, the immediate nature of the threat is assessed, and a unique Case ID is generated for tracking throughout the judicial lifecycle.',
         fields: ['intakeChannel', 'reportingDate', 'survivorAge', 'disabilityStatus', 'perpetratorType']
     },
     {
         code: 'INITIAL_SCREENING',
-        name: 'Initial Screening & Safety Assessment',
+        name: 'Initial Screening & Police Complaint Registration',
         required: true,
         order: 2,
-        fields: ['riskLevel', 'urgentProtection', 'violenceType', 'consentForm', 'referralType', 'recurrence', 'previousIncidents', 'servicesRequired']
+        description: 'A comprehensive risk assessment is conducted to determine the severity and type of violence. If a criminal offense is identified, the complaint is formally routed to the relevant Police Station. This stage includes verifying jurisdiction, documenting the initial narrative, and ensuring immediate safety measures are activated for high-risk cases.',
+        fields: ['riskLevel', 'urgentProtection', 'violenceType', 'complaintNo', 'policeStation', 'referralType', 'recurrence', 'previousIncidents']
     },
     {
-        code: 'POLICE_REGISTRATION',
-        name: 'Police Complaint Registration',
+        code: 'MEDICAL_EXAM',
+        name: 'Medical Examination & Evidence Recording',
         required: true,
         order: 3,
-        fields: ['policeStation', 'ioAssigned', 'complaintNo', 'offenceType', 'incidentLocation', 'policeResponseTime']
+        description: 'The survivor is referred to a Gazetted Medical Officer for a detailed Medico-Legal Examination (MLC). The MLO records all visible and non-visible injuries, collects forensic samples for DNA analysis, and documents the physical state of the survivor. Concurrently, a statement under Section 161 (Police) or 164 (Magistrate) CrPC is recorded to preserve the testimony.',
+        fields: ['hospital', 'examDate', 'mloName', 'dnaReport', 's164Statement', 'evidenceType']
     },
     {
         code: 'FIR_REGISTERED',
         name: 'FIR Registration',
         required: true,
         order: 4,
+        description: 'Based on the complaint and corroborating medical evidence, a First Information Report (FIR) is formally registered under the relevant sections of the Pakistan Penal Code (PPC). This marks the official commencement of the criminal investigation, where specific legal charges are levied against the accused.',
         fields: ['firNo', 'firDate', 'sections', 'legalSections', 'firCopy']
-    },
-    {
-        code: 'MEDICAL_EXAM',
-        name: 'Medical Examination & Evidence Recording',
-        required: true,
-        order: 5,
-        fields: ['hospital', 'examDate', 'mloName', 'dnaReport', 's164Statement']
     },
     {
         code: 'INVESTIGATION_CHARGE',
         name: 'Investigation & Charge Sheet',
         required: true,
-        order: 6,
-        fields: ['arrestDate', 'evidenceType', 'chargeSheetDate', 'prosecutor', 'evidenceUsability']
+        order: 5,
+        description: 'The Investigation Officer (IO) conducts a thorough inquiry, which includes visiting the crime scene, securing forensic evidence, and recording statements from witnesses. Upon completion, a final report (Challan/Charge Sheet) is submitted to the court, detailing the findings and the evidence arrayed against the accused for trial.',
+        fields: ['ioAssigned', 'chargeSheetDate', 'prosecutor', 'evidenceUsability', 'policeResponseTime']
     },
     {
         code: 'ARREST_REMAND',
         name: 'Arrest & Judicial Remand',
         required: true,
-        order: 7,
+        order: 6,
+        description: 'Following the FIR and initial investigation, the accused is apprehended. The police present the custody to the Magistrate for physical or judicial remand. This period is crucial for recoveries (e.g., weapon of offense) and further interrogation before the accused is sent to judicial lock-up pending trial.',
         fields: ['arrestDate', 'remandType', 'remandDuration', 'jailLocation', 'bailStatus']
     },
     {
         code: 'DISPOSAL_JUDGMENT',
         name: 'Disposal & Judgment (Convicted)',
         required: true,
-        order: 8,
+        order: 7,
+        description: 'The court concludes the trial after hearing arguments from both prosecution and defense. A final judgment is pronounced based on the strength of evidence and witness cross-examination. In a conviction scenario, the specific sentence (imprisonment/fine) is recorded, and the case file is marked as "Disposed - Convicted" in the central registry.',
         fields: ['outcome', 'judgmentDate', 'judgeName', 'shortOrder', 'sentenceDetail']
     },
 ];
 
 // ============================================
-// TFGBV STAGES (Digital Violence)
+// TFGBV STAGES (Digital Violence) - MAPPED TO SAME STRUCTURE FOR CONSISTENCY
 // ============================================
 export const TFGBV_STAGES = [
     {
@@ -80,55 +86,55 @@ export const TFGBV_STAGES = [
         name: 'Complaint Received',
         required: true,
         order: 1,
+        description: 'Digital abuse incidents are reported through the Cyber Harassment Helpline or the NCSW Online Portal. The intake officer meticulously verifies the jurisdiction and nature of the digital threat (e.g., non-consensual image sharing, cyberstalking) and assigns a specialized tracking number.',
         fields: ['intakeChannel', 'reportingDate', 'survivorAge', 'disabilityStatus', 'perpetratorType']
     },
     {
         code: 'INITIAL_SCREENING',
-        name: 'Initial Screening & Safety Assessment',
+        name: 'Initial Screening & Police Complaint Registration',
         required: true,
         order: 2,
-        fields: ['riskLevel', 'urgentProtection', 'tfgbvType', 'consentForm', 'referralType', 'recurrence', 'previousIncidents', 'servicesRequired']
+        description: 'The reported content is assessed for violations under the Prevention of Electronic Crimes Act (PECA). High-priority cases involving immediate threats or leakage of intimate material are flagged for urgent processing. The complaint is formally forwarded to the FIA Cyber Crime Wing for technical verification.',
+        fields: ['riskLevel', 'urgentProtection', 'tfgbvType', 'platformComplaintNo', 'reportingUnit', 'referralType']
     },
     {
-        code: 'CYBER_EVIDENCE',
-        name: 'Digital Evidence Collection (SOP-2)',
+        code: 'MEDICAL_EXAM',
+        name: 'Medical Examination & Evidence Recording',
         required: true,
         order: 3,
-        fields: ['screenshots', 'urls', 'metadata', 'hashCopies', 'platformComplaintNo']
-    },
-    {
-        code: 'CYBER_REPORT',
-        name: 'FIA/Cyber Crime Report',
-        required: true,
-        order: 4,
-        fields: ['reportingUnit', 'reportNo', 'officerAssigned', 'forensicForensics']
-    },
-    {
-        code: 'PLATFORM_TAKEDOWN',
-        name: 'Platform Takedown Request',
-        required: true,
-        order: 5,
-        fields: ['platform', 'requestDate', 'responseTime', 'takedownStatus', 'platformEvidence']
+        description: 'Technical teams preserve digital evidence using forensic imaging tools to ensure integrity. This includes capturing hash values, verified screenshots, URL logs, and metadata analysis. In parallel, if psychological trauma is evident, a psychosocial impact assessment is documented to support the case.',
+        fields: ['screenshots', 'urls', 'metadata', 'hashCopies', 'forensicForensics']
     },
     {
         code: 'FIR_REGISTERED',
         name: 'FIR Registration',
         required: true,
-        order: 6,
+        order: 4,
+        description: 'A formal FIR is registered under the PECA 2016 Act after preliminary enquiry establishes a cognizable offense. Relevant sections (e.g., Sec 20 for dignity, Sec 21 for cyberstalking) are applied, and the legal framework for prosecution is established.',
         fields: ['firNo', 'firDate', 'sections', 'legalSections', 'firCopy']
     },
     {
-        code: 'TRIAL_PROSECUTION',
-        name: 'Prosecution & Trial',
+        code: 'INVESTIGATION_CHARGE',
+        name: 'Investigation & Charge Sheet',
         required: true,
-        order: 7,
-        fields: ['court', 'judge', 'hearingDates', 'crossBorderRequest', 'mlatStatus']
+        order: 5,
+        description: 'FIA Investigators compile a comprehensive technical report linking the digital footprint to the perpetrator. Platform takedown requests are processed to remove harmful content. The final Challan, supported by the forensic analysis report, is submitted to the Cyber Crime Court.',
+        fields: ['officerAssigned', 'reportNo', 'takedownStatus', 'platformEvidence', 'chargeSheetDate']
+    },
+    {
+        code: 'ARREST_REMAND',
+        name: 'Arrest & Judicial Remand',
+        required: true,
+        order: 6,
+        description: 'The accused linked to the digital crime is arrested, and their devices are confiscated for forensic analysis. The court grants remand to allow investigators to recover deleted data or access secure accounts, ensuring all digital trails are secured before the trial begins.',
+        fields: ['arrestDate', 'remandType', 'remandDuration', 'jailLocation', 'bailStatus']
     },
     {
         code: 'DISPOSAL_JUDGMENT',
         name: 'Disposal & Judgment (Convicted)',
         required: true,
-        order: 8,
+        order: 7,
+        description: 'The Cyber Court delivers its verdict after evaluating technical evidence and forensic reports. Penalties, including imprisonment and heavy fines as stipulated in PECA, are awarded. The case is detailed in the National Cybercrime Registry as a conviction.',
         fields: ['outcome', 'judgmentDate', 'judgeName', 'shortOrder', 'sentenceDetail']
     },
 ];
@@ -288,6 +294,7 @@ export const generateCaseRepository = () => {
                 id: `stage-${i}-${idx}`,
                 stageCode: stage.code,
                 stage: stage.name,
+                description: (stage as any).description,
                 status: isCompleted ? 'Completed' : (isInProgress ? 'In Progress' : 'Pending'),
                 date: isCompleted ? `2024-01-${(10 + idx).toString().padStart(2, '0')}` : 'N/A',
                 order: stage.order,

@@ -20,19 +20,32 @@ export default function FullTimelinePage() {
     const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
     const isScrolling = useRef(false);
 
+    // Dashboard Colors for Stages
+    const STAGE_COLORS = [
+        { border: 'border-blue-500', bg: 'bg-blue-500', light: 'bg-blue-50', text: 'text-blue-700', shadow: 'shadow-blue-200' },
+        { border: 'border-indigo-500', bg: 'bg-indigo-500', light: 'bg-indigo-50', text: 'text-indigo-700', shadow: 'shadow-indigo-200' },
+        { border: 'border-purple-500', bg: 'bg-purple-500', light: 'bg-purple-50', text: 'text-purple-700', shadow: 'shadow-purple-200' },
+        { border: 'border-amber-500', bg: 'bg-amber-500', light: 'bg-amber-50', text: 'text-amber-700', shadow: 'shadow-amber-200' },
+        { border: 'border-orange-500', bg: 'bg-orange-500', light: 'bg-orange-50', text: 'text-orange-700', shadow: 'shadow-orange-200' },
+        { border: 'border-rose-500', bg: 'bg-rose-500', light: 'bg-rose-50', text: 'text-rose-700', shadow: 'shadow-rose-200' },
+        { border: 'border-emerald-600', bg: 'bg-emerald-600', light: 'bg-emerald-50', text: 'text-emerald-700', shadow: 'shadow-emerald-200' },
+    ];
+
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
-                if (isScrolling.current) return; // Skip observer updates during manual scroll
+                if (isScrolling.current) return;
 
                 entries.forEach((entry) => {
+                    // Only update if the element intersects the center line
                     if (entry.isIntersecting) {
                         setActiveStage(entry.target.id);
                     }
                 });
             },
             {
-                rootMargin: '-20% 0px -60% 0px', // Trigger when component is in the upper middle of viewport
+                // This creates a narrow detection area in the vertical center of the viewport
+                rootMargin: '-45% 0px -45% 0px',
                 threshold: 0
             }
         );
@@ -50,10 +63,11 @@ export default function FullTimelinePage() {
 
         const el = sectionRefs.current[id];
         if (el) {
-            const y = el.getBoundingClientRect().top + window.scrollY - 180; // Offset for sticky header
+            // Adjust offset for sticky header
+            const y = el.getBoundingClientRect().top + window.scrollY - 140;
             window.scrollTo({ top: y, behavior: 'smooth' });
 
-            // Re-enable observer after scroll animation finishes
+            // Reset scrolling lock after animation
             setTimeout(() => {
                 isScrolling.current = false;
             }, 800);
@@ -77,7 +91,7 @@ export default function FullTimelinePage() {
                         </Link>
                         <div>
                             <div className="flex items-center gap-3 mb-1">
-                                <h1 className="text-xl font-bold text-gray-900 tracking-tight">Case Timeline Analysis</h1>
+                                <h1 className="text-xl font-bold text-gray-900 tracking-tight">Case Timeline</h1>
                                 <span className="px-3 py-1 rounded-full bg-emerald-100/50 text-emerald-700 text-xs font-bold border border-emerald-200/60 flex items-center gap-1.5 shadow-sm">
                                     <CheckCircle size={12} weight="fill" />
                                     {idealCase.status}
@@ -107,6 +121,39 @@ export default function FullTimelinePage() {
             </header>
 
             <main className="max-w-7xl mx-auto px-6 py-10">
+
+                {/* AI Summary Section */}
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.6, ease: "easeOut" }}
+                    className="mb-10 p-1 rounded-[24px] bg-gradient-to-r from-brand-teal via-cyan-400 to-blue-500 shadow-lg shadow-brand-teal/10"
+                >
+                    <div className="bg-white rounded-[22px] p-6 relative overflow-hidden">
+                        {/* Decorative Background Elements */}
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-brand-teal/5 to-transparent rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl opacity-60" />
+
+                        <div className="flex gap-5 relative z-10">
+                            <div className="shrink-0">
+                                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-teal/10 to-blue-50 flex items-center justify-center text-brand-teal ring-4 ring-brand-teal/5 shadow-inner">
+                                    <div className="relative">
+                                        <div className="absolute inset-0 bg-brand-teal/20 blur-lg rounded-full animate-pulse" />
+                                        <span className="relative text-2xl">✨</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <h2 className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-brand-dark to-brand-teal flex items-center gap-2">
+                                    AI Case Summary
+
+                                </h2>
+                                <p className="text-gray-600 leading-relaxed text-sm md:text-base">
+                                    This case follows a <span className="font-bold text-emerald-600">standard fast-track trajectory</span> with all critical evidence submitted within 48 hours. The timeline indicates high adherence to SOPs, though a minor delay was noted in the forensic report generation. The current status suggests a <span className="font-bold text-gray-900">high probability of resolution</span> in the upcoming hearing.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </motion.div>
 
                 {/* Top Summary Cards - Enhanced Visuals */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
@@ -185,32 +232,32 @@ export default function FullTimelinePage() {
                     ))}
                 </div>
 
-                <div className="grid grid-cols-12 gap-10">
+                <div className="grid grid-cols-12 gap-8">
 
                     {/* LEFT COLUMN: Sticky Navigation */}
-                    <div className="hidden lg:block lg:col-span-4 relative">
+                    <div className="hidden lg:block lg:col-span-3 relative">
                         <div className="sticky top-28 space-y-6">
 
                             {/* Navigation Card */}
                             <div className="bg-white rounded-3xl border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
-                                <div className="p-6 border-b border-gray-100 bg-gradient-to-br from-gray-50/80 to-white/50 backdrop-blur">
-                                    <h3 className="font-bold text-gray-900 flex items-center gap-2">
-                                        <Activity size={18} className="text-brand-teal" />
+                                <div className="p-5 border-b border-gray-100 bg-gradient-to-br from-gray-50/80 to-white/50 backdrop-blur">
+                                    <h3 className="font-bold text-gray-900 flex items-center gap-2 text-sm">
+                                        <Activity size={16} className="text-brand-teal" />
                                         Process Flow
                                     </h3>
-                                    <p className="text-xs text-gray-500 mt-1 font-medium">Interactive timeline navigation</p>
                                 </div>
 
-                                <div className="p-4 bg-white relative max-h-[calc(100vh-320px)] overflow-y-auto custom-scrollbar">
+                                <div className="p-3 bg-white relative max-h-[calc(100vh-320px)] overflow-y-auto custom-scrollbar">
                                     {/* Timeline Vertical Line */}
-                                    <div className="absolute left-[39px] top-6 bottom-6 w-[2px] bg-gray-100">
+                                    <div className="absolute left-[35px] top-6 bottom-6 w-[2px] bg-gray-100">
+                                        {/* Dynamic Gradient Bar */}
                                         <motion.div
-                                            className="w-full bg-brand-teal origin-top"
+                                            className="w-full bg-gradient-to-b from-blue-400 via-purple-400 to-emerald-400 origin-top"
                                             initial={{ height: 0 }}
                                             animate={{
                                                 height: `${Math.min(100, (idealCase.timeline.findIndex((s: any) => s.id === activeStage) + 1) / idealCase.timeline.length * 100)}%`
                                             }}
-                                            transition={{ type: "spring", stiffness: 50 }}
+                                            transition={{ type: "spring", stiffness: 40 }}
                                         />
                                     </div>
 
@@ -218,44 +265,41 @@ export default function FullTimelinePage() {
                                         {idealCase.timeline.map((stage: any, idx: number) => {
                                             const isActive = activeStage === stage.id;
                                             const isPast = idealCase.timeline.findIndex((s: any) => s.id === activeStage) > idx;
+                                            const color = STAGE_COLORS[idx % STAGE_COLORS.length];
 
                                             return (
                                                 <button
                                                     key={idx}
                                                     onClick={() => scrollToStage(stage.id)}
                                                     className={clsx(
-                                                        "w-full flex items-center text-left p-3 rounded-2xl transition-all duration-300 relative z-10 group outline-none focus:ring-2 ring-brand-teal/20",
+                                                        "w-full flex items-center text-left p-2.5 rounded-xl transition-all duration-300 relative z-10 group outline-none",
                                                         isActive
-                                                            ? "bg-brand-surface/50 text-brand-dark shadow-sm translate-x-2"
+                                                            ? `${color.light} ${color.text} shadow-sm translate-x-1`
                                                             : "hover:bg-gray-50 hover:translate-x-1"
                                                     )}
                                                 >
                                                     <div className={clsx(
-                                                        "w-8 h-8 rounded-full border-[3px] flex items-center justify-center shrink-0 mr-4 transition-all duration-300 z-10",
+                                                        "w-7 h-7 rounded-full border-[2px] flex items-center justify-center shrink-0 mr-3 transition-all duration-300 z-10",
                                                         isActive
-                                                            ? "bg-brand-teal border-brand-teal text-white shadow-lg shadow-brand-teal/30 scale-110"
+                                                            ? `${color.bg} ${color.border} text-white shadow-lg ${color.shadow} scale-105`
                                                             : isPast
-                                                                ? "bg-white border-brand-teal text-brand-teal"
+                                                                ? `bg-white ${color.border} ${color.text}`
                                                                 : "bg-white border-gray-200 text-gray-300"
                                                     )}>
                                                         {isActive || isPast ? (
-                                                            <div className={clsx("w-2 h-2 rounded-full", isActive ? "bg-white" : "bg-brand-teal")} />
+                                                            <div className={clsx("w-1.5 h-1.5 rounded-full", isActive ? "bg-white" : color.bg)} />
                                                         ) : (
-                                                            <div className="w-1.5 h-1.5 rounded-full bg-gray-300" />
+                                                            <div className="w-1 h-1 rounded-full bg-gray-300" />
                                                         )}
                                                     </div>
 
-                                                    <div className="flex-1">
-                                                        <div className="flex justify-between items-center w-full">
-                                                            <p className={clsx(
-                                                                "text-sm font-bold transition-colors truncate pr-2",
-                                                                isActive ? "text-brand-dark" : isPast ? "text-gray-700" : "text-gray-400"
-                                                            )}>
-                                                                {stage.stage}
-                                                            </p>
-                                                            {isActive && <ChevronRight size={14} className="text-brand-teal animate-pulse" />}
-                                                        </div>
-                                                        <p className="text-[10px] text-gray-400 font-mono mt-0.5 tracking-tight">{stage.date}</p>
+                                                    <div className="flex-1 min-w-0">
+                                                        <p className={clsx(
+                                                            "text-[13px] font-bold transition-colors truncate px-1",
+                                                            isActive ? "text-gray-900" : isPast ? "text-gray-700" : "text-gray-400"
+                                                        )}>
+                                                            {stage.stage}
+                                                        </p>
                                                     </div>
                                                 </button>
                                             )
@@ -264,182 +308,162 @@ export default function FullTimelinePage() {
                                 </div>
                             </div>
 
-                            {/* Services Gap Analysis Card (New) */}
-                            <div className="bg-white rounded-3xl border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
-                                <div className="p-6 border-b border-gray-100 bg-gray-50/50">
-                                    <h3 className="font-bold text-gray-900 flex items-center gap-2">
-                                        <Activity size={18} className="text-purple-600" />
-                                        Services Provided
-                                    </h3>
-                                    <p className="text-xs text-gray-500 mt-1">Gaps Analysis & Support</p>
-                                </div>
-                                <div className="p-4 bg-white">
-                                    <div className="space-y-3">
-                                        <div className="flex justify-between items-center text-sm">
-                                            <span className="text-gray-500">Required</span>
-                                            <span className="font-medium text-gray-900">{getField('servicesRequired') || 'N/A'}</span>
-                                        </div>
-                                        <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
-                                            <div className="h-full bg-purple-500 w-3/4" />
-                                        </div>
-                                        <p className="text-[10px] text-gray-400 text-right">75% Services Delivered</p>
+                            {/* Services Gap - Compact */}
+                            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+                                <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Service Provided</h4>
+                                <div className="space-y-2">
+                                    <div className="flex justify-between items-center text-xs">
+                                        <span className="text-gray-600">Legal Aid</span>
+                                        <span className="text-emerald-600 font-bold">Provided</span>
                                     </div>
-                                </div>
-                            </div>
+                                    <div className="w-full bg-gray-100 h-1 rounded-full"><div className="w-full h-full bg-emerald-500 rounded-full" /></div>
 
-                            {/* Services Gap Analysis Card (New) */}
-                            <div className="bg-white rounded-3xl border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
-                                <div className="p-6 border-b border-gray-100 bg-gray-50/50">
-                                    <h3 className="font-bold text-gray-900 flex items-center gap-2">
-                                        <Activity size={18} className="text-purple-600" />
-                                        Services Provided
-                                    </h3>
-                                    <p className="text-xs text-gray-500 mt-1">Gaps Analysis & Support</p>
-                                </div>
-                                <div className="p-4 bg-white">
-                                    <div className="space-y-3">
-                                        <div className="flex justify-between items-center text-sm">
-                                            <span className="text-gray-500">Required</span>
-                                            <span className="font-medium text-gray-900">{getField('servicesRequired') || 'N/A'}</span>
-                                        </div>
-                                        <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
-                                            <div className="h-full bg-purple-500 w-3/4" />
-                                        </div>
-                                        <p className="text-[10px] text-gray-400 text-right">75% Services Delivered</p>
+                                    <div className="flex justify-between items-center text-xs mt-2">
+                                        <span className="text-gray-600">Counseling</span>
+                                        <span className="text-orange-500 font-bold">Pending</span>
                                     </div>
+                                    <div className="w-full bg-gray-100 h-1 rounded-full"><div className="w-1/3 h-full bg-orange-400 rounded-full" /></div>
                                 </div>
-                            </div>
-
-                            {/* Alert Box */}
-                            <div className="bg-brand-dark/5 p-6 rounded-3xl border border-brand-dark/10">
-                                <h4 className="font-bold text-brand-dark text-sm mb-2 flex items-center gap-2">
-                                    <AlertTriangle size={16} className="text-amber-500" />
-                                    Verify Data Integrity
-                                </h4>
-                                <p className="text-xs text-brand-dark/60 leading-relaxed mb-3">
-                                    Ensure all digital evidence hashes match the Chain of Custody logs before approving for final judgment.
-                                </p>
-                                <button className="w-full py-2 bg-white border border-gray-200 rounded-xl text-xs font-bold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors">
-                                    Last Audit: 2 Hours Ago
-                                </button>
                             </div>
                         </div>
                     </div>
 
-                    {/* RIGHT COLUMN: Detailed View */}
-                    <div className="col-span-12 lg:col-span-8 space-y-8">
+                    {/* RIGHT COLUMN: Detailed View (Wider) */}
+                    <div className="col-span-12 lg:col-span-9 space-y-6">
                         {idealCase.timeline.map((stage: any, idx: number) => {
                             const isLast = idx === idealCase.timeline.length - 1;
                             const isActive = activeStage === stage.id;
+                            const color = STAGE_COLORS[idx % STAGE_COLORS.length];
 
                             return (
                                 <div key={idx} ref={(el) => (sectionRefs.current[stage.id] = el)} id={stage.id} className="scroll-mt-32">
                                     <motion.div
-                                        initial={{ opacity: 0, y: 30 }}
+                                        initial={{ opacity: 0, y: 32 }}
                                         whileInView={{ opacity: 1, y: 0 }}
-                                        viewport={{ once: true, margin: "-100px" }}
-                                        transition={{ duration: 0.5, delay: 0.1 }}
+                                        viewport={{ once: true, margin: "-50px" }}
+                                        transition={{ duration: 0.5, ease: "easeOut" }}
                                         className={clsx(
-                                            "bg-white rounded-[32px] border transition-all duration-500 overflow-hidden relative group",
+                                            "bg-white rounded-[24px] border transition-all duration-500 overflow-hidden relative group",
                                             isActive
-                                                ? "border-brand-teal/40 shadow-[0_20px_60px_rgb(0,0,0,0.08)] ring-4 ring-brand-teal/5"
-                                                : "border-gray-100 shadow-[0_4px_10px_rgb(0,0,0,0.02)] opacity-95"
+                                                ? `${color.border}/30 ${color.shadow} ring-1 ring-${color.bg.split('-')[1]}/20`
+                                                : "border-gray-100 shadow-sm opacity-95"
                                         )}
                                     >
-                                        {/* Status Stripe */}
+                                        {/* Colored Status Stripe */}
                                         <div className={clsx(
                                             "absolute top-0 left-0 w-1.5 h-full transition-colors duration-500",
-                                            isActive ? "bg-brand-teal" : "bg-gray-100"
+                                            isActive ? color.bg : "bg-gray-100"
                                         )} />
 
                                         {/* Card Header */}
-                                        <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between bg-white relative z-10">
-                                            <div className="flex items-center gap-5">
+                                        <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/30">
+                                            <div className="flex items-center gap-4">
                                                 <div className={clsx(
-                                                    "w-12 h-12 rounded-2xl border shadow-sm flex items-center justify-center text-lg font-bold transition-all duration-500",
-                                                    isActive
-                                                        ? "bg-brand-dark text-white border-brand-dark scale-105 shadow-brand-dark/20"
-                                                        : "bg-white text-gray-400 border-gray-200"
+                                                    "w-10 h-10 rounded-xl border flex items-center justify-center text-lg font-bold font-mono transition-colors duration-300",
+                                                    isActive ? `${color.bg} text-white border-transparent` : "bg-white text-gray-400 border-gray-200"
                                                 )}>
-                                                    <span className="font-mono">{String(idx + 1).padStart(2, '0')}</span>
+                                                    {String(idx + 1).padStart(2, '0')}
                                                 </div>
                                                 <div>
-                                                    <h3 className={clsx("text-xl font-bold transition-colors", isActive ? "text-gray-900" : "text-gray-700")}>{stage.stage}</h3>
-                                                    <p className="text-sm text-emerald-600 font-bold flex items-center gap-1.5 mt-0.5">
-                                                        <CheckCircle size={14} weight="fill" />
-                                                        Completed on {stage.date}
+                                                    <h3 className={clsx("text-lg font-bold transition-colors", isActive ? "text-gray-900" : "text-gray-700")}>{stage.stage}</h3>
+                                                    <p className={clsx("text-xs font-medium flex items-center gap-1 mt-0.5", isActive ? color.text : "text-gray-500")}>
+                                                        {isActive && <CheckCircle size={12} />}
+                                                        <span className="text-gray-500">Reported:</span> {stage.date}
                                                     </p>
                                                 </div>
                                             </div>
-                                            <div className="hidden sm:block text-right">
-                                                <span className="text-[10px] text-gray-400 uppercase font-black tracking-widest block mb-1">SOP ADHERENCE</span>
-                                                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-100">
-                                                    <Shield size={12} /> VERIFIED
-                                                </div>
+                                            <div className="hidden sm:block">
+                                                <span className={clsx(
+                                                    "px-3 py-1 rounded-full text-xs font-bold border",
+                                                    isActive ? `${color.light} ${color.text} ${color.border.split('-')[1]}-100` : "bg-gray-50 text-gray-400 border-gray-100"
+                                                )}>
+                                                    {stage.status}
+                                                </span>
                                             </div>
                                         </div>
 
-                                        {/* Card Body - Dynamic Fields */}
-                                        <div className="p-8">
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
-                                                {Object.entries(stage.details).map(([key, value]) => {
-                                                    // Convert camelCase to Label
-                                                    const label = key.replace(/([A-Z])/g, ' $1').trim();
+                                        {/* 2-Column Layout with SWAPPED content (Fields Top, Description Bottom) */}
+                                        <div className="flex flex-col lg:flex-row">
+                                            {/* Left: Content (Fields First, then Description) */}
+                                            <div className="flex-1 p-6 border-b lg:border-b-0 lg:border-r border-gray-100 flex flex-col gap-6">
 
-                                                    return (
-                                                        <div key={key} className="group/field">
-                                                            <div className="flex items-center gap-2 mb-2">
-                                                                <div className="w-1.5 h-1.5 rounded-full bg-brand-teal/30 group-hover/field:bg-brand-teal transition-colors" />
-                                                                <span className="text-xs text-gray-500 uppercase font-bold tracking-wider group-hover/field:text-brand-dark transition-colors">
-                                                                    {label}
-                                                                </span>
+                                                {/* 1. Fields Grid (Moved to TOP) */}
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                                                    {Object.entries(stage.details).map(([key, value]) => {
+                                                        const label = key.replace(/([A-Z])/g, ' $1').trim();
+                                                        return (
+                                                            <div key={key} className="group/field">
+                                                                <div className="flex items-center gap-2 mb-1">
+                                                                    <div className={clsx("w-1 h-1 rounded-full", isActive ? color.bg : "bg-gray-300")} />
+                                                                    <span className="text-[10px] text-gray-400 uppercase font-bold tracking-wider">{label}</span>
+                                                                </div>
+                                                                <div className={clsx(
+                                                                    "text-sm font-bold border-l-2 pl-2 -ml-2 transition-all",
+                                                                    isActive ? "text-gray-900 border-transparent group-hover/field:border-" + color.bg.split('-')[1] + "-500" : "text-gray-700 border-transparent"
+                                                                )}>
+                                                                    {value as string || '—'}
+                                                                </div>
                                                             </div>
-                                                            <div className="pl-3.5 text-base text-gray-900 font-medium border-l-2 border-gray-100 group-hover/field:border-brand-teal/30 transition-all py-0.5">
-                                                                {value as string || <span className="text-gray-300 italic">Not recorded</span>}
-                                                            </div>
-                                                        </div>
-                                                    )
-                                                })}
+                                                        )
+                                                    })}
+                                                </div>
+
+                                                {/* 2. Description (Moved to BOTTOM) */}
+                                                {stage.description && (
+                                                    <div className={clsx(
+                                                        "p-4 rounded-xl border",
+                                                        isActive ? `${color.light} border-${color.bg.split('-')[1]}-100` : "bg-gray-50 border-gray-100"
+                                                    )}>
+                                                        <h5 className={clsx("text-[10px] font-black uppercase tracking-widest mb-2", isActive ? color.text : "text-gray-400")}>
+                                                            Description
+                                                        </h5>
+                                                        <p className="text-sm text-gray-700 leading-relaxed font-medium">
+                                                            {stage.description}
+                                                        </p>
+                                                    </div>
+                                                )}
                                             </div>
 
-                                            {/* Documentation Strip */}
-                                            {stage.attachments && stage.attachments.length > 0 && (
-                                                <div className="mt-10 pt-8 border-t border-dashed border-gray-200">
-                                                    <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                                                        <FileText size={14} className="text-brand-teal" />
-                                                        Attached Evidence & Docs
-                                                    </h4>
-                                                    <div className="flex gap-4 overflow-x-auto pb-4 custom-scrollbar">
+                                            {/* Right: Evidence Column */}
+                                            <div className="w-full lg:w-72 bg-gray-50/50 p-5 flex flex-col gap-4">
+                                                <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                                                    <FileText size={14} className="text-brand-dark" />
+                                                    Attached Evidence
+                                                </h4>
+
+                                                {stage.attachments && stage.attachments.length > 0 ? (
+                                                    <div className="space-y-3">
                                                         {stage.attachments.map((file: any, fIdx: number) => (
-                                                            <motion.div
-                                                                whileHover={{ y: -4, borderColor: '#5F9EA0' }}
-                                                                key={fIdx}
-                                                                className="flex-shrink-0 flex items-center gap-3 p-3 pr-6 bg-white rounded-xl border border-gray-200 shadow-sm cursor-pointer min-w-[200px]"
-                                                            >
-                                                                <div className="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center text-gray-500 border border-gray-100">
-                                                                    {file.type === 'image' ? <Eye size={18} /> : <FileText size={18} />}
+                                                            <div key={fIdx} className="group/file p-3 bg-white rounded-xl border border-gray-200 hover:shadow-md transition-all cursor-pointer flex items-start gap-3 relative overflow-hidden">
+                                                                <div className={clsx("absolute top-0 left-0 w-0.5 h-full transition-all", `group-hover/file:${color.bg}`)} />
+                                                                <div className={clsx("w-8 h-8 rounded-lg flex items-center justify-center transition-colors", `${color.light} ${color.text}`)}>
+                                                                    {file.type === 'image' ? <Eye size={16} /> : <FileText size={16} />}
                                                                 </div>
-                                                                <div>
-                                                                    <p className="text-xs font-bold text-gray-800 truncate max-w-[120px]">{file.name}</p>
-                                                                    <p className="text-[10px] text-gray-400 uppercase font-bold mt-0.5">{file.type} • 2.4 MB</p>
+                                                                <div className="flex-1 min-w-0">
+                                                                    <p className="text-xs font-bold text-gray-700 truncate group-hover/file:text-gray-900 transition-colors">{file.name}</p>
+                                                                    <p className="text-[10px] text-gray-400 mt-0.5">Verified • 2MB</p>
                                                                 </div>
-                                                            </motion.div>
+                                                            </div>
                                                         ))}
                                                     </div>
-                                                </div>
-                                            )}
+                                                ) : (
+                                                    <div className="h-full flex flex-col items-center justify-center text-gray-400 gap-2 min-h-[100px]">
+                                                        <FileText size={24} className="opacity-20" />
+                                                        <span className="text-xs">No documents attached</span>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
 
-                                        {/* Connector to next card (Visual only) */}
+                                        {/* Connector Line */}
                                         {!isLast && (
-                                            <div className="absolute left-1/2 -bottom-8 w-[2px] h-8 bg-gray-200 -z-10 hidden lg:block" />
+                                            <div className="absolute left-11 -bottom-6 w-[2px] h-6 bg-gray-200 -z-10 hidden lg:block" />
                                         )}
                                     </motion.div>
                                 </div>
                             )
                         })}
                     </div>
-
                 </div>
             </main>
         </div>

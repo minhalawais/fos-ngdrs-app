@@ -1,11 +1,21 @@
+"use client";
+
 import NCSWSidebar from "@/components/ncsw/NCSWSidebar";
 import { Search, Bell, HelpCircle, User } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 export default function NCSWLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
+    const pathname = usePathname();
+    const isTimelinePage = pathname?.includes('/timeline-demo');
+
+    if (isTimelinePage) {
+        return <div className="min-h-screen bg-brand-canvas">{children}</div>;
+    }
+
     return (
         <div className="flex min-h-screen bg-brand-canvas">
             <NCSWSidebar />
