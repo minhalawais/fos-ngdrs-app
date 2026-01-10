@@ -1,20 +1,12 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, TrendingUp, ShieldCheck, Activity, Scale, Award } from "lucide-react";
+import { ChevronLeft, ChevronRight, TrendingUp } from "lucide-react";
 import { generateProcessIndicatorsData } from "@/lib/process-indicators-data";
 import { clsx } from "clsx";
 import { motion } from "framer-motion";
 
 const indicatorsData = generateProcessIndicatorsData();
-
-// Map icons to categories or items if needed, for now using generic robust icons
-const getIcon = (title: string) => {
-    if (title.includes("Education") || title.includes("Literacy")) return <Award size={20} className="text-brand-dark" />;
-    if (title.includes("Services") || title.includes("Support")) return <Activity size={20} className="text-brand-dark" />;
-    if (title.includes("Justice") || title.includes("Attrition")) return <Scale size={20} className="text-brand-dark" />;
-    return <ShieldCheck size={20} className="text-brand-dark" />;
-};
 
 const PALETTE = {
     lightest: "#fbfcfc",
@@ -33,7 +25,7 @@ const CATEGORY_THEMES = [
 
 const NewIndicatorCard = ({ item, themeColor }: { item: any, themeColor: string }) => {
     return (
-        <div className="group relative w-full h-[160px] rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col border"
+        <div className="group relative w-full min-h-[190px] rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col border"
             style={{ backgroundColor: PALETTE.lightest, borderColor: PALETTE.light }}>
 
             {/* Top Colored Ribbon - Slim Professional Look */}
@@ -49,11 +41,11 @@ const NewIndicatorCard = ({ item, themeColor }: { item: any, themeColor: string 
                 <div className="space-y-2">
                     <div className="flex items-end justify-between border-b pb-2" style={{ borderColor: PALETTE.light }}>
                         <div className="flex flex-col">
-                            <span className="text-[10px] font-semibold uppercase" style={{ color: PALETTE.muted }}>Current</span>
+                            <span className="text-[10px] font-semibold uppercase" style={{ color: PALETTE.muted }}>{item.valueLabel || 'Current'}</span>
                             <span className="text-2xl font-black text-brand-dark">{item.value}</span>
                         </div>
                         <div className="flex flex-col items-end text-right">
-                            <span className="text-[10px] font-semibold uppercase" style={{ color: PALETTE.muted }}>Target</span>
+                            <span className="text-[10px] font-semibold uppercase" style={{ color: PALETTE.muted }}>{item.targetLabel || 'Target'}</span>
                             <span className="text-sm font-bold" style={{ color: themeColor }}>{item.target}</span>
                         </div>
                     </div>
@@ -69,6 +61,102 @@ const NewIndicatorCard = ({ item, themeColor }: { item: any, themeColor: string 
                             </span>
                         )}
                     </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const CategorySlider = ({ category, sectionColor }: { category: any, sectionColor: string }) => {
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const [canScrollLeft, setCanScrollLeft] = useState(false);
+    const [canScrollRight, setCanScrollRight] = useState(true);
+
+    const checkScroll = () => {
+        if (scrollContainerRef.current) {
+            const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+            setCanScrollLeft(scrollLeft > 0);
+            setCanScrollRight(Math.ceil(scrollLeft + clientWidth) < scrollWidth);
+        }
+    };
+
+    const scroll = (direction: 'left' | 'right') => {
+        if (scrollContainerRef.current) {
+            const container = scrollContainerRef.current;
+            const scrollAmount = 300; // Approx card width + gap
+            const targetScroll = container.scrollLeft + (direction === 'left' ? -scrollAmount : scrollAmount);
+
+            container.scrollTo({
+                left: targetScroll,
+                behavior: 'smooth'
+            });
+
+            // Re-check after animation
+            setTimeout(checkScroll, 300);
+        }
+    };
+
+    return (
+        <div className="group relative w-full rounded-[32px] border border-brand-surface/80 bg-white shadow-sm overflow-hidden flex flex-col md:flex-row min-h-[250px]">
+            {/* Vertical Category Strip - Left Side */}
+            <div className="md:w-10 w-full md:h-auto h-8 flex items-center justify-center relative overflow-hidden shrink-0"
+                style={{ backgroundColor: sectionColor }}>
+                <h3 className="text-[10px] font-bold text-white whitespace-nowrap uppercase tracking-[0.2em] w-max"
+                    style={{ transform: "rotate(-180deg)", writingMode: "vertical-rl" }}>
+                    {category.category.split(". ")[1]}
+                </h3>
+            </div>
+
+            {/* Cards Container with Grid Background */}
+            <div className="flex-1 p-4 relative overflow-hidden bg-white">
+                {/* Grid Background Pattern */}
+                <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
+                    style={{
+                        backgroundImage: `linear-gradient(${sectionColor} 1px, transparent 1px), linear-gradient(90deg, ${sectionColor} 1px, transparent 1px)`,
+                        backgroundSize: '30px 30px'
+                    }}
+                />
+
+                {/* Navigation Buttons */}
+                <div className="absolute right-2 top-2 z-20 flex gap-2">
+                    <button
+                        onClick={() => scroll('left')}
+                        disabled={!canScrollLeft}
+                        className={clsx(
+                            "p-1.5 rounded-full backdrop-blur-sm border transition-all",
+                            canScrollLeft
+                                ? "bg-white/80 border-gray-200 text-brand-dark hover:bg-brand-teal hover:text-white"
+                                : "bg-gray-50 border-transparent text-gray-300 cursor-not-allowed"
+                        )}
+                    >
+                        <ChevronLeft size={16} />
+                    </button>
+                    <button
+                        onClick={() => scroll('right')}
+                        disabled={!canScrollRight}
+                        className={clsx(
+                            "p-1.5 rounded-full backdrop-blur-sm border transition-all",
+                            canScrollRight
+                                ? "bg-white/80 border-gray-200 text-brand-dark hover:bg-brand-teal hover:text-white"
+                                : "bg-gray-50 border-transparent text-gray-300 cursor-not-allowed"
+                        )}
+                    >
+                        <ChevronRight size={16} />
+                    </button>
+                </div>
+
+                {/* Scrollable Container */}
+                <div
+                    ref={scrollContainerRef}
+                    onScroll={checkScroll}
+                    className="relative z-10 flex gap-4 overflow-x-auto pb-4 pt-1 snap-x scroll-smooth hide-scrollbar"
+                    style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                >
+                    {category.items.map((item: any, itemIdx: number) => (
+                        <div key={itemIdx} className="min-w-[280px] w-[280px] snap-start flex-shrink-0">
+                            <NewIndicatorCard item={item} themeColor={sectionColor} />
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>
@@ -92,47 +180,21 @@ export default function ProcessIndicatorsSection() {
 
             {/* Overhauled Layout matching reference image */}
             <div className="flex flex-col gap-4 px-2 pt-2">
-                {indicatorsData.map((category, idx) => {
-                    const sectionColor = CATEGORY_THEMES[idx % CATEGORY_THEMES.length];
-
-                    return (
-                        <div key={idx} className="group relative w-full rounded-[32px] border border-brand-surface/80 bg-white shadow-sm overflow-hidden flex flex-col md:flex-row min-h-[220px]">
-                            {/* Vertical Category Strip - Left Side */}
-                            <div className="md:w-10 w-full md:h-auto h-8 flex items-center justify-center relative overflow-hidden shrink-0"
-                                style={{ backgroundColor: sectionColor }}>
-                                <h3 className="text-[10px] font-bold text-white whitespace-nowrap uppercase tracking-[0.2em] w-max"
-                                    style={{ transform: "rotate(-180deg)", writingMode: "vertical-rl" }}>
-                                    {category.category.split(". ")[1]}
-                                </h3>
-                            </div>
-
-                            {/* Cards Container with Grid Background */}
-                            <div className="flex-1 p-4 relative overflow-hidden bg-white">
-                                {/* Grid Background Pattern */}
-                                <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
-                                    style={{
-                                        backgroundImage: `linear-gradient(${sectionColor} 1px, transparent 1px), linear-gradient(90deg, ${sectionColor} 1px, transparent 1px)`,
-                                        backgroundSize: '30px 30px'
-                                    }}
-                                />
-
-                                {/* Header for the specific section if needed, or just the grid */}
-                                <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                                    {category.items.map((item, itemIdx) => (
-                                        <div key={itemIdx} className="w-full">
-                                            <NewIndicatorCard item={item} themeColor={sectionColor} />
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    );
-                })}
+                {indicatorsData.map((category, idx) => (
+                    <CategorySlider
+                        key={idx}
+                        category={category}
+                        sectionColor={CATEGORY_THEMES[idx % CATEGORY_THEMES.length]}
+                    />
+                ))}
             </div>
             <style jsx>{`
                 .vertical-text {
                    writing-mode: vertical-rl;
                    text-orientation: mixed; 
+                }
+                .hide-scrollbar::-webkit-scrollbar {
+                    display: none;
                 }
             `}</style>
         </section>

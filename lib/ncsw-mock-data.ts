@@ -179,7 +179,7 @@ export const generateCaseProgressRequests = () => {
         'KPK': ['Peshawar', 'Mardan', 'Abbottabad'],
         'Balochistan': ['Quetta', 'Gwadar']
     };
-    const statuses = ['Pending Review', 'Under Review', 'Approved', 'Returned', 'Needs Clarification'];
+    const statuses = ['Pending Review', 'Under Review', 'Approved', 'Returned', 'Needs Clarification', 'Rejected'];
     const caseTypes = ['GBV', 'TFGBV'];
     const crimeCodes = {
         'GBV': ['GB-PH (Physical)', 'GB-SX (Sexual)', 'GB-EC (Economic)', 'GB-DV (Domestic)', 'GB-HR (Harassment)'],
@@ -204,112 +204,27 @@ export const generateCaseProgressRequests = () => {
         const codeList = crimeCodes[caseType];
         const crimeCode = codeList[i % codeList.length];
 
-        // Generate timeline similar to district mock data
-        const timeline = [
-            {
-                id: `stage-${i}-1`,
-                stageCode: 'COMPLAINT_RECEIVED',
-                stage: 'Complaint Received',
-                status: 'Completed',
-                date: `2024-01-${(1 + (i % 10)).toString().padStart(2, '0')}`,
-                order: 1,
-                details: {
-                    receivedBy: ['WPC', 'Police Station', 'Helpline 1099', 'NGO Referral'][i % 4],
-                    channel: ['In-person', 'Phone', 'Online Portal'][i % 3],
-                    urgency: ['Normal', 'Urgent', 'Emergency'][i % 3]
-                }
-            },
-            {
-                id: `stage-${i}-2`,
-                stageCode: 'INITIAL_SCREENING',
-                stage: 'Initial Screening',
-                status: i > 2 ? 'Completed' : 'Pending',
-                date: i > 2 ? `2024-01-${(2 + (i % 10)).toString().padStart(2, '0')}` : 'N/A',
-                order: 2,
-                details: {
-                    screeningOfficer: ['ASI Fatima', 'SI Ahmed', 'Const. Amna'][i % 3],
-                    riskAssessment: ['Low', 'Medium', 'High', 'Critical'][i % 4],
-                    immediateNeeds: i % 2 === 0 ? 'Medical attention required' : 'Legal counsel needed'
-                }
-            },
-            {
-                id: `stage-${i}-3`,
-                stageCode: 'FIR_REGISTERED',
-                stage: 'FIR Registration',
-                status: i > 5 ? 'Completed' : i > 3 ? 'In Progress' : 'Pending',
-                date: i > 5 ? `2024-01-${(4 + (i % 10)).toString().padStart(2, '0')}` : 'N/A',
-                order: 3,
-                details: {
-                    firNumber: i > 5 ? `FIR-${2024}-${(1000 + i).toString()}` : '',
-                    policeStation: `PS ${district} Central`,
-                    ioName: ['Inspector Jameel', 'SI Rehman', 'ASI Khan'][i % 3],
-                    sections: caseType === 'TFGBV' ? 'PECA 2016 Sec 21' : 'PPC 375, 376'
-                }
-            },
-            {
-                id: `stage-${i}-4`,
-                stageCode: 'MEDICAL_EXAM',
-                stage: 'Medical Examination',
-                status: i > 8 ? 'Completed' : i > 6 ? 'In Progress' : 'Pending',
-                date: i > 8 ? `2024-01-${(5 + (i % 10)).toString().padStart(2, '0')}` : 'N/A',
-                order: 4,
-                details: {
-                    hospital: `${district} General Hospital`,
-                    wmlo: ['Dr. Amna', 'Dr. Fatima', 'Dr. Sarah'][i % 3],
-                    reportSubmitted: i > 8 ? 'Yes' : 'Pending'
-                }
-            },
-            {
-                id: `stage-${i}-5`,
-                stageCode: 'INVESTIGATION',
-                stage: 'Investigation & Trial',
-                status: i > 15 ? 'Completed' : i > 10 ? 'In Progress' : 'Pending',
-                date: i > 15 ? `2024-01-${(10 + (i % 10)).toString().padStart(2, '0')}` : 'N/A',
-                order: 5,
-                details: {
-                    chargeSheet: i > 15 ? 'Submitted' : 'Pending',
-                    courtName: i > 15 ? `Session Court ${district}` : '',
-                    hearings: i > 15 ? `${1 + (i % 3)}` : '0',
-                    outcome: i > 20 ? ['Conviction', 'Acquittal', 'Case Ongoing'][i % 3] : ''
-                }
-            }
-        ];
-
-        // Add TFGBV-specific stages
-        if (caseType === 'TFGBV') {
-            timeline.splice(3, 0, {
-                id: `stage-${i}-tf`,
-                stageCode: 'PLATFORM_TAKEDOWN',
-                stage: 'Platform Takedown',
-                status: i > 7 ? 'Completed' : 'In Progress',
-                date: i > 7 ? `2024-01-${(4 + (i % 10)).toString().padStart(2, '0')}` : 'N/A',
-                order: 3.5,
-                details: {
-                    platform: ['Meta', 'TikTok', 'WhatsApp', 'X'][i % 4],
-                    requestId: `TKD-${2024}-${(500 + i).toString()}`,
-                    status: i > 7 ? 'Content Removed' : 'Request Pending',
-                    responseTime: i > 7 ? `${6 + (i % 18)}h` : ''
-                }
-            });
-        }
+        // Re-use logic from generateCaseRepository
+        const { generateCaseRepository } = require('./district-mock-data');
+        const repoCases = generateCaseRepository();
+        const baseCase = repoCases[i % repoCases.length];
 
         const completeness = Math.min(100, 60 + (i * 2) % 40);
         const caseFlags = i % 3 === 0 ? [] : flags.slice(0, 1 + (i % 3));
 
         return {
+            ...baseCase,
             id: `CPR-${(1000 + i).toString()}`,
             caseId: generateCaseId(caseType, province, district, 1000 + i),
             province,
             district,
             caseType,
             crimeCode,
-            survivor: `Survivor-${i + 1}`, // Anonymized
-            status: statuses[i % 5],
+            status: statuses[i % statuses.length],
             completeness,
             submittedOn: `2024-01-${(10 + (i % 5)).toString().padStart(2, '0')}`,
             submittedBy: `${province} Provincial Portal`,
             flags: caseFlags,
-            timeline,
             risk: ['Low', 'Medium', 'High', 'Critical'][i % 4],
             category: caseType === 'TFGBV'
                 ? ['Image Abuse', 'Cyber Stalking', 'Online Harassment'][i % 3]
@@ -397,33 +312,16 @@ export const generateDistrictsRegistry = () => [
 // National Case Search (Aggregated from all provinces)
 // ============================================
 export const generateNationalCases = () => {
-    const provinces = ['Punjab', 'Sindh', 'KPK', 'Balochistan'];
-    const districts = {
-        'Punjab': ['Lahore', 'Faisalabad', 'Multan', 'Rawalpindi'],
-        'Sindh': ['Karachi', 'Hyderabad', 'Sukkur'],
-        'KPK': ['Peshawar', 'Mardan', 'Abbottabad'],
-        'Balochistan': ['Quetta', 'Gwadar']
-    };
+    // Re-use the detailed case repository logic but customize for national view
+    const { generateCaseRepository } = require('./district-mock-data');
+    const cases = generateCaseRepository();
 
-    return Array.from({ length: 50 }).map((_, i) => {
-        const province = provinces[i % provinces.length];
-        const districtList = districts[province as keyof typeof districts];
-        const district = districtList[i % districtList.length];
-        const caseType = i % 3 === 0 ? 'TFGBV' : 'GBV';
-
-        return {
-            id: generateCaseId(caseType, province, district, 2000 + i),
-            province,
-            district,
-            caseType,
-            crimeCode: caseType === 'TFGBV' ? ['TF-A1', 'TF-A2', 'TF-A4'][i % 3] : ['GB-PH', 'GB-SX', 'GB-EC'][i % 3],
-            status: ['Reported', 'FIR Registered', 'Investigation', 'Trial', 'Closed'][i % 5],
-            risk: ['Low', 'Medium', 'High', 'Critical'][i % 4],
-            reportedDate: `2024-01-${(1 + (i % 15)).toString().padStart(2, '0')}`,
-            verificationStatus: i < 30 ? 'Published' : i < 40 ? 'Provincial Verified' : 'Pending',
-            lastUpdate: `${i + 1} days ago`
-        };
-    });
+    // Add national-specific fields if necessary
+    return cases.map((c: any, i: number) => ({
+        ...c,
+        verificationStatus: i < 30 ? 'Published' : i < 40 ? 'Provincial Verified' : 'Pending',
+        reportedDate: c.date
+    }));
 };
 
 // ============================================

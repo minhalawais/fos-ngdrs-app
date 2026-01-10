@@ -4,19 +4,21 @@ export const generateProcessIndicatorsData = () => {
         {
             category: "A. Prevention",
             items: [
-                { title: "Education", indicator: "Curriculum Alignment", value: "Level 1 (Pilot)", target: "Level 3", color: "bg-blue-500", wef: "Education" },
-                { title: "Media Literacy", indicator: "Digital Hygiene Reach", value: "12.5%", target: "50%", color: "bg-indigo-500", wef: "Tech Access" },
-                { title: "Workforce", indicator: "ILO 190 Compliance", value: "35%", target: "80%", color: "bg-cyan-500", wef: "Economic Participation" },
-                { title: "Digital Literacy", indicator: "Gender Digital Gap", value: "-5.2%", target: "-2%", color: "bg-teal-500", wef: "Eco Participation" },
+                { title: "Public Transport Harassment Prevention", indicator: "Lahore Transport Company (LTC)", value: "11 Apr 2024", target: "Lahore", color: "bg-blue-500", sub: "Metro Stations", valueLabel: "Date", targetLabel: "Location" },
+                { title: "Cyberbullying Detection System", indicator: "Punjab School Education Dept", value: "15 Jan - 15 Jun", target: "Peshawar", color: "bg-indigo-500", sub: "Early Warning", valueLabel: "Duration", targetLabel: "Location" },
+                { title: "DV Prevention Dialogue", indicator: "Social Welfare Dept, Sindh", value: "26 Mar 2024", target: "Karachi", color: "bg-cyan-500", sub: "Community Based", valueLabel: "Date", targetLabel: "Location" },
+                { title: "Youth Digital Literacy Session", indicator: "Ministry of Federal Education", value: "23 Apr 2024", target: "Lahore", color: "bg-teal-500", sub: "Online Risk", valueLabel: "Date", targetLabel: "Location" },
+                { title: "Harassment-Free Deterrence Booth", indicator: "District Admin Karachi", value: "10 May 2024", target: "Karachi", color: "bg-rose-500", sub: "Dolmen Mall", valueLabel: "Date", targetLabel: "Location" }
             ]
         },
         {
             category: "B. Protection & Support",
             items: [
-                { title: "Services", indicator: "One-Stop Centers", value: "4/District", target: "1/District", color: "bg-emerald-500", sub: "Qual Score: 8/10" },
-                { title: "Helplines", indicator: "Multi-channel Coverage", value: "Partial", target: "Full 24/7", color: "bg-green-500", sub: "WhatsApp Active" },
-                { title: "Psychosocial", indicator: "Full Service Resolution", value: "42%", target: "100%", color: "bg-lime-500", sub: "Legal+Med+PSS" },
-                { title: "TFGBV Evidence", indicator: "Chain-of-Custody", value: "68%", target: "95%", color: "bg-amber-500", sub: "Court Acceptance" },
+                { title: "Govt Shelter Homes (Dar-ul-Amans)", indicator: "Social Welfare Depts", value: "48", target: "Nationwide", color: "bg-emerald-500", sub: "Support: Shelter, food, counselling, rehab", valueLabel: "Shelters", targetLabel: "Scope" },
+                { title: "Medico-Legal Units (GBV)", indicator: "Provincial Health Depts", value: "128", target: "Nationwide", color: "bg-green-500", sub: "Support: Medical exams, certificates, evidence", valueLabel: "Hospitals", targetLabel: "Scope" },
+                { title: "Police Women Desks", indicator: "Provincial Police Depts", value: "700+", target: "Nationwide", color: "bg-lime-500", sub: "Support: Reporting, FIRs, referrals", valueLabel: "Desks", targetLabel: "Scope" },
+                { title: "Psychosocial Support", indicator: "Health & Social Welfare", value: "District Lvl", target: "All Provs", color: "bg-amber-500", sub: "Support: Counselling, crisis intervention", valueLabel: "Available", targetLabel: "Scope" },
+                { title: "Protection Helplines (1093/1043)", indicator: "Home & Social Welfare", value: "Active", target: "All + ICT", color: "bg-teal-500", sub: "Support: Emergency response, referrals", valueLabel: "Status", targetLabel: "Coverage" }
             ]
         },
         {

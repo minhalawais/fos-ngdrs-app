@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from 'next/link';
 import { motion, AnimatePresence } from "framer-motion";
 import {
     ClipboardCheck,
@@ -28,30 +29,29 @@ import {
     RefreshCw,
     ArrowLeft,
     FileWarning,
-    Database,
     BookOpen,
     Megaphone,
     Target,
     BarChart,
+    Download,
     Calendar,
     DollarSign,
-    Users
+    Users,
+    Activity
 } from "lucide-react";
 import {
     generateProvincialSubmissions,
     generateDataUpdateRequests,
     generateCaseProgressRequests,
-    generateIndicatorSubmissions,
     generatePreventionSubmissions,
     generateAwarenessSubmissions,
-    INDICATOR_CATEGORIES
 } from "@/lib/ncsw-mock-data";
+import { FIELD_LABELS } from "@/lib/district-mock-data";
 import { clsx } from "clsx";
 
 const submissions = generateProvincialSubmissions();
 const updateRequests = generateDataUpdateRequests();
 const initialCaseRequests = generateCaseProgressRequests();
-const initialIndicators = generateIndicatorSubmissions();
 const initialPrevention = generatePreventionSubmissions();
 const initialAwareness = generateAwarenessSubmissions();
 
@@ -71,58 +71,81 @@ const STATUS_STYLES: Record<string, string> = {
     'Awaiting Data': 'bg-purple-50 text-purple-700 border-purple-200',
 };
 
-const STAGE_ICONS: Record<string, any> = {
-    'COMPLAINT_RECEIVED': User,
-    'INITIAL_SCREENING': Shield,
-    'FIR_REGISTERED': FileText,
-    'MEDICAL_EXAM': Stethoscope,
-    'INVESTIGATION': Scale,
-    'DISPOSAL': Gavel,
-    'PLATFORM_TAKEDOWN': Smartphone,
-};
-
-const FIELD_LABELS: Record<string, string> = {
-    receivedBy: 'Received By',
-    channel: 'Channel',
-    urgency: 'Urgency',
-    screeningOfficer: 'Screening Officer',
-    riskAssessment: 'Risk Assessment',
-    immediateNeeds: 'Immediate Needs',
-    firNumber: 'FIR Number',
-    policeStation: 'Police Station',
-    ioName: 'Investigation Officer',
-    sections: 'Legal Sections',
-    hospital: 'Hospital',
-    wmlo: 'WMLO',
-    reportSubmitted: 'Report Submitted',
-    chargeSheet: 'Charge Sheet',
-    courtName: 'Court Name',
-    hearings: 'Hearings',
-    outcome: 'Outcome',
-    platform: 'Platform',
-    requestId: 'Request ID',
-    status: 'Status',
-    responseTime: 'Response Time',
+const getStageCategoryColor = (stageCode: string) => {
+    switch (stageCode) {
+        case 'COMPLAINT_RECEIVED':
+        case 'INITIAL_SCREENING':
+            return {
+                bg: 'bg-blue-50',
+                text: 'text-blue-600',
+                border: 'border-blue-100',
+                iconBg: 'bg-[#3b82f6]',
+                glow: 'shadow-blue-500/20'
+            };
+        case 'FIR_REGISTERED':
+        case 'CYBER_EVIDENCE':
+        case 'INVESTIGATION':
+            return {
+                bg: 'bg-brand-surface/30',
+                text: 'text-brand-teal',
+                border: 'border-brand-soft/30',
+                iconBg: 'bg-[#45828b]',
+                glow: 'shadow-brand-teal/20'
+            };
+        case 'MEDICAL_EXAM':
+        case 'FORENSIC_EVIDENCE':
+            return {
+                bg: 'bg-primary-50',
+                text: 'text-primary-700',
+                border: 'border-primary-100',
+                iconBg: 'bg-[#1bd488]',
+                glow: 'shadow-primary-500/20'
+            };
+        case 'TRIAL_PROSECUTION':
+        case 'DISPOSAL_JUDGMENT':
+            return {
+                bg: 'bg-amber-50',
+                text: 'text-amber-700',
+                border: 'border-amber-100',
+                iconBg: 'bg-[#f59e0b]',
+                glow: 'shadow-amber-500/20'
+            };
+        case 'SURVIVOR_SUPPORT':
+            return {
+                bg: 'bg-purple-50',
+                text: 'text-purple-700',
+                border: 'border-purple-100',
+                iconBg: 'bg-[#8b5cf6]',
+                glow: 'shadow-purple-500/20'
+            };
+        default:
+            return {
+                bg: 'bg-gray-50',
+                text: 'text-gray-600',
+                border: 'border-gray-100',
+                iconBg: 'bg-gray-600',
+                glow: 'shadow-gray-500/20'
+            };
+    }
 };
 
 type TabType = 'progress' | 'new' | 'returned' | 'data-update';
 
 const TABS = [
-    { id: 'progress' as TabType, label: 'Case Progress Requests', icon: Clock, color: 'brand-teal' },
-    { id: 'new' as TabType, label: 'New Case Requests', icon: Plus, color: 'green-500' },
-    { id: 'returned' as TabType, label: 'Returned Cases', icon: ArrowLeft, color: 'orange-500' },
-    { id: 'data-update' as TabType, label: 'Data Update Requests', icon: FileWarning, color: 'purple-500' },
+    { id: 'progress' as TabType, label: 'Case Progress Submissions', icon: Clock, color: '#659CBF' },
+    { id: 'new' as TabType, label: 'New Case Submissions', icon: Plus, color: '#6EA969' },
+    { id: 'returned' as TabType, label: 'Returned Cases Submissions', icon: RotateCcw, color: '#D3A255' },
+    { id: 'data-update' as TabType, label: 'Data Update Requests', icon: FileWarning, color: '#BC5F75' },
 ];
 
 export default function ProvincialSubmissionsPage() {
     const [caseRequests, setCaseRequests] = useState(initialCaseRequests);
-    const [indicatorSubmissions, setIndicatorSubmissions] = useState(initialIndicators);
     const [preventionSubmissions, setPreventionSubmissions] = useState(initialPrevention);
     const [awarenessSubmissions, setAwarenessSubmissions] = useState(initialAwareness);
 
     // Modal State
     const [selectedItem, setSelectedItem] = useState<any>(null);
-    const [modalType, setModalType] = useState<'case' | 'indicator' | 'prevention' | 'awareness' | null>(null);
+    const [modalType, setModalType] = useState<'case' | 'prevention' | 'awareness' | null>(null);
 
     const [activeTab, setActiveTab] = useState<TabType>('progress');
     const [searchTerm, setSearchTerm] = useState("");
@@ -131,7 +154,6 @@ export default function ProvincialSubmissionsPage() {
     // Collapsible Sections State
     const [sectionsOpen, setSectionsOpen] = useState({
         cases: true,
-        indicators: true,
         prevention: true,
         awareness: true
     });
@@ -145,25 +167,24 @@ export default function ProvincialSubmissionsPage() {
         switch (activeTab) {
             case 'new': return caseRequests.filter(c => c.status === 'Pending Review');
             case 'returned': return caseRequests.filter(c => c.status === 'Returned' || c.status === 'Needs Clarification');
-            case 'data-update': return updateRequests;
-            default: return caseRequests;
+            case 'data-update': return caseRequests.filter(c => c.status === 'Rejected'); // Now showing rejected cases awaiting overhaul
+            case 'progress': return caseRequests.filter(c => c.status === 'Under Review');
+            default: return caseRequests.filter(c => c.status === 'Under Review');
         }
     };
 
     const caseData = getTabCaseData();
 
     // Stats
-    const progressCount = caseRequests.filter(c => c.status === 'Under Review' || c.status === 'Pending Review').length;
+    const progressCount = caseRequests.filter(c => c.status === 'Under Review').length;
     const newCount = caseRequests.filter(c => c.status === 'Pending Review').length;
     const returnedCount = caseRequests.filter(c => c.status === 'Returned' || c.status === 'Needs Clarification').length;
-    const dataUpdateCount = updateRequests.filter(r => r.status === 'Open').length;
+    const rejectedCount = caseRequests.filter(c => c.status === 'Rejected').length;
 
     // Status Handlers
-    const handleStatusChange = (id: string, newStatus: string, type: 'case' | 'indicator' | 'prevention' | 'awareness') => {
+    const handleStatusChange = (id: string, newStatus: string, type: 'case' | 'prevention' | 'awareness') => {
         if (type === 'case') {
             setCaseRequests(prev => prev.map(c => c.id === id ? { ...c, status: newStatus } : c));
-        } else if (type === 'indicator') {
-            setIndicatorSubmissions(prev => prev.map(i => i.id === id ? { ...i, status: newStatus } : i));
         } else if (type === 'prevention') {
             setPreventionSubmissions(prev => prev.map(p => p.id === id ? { ...p, status: newStatus } : p));
         } else if (type === 'awareness') {
@@ -177,7 +198,7 @@ export default function ProvincialSubmissionsPage() {
         setExpandedStages(prev => prev.includes(stageId) ? prev.filter(id => id !== stageId) : [...prev, stageId]);
     };
 
-    const openModal = (item: any, type: 'case' | 'indicator' | 'prevention' | 'awareness') => {
+    const openModal = (item: any, type: 'case' | 'prevention' | 'awareness') => {
         setSelectedItem(item);
         setModalType(type);
         if (type === 'case') {
@@ -196,9 +217,14 @@ export default function ProvincialSubmissionsPage() {
                     </h1>
                     <p className="text-sm text-brand-teal">Review case submissions, manage requests, and track data updates</p>
                 </div>
-                <button className="px-5 py-2 bg-brand-dark hover:bg-brand-teal text-white font-bold rounded-xl text-sm shadow-md transition-all flex items-center gap-2">
-                    <Send size={16} /> Publish All Approved
-                </button>
+                <div className="flex gap-3">
+                    <Link href="/ncsw/timeline-demo" className="px-5 py-2 bg-white text-brand-dark hover:bg-gray-50 border border-gray-200 font-bold rounded-xl text-sm shadow-sm transition-all flex items-center gap-2">
+                        <Eye size={16} /> full Timeline Demo
+                    </Link>
+                    <button className="px-5 py-2 bg-brand-dark hover:bg-brand-teal text-white font-bold rounded-xl text-sm shadow-md transition-all flex items-center gap-2">
+                        <Send size={16} /> Publish All Approved
+                    </button>
+                </div>
             </div>
 
             {/* SECTION 1: CASES SUBMISSION */}
@@ -221,31 +247,84 @@ export default function ProvincialSubmissionsPage() {
 
                 {sectionsOpen.cases && (
                     <div className="p-6 space-y-6">
-                        {/* Stats Cards */}
+                        {/* Stats as Tabs */}
                         <div className="grid grid-cols-4 gap-4">
                             {[
-                                { id: 'progress', label: 'In Progress', count: progressCount, icon: Clock, color: 'text-brand-teal', bg: 'bg-brand-surface/50', border: 'border-brand-teal' },
-                                { id: 'new', label: 'New Requests', count: newCount, icon: Plus, color: 'text-green-500', bg: 'bg-green-50', border: 'border-green-500' },
-                                { id: 'returned', label: 'Returned', count: returnedCount, icon: ArrowLeft, color: 'text-orange-500', bg: 'bg-orange-50', border: 'border-orange-500' },
-                                { id: 'data-update', label: 'Data Updates', count: dataUpdateCount, icon: FileWarning, color: 'text-purple-500', bg: 'bg-purple-50', border: 'border-purple-500' },
+                                {
+                                    id: 'progress',
+                                    label: 'Case Progress Submissions',
+                                    count: progressCount,
+                                    icon: Clock,
+                                    color: '#659CBF',
+                                    bg: '#659CBF15',
+                                    borderColor: '#659CBF'
+                                },
+                                {
+                                    id: 'new',
+                                    label: 'New Case Submissions',
+                                    count: newCount,
+                                    icon: Plus,
+                                    color: '#6EA969',
+                                    bg: '#6EA96915',
+                                    borderColor: '#6EA969'
+                                },
+                                {
+                                    id: 'returned',
+                                    label: 'Returned Cases Submissions',
+                                    count: returnedCount,
+                                    icon: RotateCcw,
+                                    color: '#D3A255',
+                                    bg: '#D3A25515',
+                                    borderColor: '#D3A255'
+                                },
+                                {
+                                    id: 'data-update',
+                                    label: 'Data Update Requests',
+                                    count: rejectedCount,
+                                    icon: FileWarning,
+                                    color: '#BC5F75',
+                                    bg: '#BC5F7515',
+                                    borderColor: '#BC5F75'
+                                },
                             ].map((stat) => (
                                 <div
                                     key={stat.id}
-                                    className={clsx(
-                                        "rounded-2xl border p-4 shadow-sm cursor-pointer transition-all hover:shadow-md",
-                                        activeTab === stat.id ? `${stat.border} ring-2 ring-opacity-20` : "border-brand-surface"
-                                    )}
                                     onClick={() => setActiveTab(stat.id as TabType)}
+                                    className={clsx(
+                                        "rounded-2xl border p-4 shadow-sm cursor-pointer transition-all duration-300 group relative",
+                                        activeTab === stat.id
+                                            ? "bg-white ring-1 ring-black/5"
+                                            : "border-brand-surface bg-gray-50/30 hover:bg-white hover:shadow-md"
+                                    )}
+                                    style={{
+                                        borderColor: activeTab === stat.id ? stat.borderColor : undefined,
+                                        boxShadow: activeTab === stat.id ? `0 8px 20px ${stat.color}20` : undefined
+                                    }}
                                 >
-                                    <div className="flex items-center gap-3">
-                                        <div className={clsx("w-10 h-10 rounded-xl flex items-center justify-center", stat.bg)}>
-                                            <stat.icon size={20} className={stat.color} />
+                                    <div className="flex items-center gap-4">
+                                        <div
+                                            className={clsx(
+                                                "w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300",
+                                                activeTab === stat.id ? "scale-110 shadow-sm" : "group-hover:scale-105"
+                                            )}
+                                            style={{ backgroundColor: stat.bg, color: stat.color }}
+                                        >
+                                            <stat.icon size={24} />
                                         </div>
                                         <div>
-                                            <p className="text-xl font-bold text-brand-dark">{stat.count}</p>
-                                            <p className="text-xs text-gray-500">{stat.label}</p>
+                                            <p className="text-2xl font-black text-brand-dark tracking-tight">{stat.count}</p>
+                                            <p className={clsx(
+                                                "text-[10px] font-bold uppercase tracking-widest transition-colors leading-tight",
+                                                activeTab === stat.id ? "text-brand-dark" : "text-gray-400"
+                                            )}>{stat.label}</p>
                                         </div>
                                     </div>
+                                    {activeTab === stat.id && (
+                                        <div
+                                            className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-1 rounded-t-full"
+                                            style={{ backgroundColor: stat.color }}
+                                        />
+                                    )}
                                 </div>
                             ))}
                         </div>
@@ -266,15 +345,29 @@ export default function ProvincialSubmissionsPage() {
                                 </thead>
                                 <tbody className="divide-y divide-brand-surface">
                                     {activeTab === 'data-update' ? (
-                                        (caseData as typeof updateRequests).map((req) => (
+                                        (caseData as any[]).map((req) => (
                                             <tr key={req.id} className="hover:bg-gray-50 transition-colors">
                                                 <td className="px-6 py-4 font-mono text-sm font-medium text-brand-dark">{req.caseId}</td>
                                                 <td className="px-6 py-4">
                                                     <div><span className="font-bold text-brand-dark">{req.province}</span><p className="text-xs text-gray-400">{req.district}</p></div>
                                                 </td>
-                                                <td className="px-6 py-4" colSpan={2}><span className="text-sm text-gray-600">{req.issue}</span></td>
-                                                <td className="px-6 py-4"><span className="px-2 py-0.5 rounded text-xs font-bold bg-blue-50 text-blue-700">{req.status}</span></td>
-                                                <td className="px-6 py-4 text-right"><button className="text-brand-teal font-bold text-xs hover:underline">Review Update</button></td>
+                                                <td className="px-6 py-4">
+                                                    <span className="px-2 py-1 rounded-lg bg-gray-100 text-[10px] font-bold text-gray-600 uppercase tracking-tight">{req.caseType}</span>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <div className="flex items-center gap-2 text-xs text-gray-500"><Calendar size={12} /> {req.submittedOn}</div>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <span className="px-2 py-0.5 rounded text-xs font-bold bg-red-50 text-red-700">Action Required</span>
+                                                </td>
+                                                <td className="px-6 py-4 text-right">
+                                                    <button
+                                                        onClick={() => openModal(req, 'case')}
+                                                        className="text-brand-teal font-bold text-xs hover:underline"
+                                                    >
+                                                        Review & Fix
+                                                    </button>
+                                                </td>
                                             </tr>
                                         ))
                                     ) : (
@@ -312,61 +405,7 @@ export default function ProvincialSubmissionsPage() {
                 )}
             </div>
 
-            {/* SECTION 2: PROCESS INDICATORS SUBMISSION */}
-            <div className="bg-white rounded-3xl border border-brand-surface shadow-sm overflow-hidden">
-                <div
-                    className="p-6 border-b border-brand-surface flex justify-between items-center bg-gray-50/50 cursor-pointer"
-                    onClick={() => toggleSection('indicators')}
-                >
-                    <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600">
-                            <Database size={20} />
-                        </div>
-                        <div>
-                            <h2 className="text-lg font-bold text-brand-dark">Process Indicators Submission</h2>
-                            <p className="text-xs text-gray-500">Track implementation of standard operating procedures and laws</p>
-                        </div>
-                    </div>
-                    {sectionsOpen.indicators ? <ChevronUp className="text-gray-400" /> : <ChevronDown className="text-gray-400" />}
-                </div>
 
-                {sectionsOpen.indicators && (
-                    <div className="p-6">
-                        <div className="rounded-2xl border border-brand-surface overflow-hidden">
-                            <table className="w-full text-left border-collapse">
-                                <thead className="bg-brand-surface/20 text-xs text-brand-dark/70 uppercase font-bold tracking-wider">
-                                    <tr>
-                                        <th className="px-6 py-4">ID</th>
-                                        <th className="px-6 py-4">Indicator Name</th>
-                                        <th className="px-6 py-4">Province / District</th>
-                                        <th className="px-6 py-4">Value</th>
-                                        <th className="px-6 py-4">Target</th>
-                                        <th className="px-6 py-4">Status</th>
-                                        <th className="px-6 py-4 text-right">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-brand-surface">
-                                    {indicatorSubmissions.map((ind) => (
-                                        <tr key={ind.id} className="hover:bg-gray-50 transition-colors">
-                                            <td className="px-6 py-4 font-mono text-xs text-gray-500">{ind.id}</td>
-                                            <td className="px-6 py-4"><span className="font-medium text-brand-dark block max-w-xs">{ind.indicatorName}</span><span className="text-xs text-gray-400">{ind.category}</span></td>
-                                            <td className="px-6 py-4">
-                                                <div><span className="font-bold text-brand-dark">{ind.province}</span><p className="text-xs text-gray-400">{ind.district}</p></div>
-                                            </td>
-                                            <td className="px-6 py-4 font-bold text-brand-dark">{ind.currentValue} <span className="text-xs font-normal text-gray-500">{ind.unit}</span></td>
-                                            <td className="px-6 py-4 text-gray-500">{ind.targetValue} {ind.unit}</td>
-                                            <td className="px-6 py-4"><span className={clsx("px-2.5 py-1 rounded-md text-xs font-bold border", STATUS_STYLES[ind.status] || "bg-gray-100")}>{ind.status}</span></td>
-                                            <td className="px-6 py-4 text-right">
-                                                <button onClick={() => openModal(ind, 'indicator')} className="p-2 hover:bg-brand-surface/50 rounded-lg text-brand-teal transition-colors"><Eye size={16} /></button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                )}
-            </div>
 
             {/* SECTION 3: PREVENTION SUBMISSION */}
             <div className="bg-white rounded-3xl border border-brand-surface shadow-sm overflow-hidden">
@@ -379,7 +418,7 @@ export default function ProvincialSubmissionsPage() {
                             <Shield size={20} />
                         </div>
                         <div>
-                            <h2 className="text-lg font-bold text-brand-dark">Prevention Submission</h2>
+                            <h2 className="text-lg font-bold text-brand-dark">Prevention Measures Submission</h2>
                             <p className="text-xs text-gray-500">Review community programs, training, and strategic initiatives</p>
                         </div>
                     </div>
@@ -387,7 +426,24 @@ export default function ProvincialSubmissionsPage() {
                 </div>
 
                 {sectionsOpen.prevention && (
-                    <div className="p-6">
+                    <div className="p-6 space-y-6">
+                        {/* Prevention Stats */}
+                        <div className="grid grid-cols-4 gap-4">
+                            {[
+                                { label: 'Total Projects', count: preventionSubmissions.length, icon: Target, color: '#659CBF', bg: '#659CBF15' },
+                                { label: 'Active/Approved', count: preventionSubmissions.filter(p => p.status === 'Approved').length, icon: CheckCircle, color: '#6EA969', bg: '#6EA96915' },
+                                { label: 'Review Pending', count: preventionSubmissions.filter(p => p.status.includes('Review')).length, icon: Clock, color: '#D3A255', bg: '#D3A25515' },
+                                { label: 'Submissions Req', count: preventionSubmissions.filter(p => p.status === 'Needs Clarification').length, icon: AlertTriangle, color: '#EE8A7D', bg: '#EE8A7D15' },
+                            ].map((stat, idx) => (
+                                <div key={idx} className="bg-gray-50/50 rounded-2xl border border-brand-surface p-4 flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: stat.bg, color: stat.color }}><stat.icon size={20} /></div>
+                                    <div>
+                                        <p className="text-xl font-bold text-brand-dark">{stat.count}</p>
+                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{stat.label}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                         <div className="rounded-2xl border border-brand-surface overflow-hidden">
                             <table className="w-full text-left border-collapse">
                                 <thead className="bg-brand-surface/20 text-xs text-brand-dark/70 uppercase font-bold tracking-wider">
@@ -435,7 +491,7 @@ export default function ProvincialSubmissionsPage() {
                             <BookOpen size={20} />
                         </div>
                         <div>
-                            <h2 className="text-lg font-bold text-brand-dark">Awareness Submission</h2>
+                            <h2 className="text-lg font-bold text-brand-dark">Awareness Measures Submission</h2>
                             <p className="text-xs text-gray-500">Review media campaigns, public service announcements, and events</p>
                         </div>
                     </div>
@@ -443,7 +499,24 @@ export default function ProvincialSubmissionsPage() {
                 </div>
 
                 {sectionsOpen.awareness && (
-                    <div className="p-6">
+                    <div className="p-6 space-y-6">
+                        {/* Awareness Stats */}
+                        <div className="grid grid-cols-4 gap-4">
+                            {[
+                                { label: 'Total Campaigns', count: awarenessSubmissions.length, icon: Megaphone, color: '#659CBF', bg: '#659CBF15' },
+                                { label: 'Certified', count: awarenessSubmissions.filter(a => a.status === 'Approved').length, icon: CheckCircle, color: '#6EA969', bg: '#6EA96915' },
+                                { label: 'Under Review', count: awarenessSubmissions.filter(a => a.status === 'Under Review').length, icon: Clock, color: '#D3A255', bg: '#D3A25515' },
+                                { label: 'Rejected/Returned', count: awarenessSubmissions.filter(a => a.status === 'Rejected' || a.status === 'Returned').length, icon: XCircle, color: '#EE8A7D', bg: '#EE8A7D15' },
+                            ].map((stat, idx) => (
+                                <div key={idx} className="bg-gray-50/50 rounded-2xl border border-brand-surface p-4 flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: stat.bg, color: stat.color }}><stat.icon size={20} /></div>
+                                    <div>
+                                        <p className="text-xl font-bold text-brand-dark">{stat.count}</p>
+                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{stat.label}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                         <div className="rounded-2xl border border-brand-surface overflow-hidden">
                             <table className="w-full text-left border-collapse">
                                 <thead className="bg-brand-surface/20 text-xs text-brand-dark/70 uppercase font-bold tracking-wider">
@@ -501,9 +574,7 @@ export default function ProvincialSubmissionsPage() {
                                             <span className={clsx("px-2.5 py-1 rounded-lg text-xs font-bold border", STATUS_STYLES[selectedItem.status])}>{selectedItem.status}</span>
                                         </div>
                                         <h2 className="text-xl font-bold text-brand-dark">
-                                            {modalType === 'case' ? 'Case Timeline & Progress' :
-                                                modalType === 'indicator' ? selectedItem.indicatorName :
-                                                    selectedItem.title}
+                                            {modalType === 'case' ? 'Case Timeline & Progress' : selectedItem.title}
                                         </h2>
                                         <p className="text-sm text-brand-teal">{selectedItem.province} • {selectedItem.district} • {modalType === 'case' ? selectedItem.category : (selectedItem.type || selectedItem.category)}</p>
                                     </div>
@@ -515,59 +586,285 @@ export default function ProvincialSubmissionsPage() {
                             <div className="flex-1 overflow-y-auto p-6 bg-brand-canvas space-y-6">
                                 {/* CONTENT FOR CASES */}
                                 {modalType === 'case' && (
-                                    <div className="space-y-4">
-                                        <div className="bg-white p-4 rounded-xl border border-gray-200">
-                                            <h3 className="font-bold text-brand-dark mb-4">Case Progression</h3>
-                                            {selectedItem.timeline.map((stage: any, idx: number) => {
-                                                const Icon = STAGE_ICONS[stage.stageCode] || FileText;
-                                                const isCompleted = stage.status === 'Completed';
-                                                const isExpanded = expandedStages.includes(stage.id);
-                                                return (
-                                                    <div key={stage.id} className="relative pl-12 mb-4">
-                                                        {idx !== selectedItem.timeline.length - 1 && <div className={clsx("absolute left-[23px] top-12 bottom-[-24px] w-0.5", isCompleted ? "bg-brand-teal" : "bg-gray-200")} />}
-                                                        <div className={clsx("absolute left-0 top-1 w-12 h-12 rounded-full flex items-center justify-center border-4 transition-all z-10 shadow-sm", isCompleted ? "bg-brand-teal border-white text-white" : "bg-white border-gray-200 text-gray-300")}><Icon size={20} /></div>
-                                                        <div className={clsx("bg-white rounded-xl border transition-all shadow-sm overflow-hidden", isCompleted ? "border-brand-teal/30" : "border-gray-200")}>
-                                                            <div className="flex justify-between items-center p-3 cursor-pointer hover:bg-gray-50" onClick={() => toggleStageExpand(stage.id)}>
-                                                                <h4 className="font-bold text-sm">{stage.stage}</h4>
-                                                                {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                                    <div className="space-y-6">
+                                        {/* Personal Information & Incident Details */}
+                                        <div className="bg-white p-6 rounded-3xl border border-brand-surface shadow-sm">
+                                            <div className="flex items-center justify-between mb-6">
+                                                <h3 className="font-bold text-brand-dark uppercase tracking-widest text-xs flex items-center gap-2">
+                                                    <User size={16} className="text-brand-teal" />
+                                                    Personal & Incident Profile
+                                                </h3>
+                                                <span className="px-2 py-1 bg-brand-teal/10 text-brand-teal text-[10px] font-bold rounded uppercase">
+                                                    Restricted Access
+                                                </span>
+                                            </div>
+
+                                            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                                                {(() => {
+                                                    // Helper to safely extract field from any stage in timeline
+                                                    const getTimelineField = (key: string) => {
+                                                        return selectedItem.timeline?.find((s: any) => s.details && s.details[key])?.details[key] || 'N/A';
+                                                    };
+
+                                                    return (
+                                                        <>
+                                                            <div className="p-4 bg-gray-50/50 rounded-2xl border border-brand-surface/50 group hover:border-brand-teal/30 hover:shadow-md transition-all">
+                                                                <div className="flex items-center gap-3 mb-2">
+                                                                    <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600">
+                                                                        <User size={16} />
+                                                                    </div>
+                                                                    <span className="text-[10px] uppercase font-bold text-gray-400">Survivor Profile</span>
+                                                                </div>
+                                                                <div>
+                                                                    <p className="font-bold text-brand-dark text-sm">{getTimelineField('survivorAge')}</p>
+                                                                    <p className="text-xs text-gray-500 mt-0.5">{getTimelineField('disabilityStatus')}</p>
+                                                                    <p className="text-[10px] text-blue-600 font-bold mt-1 bg-blue-50 px-1.5 py-0.5 rounded inline-block">{getTimelineField('recurrence')}</p>
+                                                                </div>
                                                             </div>
-                                                            {isExpanded && <div className="p-4 bg-gray-50 text-xs text-gray-600 grid grid-cols-2 gap-2">{Object.entries(stage.details).map(([k, v]) => <div key={k}><span className="font-bold block uppercase text-[10px] text-gray-400">{FIELD_LABELS[k] || k}</span>{v as string}</div>)}</div>}
+
+                                                            <div className="p-4 bg-gray-50/50 rounded-2xl border border-brand-surface/50 group hover:border-brand-teal/30 hover:shadow-md transition-all">
+                                                                <div className="flex items-center gap-3 mb-2">
+                                                                    <div className="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center text-red-600">
+                                                                        <Shield size={16} />
+                                                                    </div>
+                                                                    <span className="text-[10px] uppercase font-bold text-gray-400">Accused & Risk</span>
+                                                                </div>
+                                                                <div>
+                                                                    <p className="font-bold text-brand-dark text-sm">{getTimelineField('perpetratorType')}</p>
+                                                                    <p className="text-xs text-gray-500 mt-0.5">Primary Suspect</p>
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="p-4 bg-gray-50/50 rounded-2xl border border-brand-surface/50 group hover:border-brand-teal/30 hover:shadow-md transition-all">
+                                                                <div className="flex items-center gap-3 mb-2">
+                                                                    <div className="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600">
+                                                                        <MapPin size={16} />
+                                                                    </div>
+                                                                    <span className="text-[10px] uppercase font-bold text-gray-400">Location & Response</span>
+                                                                </div>
+                                                                <div>
+                                                                    <p className="font-bold text-brand-dark text-sm">{getTimelineField('incidentLocation')}</p>
+                                                                    <p className="text-xs text-gray-500 mt-0.5">Resp: <span className="font-bold">{getTimelineField('policeResponseTime')}</span></p>
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="p-4 bg-gray-50/50 rounded-2xl border border-brand-surface/50 group hover:border-brand-teal/30 hover:shadow-md transition-all">
+                                                                <div className="flex items-center gap-3 mb-2">
+                                                                    <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600">
+                                                                        <Activity size={16} />
+                                                                    </div>
+                                                                    <span className="text-[10px] uppercase font-bold text-gray-400">Services</span>
+                                                                </div>
+                                                                <div>
+                                                                    <p className="font-medium text-brand-dark text-xs leading-tight">{getTimelineField('servicesRequired')}</p>
+                                                                    <p className="text-[10px] text-gray-400 mt-1">Status: Pending</p>
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="p-4 bg-gray-50/50 rounded-2xl border border-brand-surface/50 group hover:border-brand-teal/30 hover:shadow-md transition-all">
+                                                                <div className="flex items-center gap-3 mb-2">
+                                                                    <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600">
+                                                                        <AlertTriangle size={16} />
+                                                                    </div>
+                                                                    <span className="text-[10px] uppercase font-bold text-gray-400">Risk Assessment</span>
+                                                                </div>
+                                                                <div>
+                                                                    <p className={clsx(
+                                                                        "font-bold text-sm",
+                                                                        selectedItem.risk === 'Critical' ? "text-red-600" :
+                                                                            selectedItem.risk === 'High' ? "text-orange-600" :
+                                                                                "text-brand-dark"
+                                                                    )}>{selectedItem.risk || 'Pending'}</p>
+                                                                    <p className="text-xs text-gray-500 mt-0.5">Initial Evaluation</p>
+                                                                </div>
+                                                            </div>
+                                                        </>
+                                                    );
+                                                })()}
+                                            </div>
+                                        </div>
+
+                                        {/* Case Life-cycle Header */}
+                                        <div className="bg-white p-6 rounded-3xl border border-brand-surface shadow-sm">
+                                            <div className="flex items-center justify-between mb-6">
+                                                <div>
+                                                    <h3 className="font-bold text-brand-dark uppercase tracking-widest text-xs flex items-center gap-2">
+                                                        <BarChart size={16} className="text-brand-teal" />
+                                                        Justice System Life-cycle
+                                                    </h3>
+                                                    <p className="text-[10px] text-gray-400 font-medium">Provincial Submission Audit (SOP Compliance)</p>
+                                                </div>
+                                                <div className="text-right font-mono">
+                                                    <span className="text-2xl font-black text-brand-dark">
+                                                        {Math.round((selectedItem.timeline?.filter((s: any) => s.status === 'Completed').length / selectedItem.timeline?.length) * 100)}%
+                                                    </span>
+                                                    <span className="text-xs text-brand-teal ml-1 font-bold">Audit Multiplier</span>
+                                                </div>
+                                            </div>
+
+                                            <div className="relative h-3 bg-gray-50 rounded-full overflow-hidden border border-gray-100 flex p-0.5">
+                                                {selectedItem.timeline?.map((stage: any, sIdx: number) => (
+                                                    <div
+                                                        key={sIdx}
+                                                        className={clsx(
+                                                            "h-full flex-1 first:rounded-l-full last:rounded-r-full transition-all duration-500 mx-0.5",
+                                                            stage.status === 'Completed' ? "bg-brand-teal shadow-[0_0_8px_rgba(40,152,154,0.3)]" :
+                                                                stage.status === 'In Progress' ? "bg-brand-teal/30 animate-pulse" : "bg-gray-200"
+                                                        )}
+                                                    />
+                                                ))}
+                                            </div>
+                                            <div className="grid grid-cols-4 gap-2 mt-4 text-[9px] font-bold uppercase tracking-tighter text-gray-400">
+                                                <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-blue-500" /> Intake</div>
+                                                <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-indigo-500" /> Evidence</div>
+                                                <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Medical</div>
+                                                <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-amber-500" /> Trial</div>
+                                            </div>
+                                        </div>
+
+                                        {/* Audit Timeline */}
+                                        <div className="relative pl-8 space-y-0">
+                                            {/* Continuous vertical line background */}
+                                            <div className="absolute left-[39px] top-6 bottom-6 w-0.5 bg-gray-100/80 -z-10" />
+
+                                            {selectedItem.timeline?.map((stage: any, idx: number) => {
+                                                const isCompleted = stage.status === 'Completed';
+                                                const isInProgress = stage.status === 'In Progress';
+                                                const isConvicted = stage.stageCode === 'DISPOSAL_JUDGMENT' && isCompleted;
+                                                const colors = getStageCategoryColor(stage.stageCode);
+
+                                                return (
+                                                    <motion.div
+                                                        key={idx}
+                                                        initial={{ opacity: 0, y: 10 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        transition={{ delay: idx * 0.08, type: "spring", stiffness: 200 }}
+                                                        className="group/timeline-item relative pb-10 last:pb-0"
+                                                    >
+                                                        <div className="flex gap-6">
+                                                            {/* Timeline Marker Column */}
+                                                            <div className="flex flex-col items-center flex-shrink-0 relative">
+                                                                {/* Connector overlay for active state */}
+                                                                {idx !== selectedItem.timeline.length - 1 && isCompleted && (
+                                                                    <div className="absolute top-10 bottom-[-40px] w-0.5 bg-brand-teal transition-all duration-500" />
+                                                                )}
+
+                                                                <div className={clsx(
+                                                                    "w-14 h-14 rounded-full flex items-center justify-center border-[3px] shadow-sm transition-all duration-300 z-10",
+                                                                    isCompleted ? `bg-white border-brand-teal text-brand-teal shadow-[0_0_0_4px_rgba(40,152,154,0.1)]` :
+                                                                        isInProgress ? "bg-white border-brand-teal text-brand-teal animate-pulse shadow-[0_0_0_4px_rgba(40,152,154,0.2)]" :
+                                                                            "bg-white border-gray-200 text-gray-300"
+                                                                )}>
+                                                                    {isCompleted ? <CheckCircle size={24} strokeWidth={2.5} /> :
+                                                                        isInProgress ? <RefreshCw className="animate-spin-slow" size={24} strokeWidth={2.5} /> :
+                                                                            <div className="w-3 h-3 rounded-full bg-gray-300" />}
+                                                                </div>
+                                                            </div>
+
+                                                            {/* Content Card */}
+                                                            <div className={clsx(
+                                                                "flex-1 rounded-2xl border transition-all duration-300 relative overflow-visible",
+                                                                isCompleted ? "bg-white border-brand-surface/60 shadow-[0_4px_20px_rgb(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:-translate-y-0.5" :
+                                                                    isInProgress ? "bg-white border-brand-teal/30 shadow-[0_8px_30px_rgba(40,152,154,0.08)] ring-1 ring-brand-teal/10" :
+                                                                        "bg-gray-50/50 border-gray-100 opacity-60 grayscale"
+                                                            )}>
+                                                                {/* Header Section */}
+                                                                <div className="p-5 border-b border-gray-50/80 flex justify-between items-start gap-4">
+                                                                    <div>
+                                                                        <div className="flex items-center gap-2 mb-1.5">
+                                                                            {isCompleted && (
+                                                                                <span className="px-2 py-0.5 rounded-md bg-brand-teal/5 text-brand-teal text-[10px] uppercase font-black tracking-widest leading-none border border-brand-teal/10">
+                                                                                    {stage.date}
+                                                                                </span>
+                                                                            )}
+                                                                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                                                                                {stage.stageCode.replace(/_/g, ' ')}
+                                                                            </span>
+                                                                        </div>
+                                                                        <h4 className={clsx("font-extrabold text-lg tracking-tight leading-tight", isCompleted ? "text-brand-dark" : "text-gray-500")}>
+                                                                            {stage.stage}
+                                                                        </h4>
+                                                                    </div>
+
+                                                                    <div className="text-right">
+                                                                        {isConvicted ? (
+                                                                            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-brand-dark text-white text-[10px] font-black uppercase tracking-wider rounded-lg shadow-md shadow-brand-dark/20 animate-pulse">
+                                                                                <Gavel size={12} /> Convicted
+                                                                            </span>
+                                                                        ) : (
+                                                                            <span className={clsx(
+                                                                                "inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider border",
+                                                                                isCompleted ? "bg-green-50 border-green-100 text-green-700" :
+                                                                                    isInProgress ? "bg-blue-50 border-blue-100 text-blue-700" :
+                                                                                        "bg-gray-100 border-gray-200 text-gray-400"
+                                                                            )}>
+                                                                                {stage.status}
+                                                                            </span>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+
+                                                                {/* Body Section */}
+                                                                {(isCompleted || isInProgress) && (
+                                                                    <div className="p-5">
+                                                                        {/* Data Grid */}
+                                                                        <div className="grid grid-cols-2 md:grid-cols-3 gap-y-5 gap-x-4">
+                                                                            {Object.entries((stage.details || {}) as Record<string, any>).map(([k, v]) => (
+                                                                                v && (
+                                                                                    <div key={k} className="group/field">
+                                                                                        <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest mb-1.5 group-hover/field:text-brand-teal transition-colors">
+                                                                                            {FIELD_LABELS[k] || k}
+                                                                                        </p>
+                                                                                        <p className="text-[13px] text-brand-dark font-medium leading-normal break-words">
+                                                                                            {v.toString()}
+                                                                                        </p>
+                                                                                    </div>
+                                                                                )
+                                                                            ))}
+                                                                        </div>
+
+                                                                        {/* Attachments Section */}
+                                                                        {stage.attachments && stage.attachments.length > 0 && (
+                                                                            <div className="mt-6 pt-5 border-t border-dashed border-gray-200/80">
+                                                                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                                                                    <FileText size={12} /> Evidence & Documentation
+                                                                                </p>
+                                                                                <div className="flex flex-wrap gap-2">
+                                                                                    {stage.attachments.map((file: any, fIdx: number) => (
+                                                                                        <button
+                                                                                            key={fIdx}
+                                                                                            className="group/doc relative pl-2 pr-4 py-2 bg-white border border-gray-200/80 rounded-xl hover:border-brand-teal hover:shadow-md hover:translate-y-[-1px] transition-all flex items-start gap-3 text-left w-full sm:w-auto"
+                                                                                        >
+                                                                                            <div className={clsx(
+                                                                                                "w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center transition-colors",
+                                                                                                file.type === 'pdf' ? "bg-red-50 text-red-500 group-hover/doc:bg-red-100" : "bg-blue-50 text-blue-500 group-hover/doc:bg-blue-100"
+                                                                                            )}>
+                                                                                                {file.type === 'pdf' ? <FileText size={16} /> : <Eye size={16} />}
+                                                                                            </div>
+                                                                                            <div>
+                                                                                                <span className="text-xs font-bold text-gray-700 block group-hover/doc:text-brand-dark line-clamp-1">{file.name}</span>
+                                                                                                <span className="text-[9px] text-gray-400 font-medium">Verified • 2.4 MB</span>
+                                                                                            </div>
+                                                                                            <div className="absolute top-2 right-2 opacity-0 group-hover/doc:opacity-100 transition-opacity">
+                                                                                                <Download size={12} className="text-brand-teal" />
+                                                                                            </div>
+                                                                                        </button>
+                                                                                    ))}
+                                                                                </div>
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                )}
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                )
+                                                    </motion.div>
+                                                );
                                             })}
                                         </div>
                                     </div>
                                 )}
 
-                                {/* CONTENT FOR INDICATORS */}
-                                {modalType === 'indicator' && (
-                                    <div className="space-y-6">
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div className="bg-white p-4 rounded-xl border border-gray-200 text-center">
-                                                <p className="text-sm text-gray-500 mb-1">Current Value</p>
-                                                <p className="text-3xl font-bold text-brand-dark">{selectedItem.currentValue}<span className="text-sm font-normal text-gray-400 ml-1">{selectedItem.unit}</span></p>
-                                                <span className={clsx("text-xs font-bold flex items-center justify-center gap-1 mt-2", selectedItem.trend === 'up' ? "text-green-600" : "text-red-500")}>
-                                                    {selectedItem.trend === 'up' ? '▲' : '▼'} vs Last Period
-                                                </span>
-                                            </div>
-                                            <div className="bg-white p-4 rounded-xl border border-gray-200 text-center">
-                                                <p className="text-sm text-gray-500 mb-1">Target</p>
-                                                <p className="text-3xl font-bold text-gray-400">{selectedItem.targetValue}<span className="text-sm font-normal text-gray-300 ml-1">{selectedItem.unit}</span></p>
-                                                <p className="text-xs text-brand-teal mt-2">Progress: {Math.round((selectedItem.currentValue / selectedItem.targetValue) * 100)}%</p>
-                                            </div>
-                                        </div>
-                                        <div className="bg-white p-5 rounded-xl border border-gray-200">
-                                            <h3 className="font-bold text-brand-dark mb-3">Verification Details</h3>
-                                            <div className="grid grid-cols-2 gap-y-4 gap-x-8 text-sm">
-                                                <div><span className="block text-xs font-bold text-gray-400 uppercase">Methodology</span>{selectedItem.details.methodology}</div>
-                                                <div><span className="block text-xs font-bold text-gray-400 uppercase">Data Source</span>{selectedItem.details.dataSource}</div>
-                                                <div><span className="block text-xs font-bold text-gray-400 uppercase">Verified By</span>{selectedItem.details.verifiedBy}</div>
-                                                <div><span className="block text-xs font-bold text-gray-400 uppercase">Date</span>{selectedItem.details.verificationDate}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
+
 
                                 {/* CONTENT FOR PREVENTION & AWARENESS */}
                                 {(modalType === 'prevention' || modalType === 'awareness') && (

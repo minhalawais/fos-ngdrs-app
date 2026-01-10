@@ -6,29 +6,19 @@ import {
     LayoutDashboard,
     ClipboardCheck,
     Search,
-    Globe,
-    Smartphone,
-    BookOpen,
-    Database,
-    FileText,
-    Settings,
     ChevronRight,
-    Building,
     Users,
     MapPin,
     Home,
     LogOut,
-    Shield
+    FileText
 } from "lucide-react";
 import { clsx } from "clsx";
 
 const menuItems = [
     { href: '/ncsw', label: 'National Overview', icon: LayoutDashboard },
     { href: '/ncsw/approvals', label: 'Provincial Submissions', icon: ClipboardCheck },
-    { href: '/ncsw/cases', label: 'Case Explorer', icon: Search },
-    { href: '/ncsw/process-indicators', label: 'Process Indicators', icon: Database },
-    { href: '/ncsw/prevention', label: 'Prevention Actions', icon: Shield },
-    { href: '/ncsw/awareness', label: 'Awareness Actions', icon: BookOpen },
+    { href: '/ncsw/cases', label: 'National Registry', icon: Search },
 ];
 
 const adminItems = [

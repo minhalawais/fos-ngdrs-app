@@ -18,77 +18,56 @@ export const GBV_STAGES = [
         name: 'Complaint Received',
         required: true,
         order: 1,
-        fields: ['intakeChannel', 'officer', 'method', 'survivorStatus']
+        fields: ['intakeChannel', 'reportingDate', 'survivorAge', 'disabilityStatus', 'perpetratorType']
     },
     {
         code: 'INITIAL_SCREENING',
         name: 'Initial Screening & Safety Assessment',
         required: true,
         order: 2,
-        fields: ['riskLevel', 'urgentProtection', 'violenceType', 'consent']
+        fields: ['riskLevel', 'urgentProtection', 'violenceType', 'consentForm', 'referralType', 'recurrence', 'previousIncidents', 'servicesRequired']
     },
     {
-        code: 'POLICE_COMPLAINT',
+        code: 'POLICE_REGISTRATION',
         name: 'Police Complaint Registration',
         required: true,
         order: 3,
-        fields: ['policeStation', 'ioAssigned', 'complaintNo', 'offence']
+        fields: ['policeStation', 'ioAssigned', 'complaintNo', 'offenceType', 'incidentLocation', 'policeResponseTime']
     },
     {
         code: 'FIR_REGISTERED',
         name: 'FIR Registration',
-        required: false,
+        required: true,
         order: 4,
-        fields: ['firNo', 'firDate', 'sections', 'courtJurisdiction']
+        fields: ['firNo', 'firDate', 'sections', 'legalSections', 'firCopy']
     },
     {
         code: 'MEDICAL_EXAM',
         name: 'Medical Examination & Evidence Recording',
-        required: false,
+        required: true,
         order: 5,
-        fields: ['hospital', 'examDate', 'mloName', 'dnaReport', 'initialReport']
+        fields: ['hospital', 'examDate', 'mloName', 'dnaReport', 's164Statement']
     },
     {
-        code: 'INVESTIGATION',
-        name: 'Investigation & Trial Detail',
+        code: 'INVESTIGATION_CHARGE',
+        name: 'Investigation & Charge Sheet',
         required: true,
         order: 6,
-        fields: ['investigationStatus', 'daysPending', 'evidenceCollected', 'witnesses']
+        fields: ['arrestDate', 'evidenceType', 'chargeSheetDate', 'prosecutor', 'evidenceUsability']
     },
     {
         code: 'ARREST_REMAND',
         name: 'Arrest & Judicial Remand',
-        required: false,
+        required: true,
         order: 7,
-        fields: ['arrestDate', 'remandType', 'bailStatus', 'custody']
+        fields: ['arrestDate', 'remandType', 'remandDuration', 'jailLocation', 'bailStatus']
     },
     {
-        code: 'CHARGE_SHEET',
-        name: 'Charge Sheet Filing',
-        required: false,
+        code: 'DISPOSAL_JUDGMENT',
+        name: 'Disposal & Judgment (Convicted)',
+        required: true,
         order: 8,
-        fields: ['chargeSheetDate', 'prosecutor', 'chargesFramed']
-    },
-    {
-        code: 'TRIAL',
-        name: 'Trial Proceedings',
-        required: false,
-        order: 9,
-        fields: ['court', 'judge', 'hearingDates', 'adjournments']
-    },
-    {
-        code: 'ESCALATION',
-        name: 'Escalation & Proceeding History',
-        required: false,
-        order: 10,
-        fields: ['escalationReason', 'escalatedTo', 'escalationDate']
-    },
-    {
-        code: 'DISPOSAL',
-        name: 'Disposal & Judgment',
-        required: false,
-        order: 11,
-        fields: ['outcome', 'judgmentDate', 'judge', 'shortOrder', 'sentence']
+        fields: ['outcome', 'judgmentDate', 'judgeName', 'shortOrder', 'sentenceDetail']
     },
 ];
 
@@ -101,70 +80,56 @@ export const TFGBV_STAGES = [
         name: 'Complaint Received',
         required: true,
         order: 1,
-        fields: ['intakeChannel', 'officer', 'method', 'survivorStatus']
+        fields: ['intakeChannel', 'reportingDate', 'survivorAge', 'disabilityStatus', 'perpetratorType']
     },
     {
         code: 'INITIAL_SCREENING',
         name: 'Initial Screening & Safety Assessment',
         required: true,
         order: 2,
-        fields: ['riskLevel', 'urgentProtection', 'tfgbvType', 'consent']
+        fields: ['riskLevel', 'urgentProtection', 'tfgbvType', 'consentForm', 'referralType', 'recurrence', 'previousIncidents', 'servicesRequired']
     },
     {
-        code: 'DIGITAL_EVIDENCE',
+        code: 'CYBER_EVIDENCE',
         name: 'Digital Evidence Collection (SOP-2)',
         required: true,
         order: 3,
-        fields: ['screenshots', 'urls', 'metadata', 'hashGenerated', 'platformComplaintNo']
+        fields: ['screenshots', 'urls', 'metadata', 'hashCopies', 'platformComplaintNo']
     },
     {
-        code: 'CYBER_CRIME_REPORT',
+        code: 'CYBER_REPORT',
         name: 'FIA/Cyber Crime Report',
         required: true,
         order: 4,
-        fields: ['reportingUnit', 'reportNo', 'officerAssigned', 'reportDate']
+        fields: ['reportingUnit', 'reportNo', 'officerAssigned', 'forensicForensics']
     },
     {
         code: 'PLATFORM_TAKEDOWN',
         name: 'Platform Takedown Request',
-        required: true,  // Can be marked N/A
+        required: true,
         order: 5,
-        fields: ['platform', 'requestDate', 'responseTime', 'takedownStatus', 'reason']
+        fields: ['platform', 'requestDate', 'responseTime', 'takedownStatus', 'platformEvidence']
     },
     {
         code: 'FIR_REGISTERED',
         name: 'FIR Registration',
-        required: false,
+        required: true,
         order: 6,
-        fields: ['firNo', 'firDate', 'sections', 'courtJurisdiction']
+        fields: ['firNo', 'firDate', 'sections', 'legalSections', 'firCopy']
     },
     {
-        code: 'FORENSIC_ANALYSIS',
-        name: 'Digital Forensic Analysis',
-        required: false,
+        code: 'TRIAL_PROSECUTION',
+        name: 'Prosecution & Trial',
+        required: true,
         order: 7,
-        fields: ['forensicLab', 'deviceType', 'reportStatus', 'evidenceAccepted']
+        fields: ['court', 'judge', 'hearingDates', 'crossBorderRequest', 'mlatStatus']
     },
     {
-        code: 'INVESTIGATION',
-        name: 'Investigation',
+        code: 'DISPOSAL_JUDGMENT',
+        name: 'Disposal & Judgment (Convicted)',
         required: true,
         order: 8,
-        fields: ['investigationStatus', 'daysPending', 'crossBorderRequest', 'mlatStatus']
-    },
-    {
-        code: 'TRIAL',
-        name: 'Prosecution & Trial',
-        required: false,
-        order: 9,
-        fields: ['court', 'judge', 'hearingDates', 'evidencePresented']
-    },
-    {
-        code: 'DISPOSAL',
-        name: 'Disposal & Judgment',
-        required: false,
-        order: 10,
-        fields: ['outcome', 'judgmentDate', 'judge', 'shortOrder', 'sentence']
+        fields: ['outcome', 'judgmentDate', 'judgeName', 'shortOrder', 'sentenceDetail']
     },
 ];
 
@@ -185,70 +150,68 @@ export const STAGE_STATUS_OPTIONS = [
 // ============================================
 export const FIELD_LABELS: Record<string, string> = {
     intakeChannel: 'Intake Channel',
-    officer: 'Receiving Officer',
-    method: 'Reporting Method',
-    survivorStatus: 'Survivor Status',
-    riskLevel: 'Risk Level',
-    urgentProtection: 'Urgent Protection Needed',
-    violenceType: 'Violence Type',
+    reportingDate: 'Reporting Date',
+    survivorAge: 'Survivor Age Group',
+    disabilityStatus: 'Disability Status',
+    perpetratorType: 'Perpetrator Type',
+    riskLevel: 'Immediate Risk Level',
+    urgentProtection: 'Urgent Protection Required',
+    violenceType: 'Type of Violence',
     tfgbvType: 'TFGBV Sub-Type',
-    consent: 'Consent Given',
-    policeStation: 'Police Station',
+    consentForm: 'Complainant Consent (Form)',
+    referralType: 'Initial Referral',
+    recurrence: 'Recurrence Status',
+    previousIncidents: 'Previous Incidents (Qty)',
+    servicesRequired: 'Services Required',
+    policeResponseTime: 'Police Response Time',
+    policeStation: 'Police Station Name',
     ioAssigned: 'Inquiry Officer (IO)',
     complaintNo: 'Complaint Application No.',
-    offence: 'Applicable Legal Sections',
+    offenceType: 'Offence Type',
+    incidentLocation: 'Incident Location Type',
     firNo: 'FIR Number',
-    firDate: 'FIR Date',
-    sections: 'Sections Applied',
-    courtJurisdiction: 'Court Jurisdiction',
+    firDate: 'Date of FIR',
+    sections: 'PPC / PECA Sections',
+    legalSections: 'Applicable Legal Sections',
+    firCopy: 'FIR Copy Status',
     hospital: 'Hospital Name',
-    examDate: 'Examination Date',
-    mloName: 'MLO Name',
+    examDate: 'Medical Examination Date',
+    mloName: 'MLO Name (Verified)',
     dnaReport: 'DNA Report Status',
-    initialReport: 'Initial Medical Report',
-    investigationStatus: 'Investigation Status',
-    daysPending: 'Days Pending',
-    evidenceCollected: 'Evidence Collected',
-    witnesses: 'Witnesses Recorded',
+    s164Statement: 's.164 CPRC (Statement)',
     arrestDate: 'Arrest Date',
+    evidenceType: 'Key Evidence Type',
+    chargeSheetDate: 'Charge Sheet Submission',
+    prosecutor: 'Assigned Prosecutor',
+    evidenceUsability: 'Evidence Accepted by Court',
     remandType: 'Remand Type (Physical/Judicial)',
-    bailStatus: 'Bail Status',
-    custody: 'Custody Status',
-    chargeSheetDate: 'Charge Sheet Date',
-    prosecutor: 'Prosecutor Name',
-    chargesFramed: 'Charges Framed',
-    court: 'Court Name',
-    judge: 'Presiding Judge',
-    hearingDates: 'Hearing Dates',
-    adjournments: 'Number of Adjournments',
-    escalationReason: 'Escalation Reason',
-    escalatedTo: 'Escalated To',
-    escalationDate: 'Escalation Date',
-    outcome: 'Case Outcome',
-    judgmentDate: 'Judgment Date',
-    shortOrder: 'Short Order',
-    sentence: 'Sentence (if convicted)',
-    screenshots: 'Screenshots Captured',
-    urls: 'URLs/Links Documented',
+    remandDuration: 'Remand Duration (Days)',
+    jailLocation: 'Judicial Custody Location',
+    bailStatus: 'Bail Status / Outcome',
+    outcome: 'Final Case Outcome',
+    judgmentDate: 'Date of Final Decision',
+    judgeName: 'Decided By (Presiding Judge)',
+    shortOrder: 'Final Short Order',
+    sentenceDetail: 'Sentence Details (if Convicted)',
+    screenshots: 'Screenshots Captured (Qty)',
+    urls: 'URLs/Links (Verified)',
     metadata: 'Metadata Extracted',
-    hashGenerated: 'Hash Generated',
+    hashCopies: 'Hash Copies Generated',
     platformComplaintNo: 'Platform Complaint No.',
-    reportingUnit: 'Reporting Unit',
-    reportNo: 'Report Number',
-    officerAssigned: 'Officer Assigned',
-    reportDate: 'Report Date',
-    platform: 'Platform Name',
-    requestDate: 'Request Date',
-    responseTime: 'Response Time (hours)',
-    takedownStatus: 'Takedown Status',
-    reason: 'Reason (if rejected)',
-    forensicLab: 'Forensic Lab',
-    deviceType: 'Device Type',
-    reportStatus: 'Report Status',
-    evidenceAccepted: 'Evidence Accepted by Court',
-    crossBorderRequest: 'Cross-Border Request',
-    mlatStatus: 'MLAT Status',
-    evidencePresented: 'Evidence Presented',
+    reportingUnit: 'Cyber Crime Reporting Unit',
+    reportNo: 'Forensic Report Number',
+    officerAssigned: 'Cyber Officer Assigned',
+    forensicForensics: 'Digital Forensic Status',
+    platform: 'Online Platform',
+    requestDate: 'Takedown Request Date',
+    responseTime: 'Platform Response Time',
+    takedownStatus: 'Content Removal Status',
+    platformEvidence: 'Platform Response Evidence',
+    court: 'Trial Court Name',
+    judge: 'Special Court Judge',
+    hearingDates: 'Major Hearing Dates',
+    crossBorderRequest: 'MLAT / Cross-Border Request',
+    mlatStatus: 'MLAT Execution Status',
 };
 
 // ============================================
@@ -305,38 +268,54 @@ export const generateRecentActivity = () => [
 
 export const generateCaseRepository = () => {
     const caseTypes = ['GBV', 'TFGBV'] as const;
-    const gbvCodes = ['GB-PH', 'GB-SX', 'GB-FE', 'GB-EC'];
-    const tfgbvCodes = ['TF-A1', 'TF-A2', 'TF-A3', 'TF-A4', 'TF-A5'];
+    const gbvCodes = ['GB-PH (Physical)', 'GB-SX (Sexual)', 'GB-FE (Femicide)', 'GB-EC (Economic)'];
+    const tfgbvCodes = ['TF-A1 (Image Abuse)', 'TF-A2 (Stalking)', 'TF-A3 (Extortion)', 'TF-A4 (Deepfake)'];
 
     return Array.from({ length: 15 }).map((_, i) => {
-        const caseType = caseTypes[i % 2];
+        const caseType = i === 0 ? 'GBV' : (caseTypes[i % 2]); // First case is always the Ideal Case
         const crimeCode = caseType === 'GBV' ? gbvCodes[i % gbvCodes.length] : tfgbvCodes[i % tfgbvCodes.length];
         const stages = caseType === 'TFGBV' ? TFGBV_STAGES : GBV_STAGES;
 
-        // Generate timeline with varying completion states
-        const timeline = stages.slice(0, 5 + (i % 3)).map((stage, idx) => ({
-            id: `stage-${i}-${idx}`,
-            stageCode: stage.code,
-            stage: stage.name,
-            status: idx < 2 + (i % 3) ? 'Completed' : (idx === 2 + (i % 3) ? 'In Progress' : 'Pending'),
-            date: idx < 3 ? `2024-10-${(10 + idx).toString().padStart(2, '0')}` : 'N/A',
-            order: stage.order,
-            details: stage.fields.reduce((acc, field, fIdx) => ({
-                ...acc,
-                [field]: getMockFieldValue(field, i, idx)
-            }), {})
-        }));
+        // Force first case to be "Convicted" (Ideal Path)
+        const isIdeal = i === 0;
+
+        // Generate timeline with all 8 stages
+        const timeline = stages.map((stage, idx) => {
+            const isCompleted = isIdeal || idx < 3 + (i % 4);
+            const isInProgress = !isIdeal && idx === 3 + (i % 4);
+
+            return {
+                id: `stage-${i}-${idx}`,
+                stageCode: stage.code,
+                stage: stage.name,
+                status: isCompleted ? 'Completed' : (isInProgress ? 'In Progress' : 'Pending'),
+                date: isCompleted ? `2024-01-${(10 + idx).toString().padStart(2, '0')}` : 'N/A',
+                order: stage.order,
+                details: stage.fields.reduce((acc, field) => ({
+                    ...acc,
+                    [field]: getMockFieldValue(field, i, idx)
+                }), {}),
+                attachments: isCompleted ? [
+                    { name: `${stage.name} Document.pdf`, type: 'pdf', url: '#' },
+                    { name: `Evidence_Snapshot_${idx + 1}.jpg`, type: 'image', url: '#' }
+                ] : []
+            };
+        });
 
         return {
             id: generateCaseId(caseType, 100 + i),
+            caseId: generateCaseId(caseType, 100 + i),
             caseType,
             crimeCode,
-            survivor: ['Ayesha B.', 'Fatima Z.', 'Saima K.', 'Anonymous', 'Zainab M.'][i % 5],
-            date: `2024-10-${(10 + i).toString()}`,
+            survivor: isIdeal ? 'Ayesha Bibi' : ['Fatima Z.', 'Saima K.', 'Anonymous', 'Zainab M.'][i % 4],
+            date: `2024-01-10`,
             category: caseType === 'GBV' ? ['Physical', 'Sexual', 'Femicide', 'Economic'][i % 4] : 'TFGBV',
-            status: ['Reported', 'FIR Registered', 'Investigation', 'Trial', 'Closed'][i % 5],
-            risk: ['Low', 'Medium', 'High', 'Critical'][i % 4],
+            status: isIdeal ? 'Convicted' : (i % 3 === 0 ? 'FIR Registered' : (i % 2 === 0 ? 'Investigation' : 'Reported')),
+            risk: isIdeal ? 'Critical' : ['Low', 'Medium', 'High', 'Critical'][i % 4],
             lastUpdate: `${i + 2} days ago`,
+            completeness: isIdeal ? 100 : 40 + (i * 10) % 60,
+            province: 'Punjab',
+            district: 'Lahore',
             timeline
         };
     });
@@ -345,21 +324,69 @@ export const generateCaseRepository = () => {
 // Helper to generate realistic mock field values
 const getMockFieldValue = (field: string, caseIdx: number, stageIdx: number): string => {
     const mockValues: Record<string, string[]> = {
-        intakeChannel: ['Women Protection Center', 'Police Station', 'Helpline 1099', 'Walk-in'],
-        officer: ['Officer Sarah Khan', 'Officer Jameel', 'Const. Amna', 'SI Rehman'],
-        method: ['In-Person', 'Phone', 'Online Portal', 'Referral'],
-        survivorStatus: ['Stable', 'Requires Immediate Care', 'Under Protection'],
-        riskLevel: ['Low', 'Medium', 'High', 'Critical'],
-        urgentProtection: ['Yes', 'No', 'Under Assessment'],
-        violenceType: ['Physical', 'Sexual', 'Psychological', 'Economic'],
-        consent: ['Given', 'Pending', 'Refused'],
-        policeStation: ['Gulberg PS', 'Sadar PS', 'Model Town PS', 'Defence PS'],
-        ioAssigned: ['Inspector Jameel', 'SI Rehman', 'ASI Fatima', 'DSP Ahmed'],
-        firNo: [`FIR-${202400 + caseIdx}`, 'Pending'],
-        hospital: ['DHQ Hospital', 'Services Hospital', 'Jinnah Hospital'],
-        platform: ['WhatsApp', 'Facebook', 'TikTok', 'Instagram', 'X (Twitter)'],
-        takedownStatus: ['Requested', 'Completed', 'Rejected', 'Pending'],
-        outcome: ['Convicted', 'Acquitted', 'Withdrawn', 'Pending'],
+        intakeChannel: ['Police Station (Direct)', 'Women Protection Center (WPC)', 'National Helpline 1099', 'Punjab Police Pakistan App'],
+        reportingDate: ['2023-12-05', '2024-01-02', '2024-01-10'],
+        survivorAge: ['Adult (25-40)', 'Youth (18-24)', 'Minor (under 18)', 'Senior (60+)'],
+        disabilityStatus: ['None', 'Physical Disability', 'Speech/Hearing Impaired', 'Not Disclosed'],
+        perpetratorType: ['Intimate Partner', 'Family Member', 'Acquaintance', 'Stranger', 'Employer'],
+        riskLevel: ['Critical (Immediate Intervention)', 'High Risk', 'Medium', 'Low'],
+        urgentProtection: ['Yes - Shelter Provided', 'Yes - Protection Order Issued', 'No - Survivor in Safe Location'],
+        violenceType: ['Physical Abuse (PPC 324)', 'Sexual Assault (PPC 376)', 'Domestic Violence', 'Acid Attack (PPC 336B)'],
+        tfgbvType: ['Cyberstalking (PECA 24)', 'Non-consensual Image Sharing (PECA 21)', 'Deepfake Content', 'Online Harassment'],
+        consentForm: ['Signed & Witnessed', 'Digital Consent Recorded', 'Pending Verification'],
+        referralType: ['Medical/Forensic', 'Shelter/Safe Home', 'Legal Aid Services'],
+        recurrence: ['First Incident', 'Repeat Offence', 'Escalating Violence', 'Chronic History'],
+        previousIncidents: ['0', '1', '2', '3+'],
+        servicesRequired: ['Medical, Psychosocial', 'Legal Aid, Shelter', 'Medical, Legal, Digital Forensics', 'Psychosocial Only'],
+        policeResponseTime: ['< 30 Mins', '1-2 Hours', '24 Hours', '> 48 Hours'],
+        policeStation: ['Civil Lines PS', 'Sadar PS', 'Model Town PS', 'Defence PS', 'Women PS Lahore'],
+        ioAssigned: ['Inspector Muhammad Sharif', 'SI Nasir Ahmed', 'ASI Amna Khan', 'SI Rabia Zafar'],
+        complaintNo: [`APP-2024-${1000 + caseIdx}`, `REG-PB-${2000 + caseIdx}`],
+        offenceType: ['PPC 324 / 354', 'PPC 376 / 506', 'PECA 2016 Sec 21'],
+        incidentLocation: ['Residence', 'Public Space', 'Workplace', 'Online Platform'],
+        firNo: [`FIR-${2024}-${300 + caseIdx}`, 'FIR-LHR-2024-045'],
+        firDate: ['2024-01-05', '2024-01-12', '2024-01-18'],
+        sections: ['PPC 376, 506-II', 'PPC 324, 337-A', 'PECA 21, 24'],
+        legalSections: ['PPC 376/506', 'PPC 324', 'PECA 2016'],
+        firCopy: ['Uploaded - Digital Scan', 'Certified Copy in File'],
+        hospital: ['Mayo Hospital Lahore', 'Jinnah Hospital', 'General Hospital'],
+        examDate: ['2024-01-06', '2024-01-13', '2024-01-19'],
+        mloName: ['Dr. Fatima Aziz (WMLO)', 'Dr. Sarah Ahmed', 'Dr. Noreen Malik'],
+        dnaReport: ['Collected - Sent to Forensic Lab', 'Report Received - Positive Match', 'Pending'],
+        s164Statement: ['Recorded before Magistrate', 'Scheduled for 2024-01-25', 'N/A'],
+        arrestDate: ['2024-01-10', '2024-01-20', '2024-01-28'],
+        evidenceType: ['Medical Report + Witness Testimony', 'Digital Forensic Metadata', 'CCTV Footage + DNA'],
+        chargeSheetDate: ['2024-01-25', '2024-02-05', 'Pending'],
+        prosecutor: ['Adv. Usman Ali', 'Adv. Mehak Sheikh', 'Adv. Khalid Mansoor'],
+        evidenceUsability: ['Accepted by Trial Court', 'Under Judicial Review', 'Challenged by Defence'],
+        remandType: ['Judicial Remand', 'Physical Remand (3 Days)', 'Physical Remand (7 Days)'],
+        remandDuration: ['14 Days', '3 Days', '7 Days'],
+        jailLocation: ['Central Jail Kot Lakhpat', 'Camp Jail Lahore', 'District Jail'],
+        bailStatus: ['Bail Rejected', 'Bail Postponed', 'In Custody'],
+        outcome: ['Convicted - 10 Years Imprisonment', 'Convicted - Life Sentence', 'Case in Trial'],
+        judgmentDate: ['2024-02-15', '2024-03-01', 'Pending'],
+        judgeName: ['Mr. Muhammad Sharif, ASJ', 'Justice Nasir Saeed', 'Ms. Rabia Ahmed, Magistrate'],
+        shortOrder: ['Conviction Awarded under Sec 376', 'Life Imprisonment + Fine', 'Rigorous Imprisonment'],
+        sentenceDetail: ['10 Years + PKR 100,000 Fine', 'Life Imprisonment', '7 Years'],
+        screenshots: ['15 Verified Screenshots', '8 Screenshots with Hash', '24 Digital Captures'],
+        urls: ['3 Active Links Documented', 'Archive.is links saved'],
+        metadata: ['EXIF Data Extracted', 'IP Logs Verified', 'Device ID Matched'],
+        hashCopies: ['SHA-256 Hashes Generated', 'Forensic Image Created'],
+        platformComplaintNo: [`TKD-FB-2024-${500 + caseIdx}`, `TKT-2401-${caseIdx}`],
+        reportingUnit: ['Cyber Crime Wing (CCW) Lahore', 'FIA Karachi Unit'],
+        reportNo: [`FORENSIC-${2024}-${100 + caseIdx}`, 'FIA-RPT-089'],
+        officerAssigned: ['SI Bilal Ahmed (Cyber)', 'Inspector Sana Khan'],
+        forensicForensics: ['Analysis Completed', 'Device in Lab', 'Report Signed'],
+        platform: ['Facebook / Meta', 'TikTok / ByteDance', 'WhatsApp', 'X (Twitter)', 'Instagram'],
+        requestDate: ['2024-01-05', '2024-01-10'],
+        responseTime: ['6 Hours', '24 Hours', '72 Hours'],
+        takedownStatus: ['Content Removed Successfully', 'Request Sent - Pending', 'Rejected by Platform'],
+        platformEvidence: ['Email Confirmation from Platform', 'Dashboard Screenshot'],
+        court: ['Special Court (Anti-Rape)', 'Session Court Lahore', 'Cyber Crime Court'],
+        judge: ['Mr. Justice Ali Khan', 'Ms. Justice Sarah Bibi'],
+        hearingDates: ['2024-02-01, 2024-02-10', '2024-02-15'],
+        crossBorderRequest: ['Required - MLAT Prepared', 'Not Required', 'MLAT Sent to US'],
+        mlatStatus: ['Awaiting US Dept of Justice Response', 'Execution Completed', 'N/A'],
     };
 
     if (mockValues[field]) {

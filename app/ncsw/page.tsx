@@ -31,13 +31,51 @@ import { clsx } from "clsx";
 // Brand Colors matching National Dashboard
 const BRAND_COLORS = {
     primary: "#1bd488",
+    primaryGradient: ["#1bd488", "#14b070"],
     teal: "#45828b",
     dark: "#055b65",
     soft: "#b2c9c5",
     red: "#ef4444",
+    redGradient: ["#ef4444", "#dc2626"],
     amber: "#f59e0b",
+    amberGradient: ["#f59e0b", "#d97706"],
     blue: "#3b82f6",
-    purple: "#8b5cf6"
+    purple: "#8b5cf6",
+    surface: "#f8fafb"
+};
+
+// Custom Tooltip component for a more professional look
+const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+        return (
+            <div className="bg-white/95 backdrop-blur-sm border border-brand-soft/30 p-4 rounded-xl shadow-xl shadow-brand-dark/5 ring-1 ring-black/5 animate-in fade-in zoom-in duration-200">
+                <p className="text-sm font-bold text-brand-dark mb-2 flex items-center gap-2">
+                    <MapPin size={14} className="text-brand-teal" />
+                    {label}
+                </p>
+                <div className="space-y-1.5">
+                    {payload.map((entry: any, index: number) => (
+                        <div key={`item-${index}`} className="flex items-center justify-between gap-4">
+                            <div className="flex items-center gap-2">
+                                <div className="w-2.5 h-2.5 rounded-full shadow-sm" style={{ backgroundColor: entry.fill.includes('url') ? entry.color : entry.fill }} />
+                                <span className="text-xs font-medium text-brand-teal">{entry.name}</span>
+                            </div>
+                            <span className="text-sm font-bold text-brand-dark">{entry.value.toLocaleString()}</span>
+                        </div>
+                    ))}
+                </div>
+                <div className="mt-3 pt-2 border-t border-brand-surface border-dashed">
+                    <div className="flex justify-between items-center text-[10px] text-gray-400">
+                        <span>Total Cases</span>
+                        <span className="font-bold text-brand-dark">
+                            {payload.reduce((sum: number, entry: any) => sum + entry.value, 0).toLocaleString()}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+    return null;
 };
 
 // Provincial submission data
@@ -311,23 +349,88 @@ export default function NCSWDashboardPage() {
                                 <BarChart
                                     data={provincialSubmissions}
                                     layout="horizontal"
-                                    margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                                    margin={{ top: 20, right: 10, left: 0, bottom: 0 }}
+                                    barGap={0}
                                 >
-                                    <CartesianGrid strokeDasharray="3 3" stroke="#e0e5e9" />
-                                    <XAxis dataKey="province" tick={{ fill: '#055b65', fontSize: 12, fontWeight: 600 }} />
-                                    <YAxis tick={{ fill: '#45828b', fontSize: 11 }} />
-                                    <Tooltip
-                                        contentStyle={{
-                                            backgroundColor: '#fff',
-                                            border: '1px solid #e0e5e9',
-                                            borderRadius: '12px',
-                                            boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-                                        }}
+                                    <defs>
+                                        <linearGradient id="barGradientApproved" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="0%" stopColor={BRAND_COLORS.primaryGradient[0]} />
+                                            <stop offset="100%" stopColor={BRAND_COLORS.primaryGradient[1]} />
+                                        </linearGradient>
+                                        <linearGradient id="barGradientPending" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="0%" stopColor={BRAND_COLORS.amberGradient[0]} />
+                                            <stop offset="100%" stopColor={BRAND_COLORS.amberGradient[1]} />
+                                        </linearGradient>
+                                        <linearGradient id="barGradientReturned" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="0%" stopColor={BRAND_COLORS.redGradient[0]} />
+                                            <stop offset="100%" stopColor={BRAND_COLORS.redGradient[1]} />
+                                        </linearGradient>
+                                        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                                            <feGaussianBlur in="SourceAlpha" stdDeviation="2" />
+                                            <feOffset dx="0" dy="2" result="offsetblur" />
+                                            <feComponentTransfer>
+                                                <feFuncA type="linear" slope="0.1" />
+                                            </feComponentTransfer>
+                                            <feMerge>
+                                                <feMergeNode />
+                                                <feMergeNode in="SourceGraphic" />
+                                            </feMerge>
+                                        </filter>
+                                    </defs>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                    <XAxis
+                                        dataKey="province"
+                                        tick={{ fill: '#64748b', fontSize: 11, fontWeight: 500 }}
+                                        axisLine={{ stroke: '#e2e8f0' }}
+                                        tickLine={false}
+                                        dy={10}
                                     />
-                                    <Legend />
-                                    <Bar dataKey="approved" name="Approved" stackId="a" fill={BRAND_COLORS.primary} radius={[0, 0, 0, 0]} />
-                                    <Bar dataKey="pending" name="Pending" stackId="a" fill={BRAND_COLORS.amber} radius={[0, 0, 0, 0]} />
-                                    <Bar dataKey="returned" name="Returned" stackId="a" fill={BRAND_COLORS.red} radius={[4, 4, 0, 0]} />
+                                    <YAxis
+                                        tick={{ fill: '#94a3b8', fontSize: 10 }}
+                                        axisLine={false}
+                                        tickLine={false}
+                                        tickFormatter={(value) => value >= 1000 ? `${(value / 1000).toFixed(1)}k` : value}
+                                    />
+                                    <Tooltip
+                                        content={<CustomTooltip />}
+                                        cursor={{ fill: 'rgba(203, 213, 225, 0.15)', radius: 8 }}
+                                    />
+                                    <Legend
+                                        verticalAlign="bottom"
+                                        align="center"
+                                        iconType="circle"
+                                        iconSize={8}
+                                        wrapperStyle={{ paddingTop: '20px', fontSize: '12px', fontWeight: 600, color: '#475569' }}
+                                    />
+                                    <Bar
+                                        dataKey="approved"
+                                        name="Approved"
+                                        stackId="a"
+                                        fill="url(#barGradientApproved)"
+                                        radius={[0, 0, 0, 0]}
+                                        barSize={45}
+                                        animationDuration={1500}
+                                        animationBegin={0}
+                                    />
+                                    <Bar
+                                        dataKey="pending"
+                                        name="Pending"
+                                        stackId="a"
+                                        fill="url(#barGradientPending)"
+                                        radius={[0, 0, 0, 0]}
+                                        animationDuration={1500}
+                                        animationBegin={200}
+                                    />
+                                    <Bar
+                                        dataKey="returned"
+                                        name="Returned"
+                                        stackId="a"
+                                        fill="url(#barGradientReturned)"
+                                        radius={[6, 6, 0, 0]}
+                                        animationDuration={1500}
+                                        animationBegin={400}
+                                        style={{ filter: 'url(#shadow)' }}
+                                    />
                                 </BarChart>
                             </ResponsiveContainer>
                         </div>
