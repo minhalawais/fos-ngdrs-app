@@ -341,7 +341,7 @@ export const generateProvincialSummary = () => [
 // Process Indicators Data (District Submissions)
 // ============================================
 export const INDICATOR_CATEGORIES = [
-    'A. Prevention',
+    'A. Prevention Measures',
     'B. Protection & Support',
     'C. Justice & Accountability'
 ];
@@ -583,6 +583,67 @@ export const generateAwarenessSubmissions = () => {
                 contactPerson: 'Sana Ahmed',
                 contactEmail: `awareness.${district.toLowerCase()}@${province.toLowerCase()}.gov.pk`,
                 contactPhone: '0321-7654321'
+            }
+        };
+    });
+};
+
+// ============================================
+// Protection & Support Data
+// ============================================
+export const PROTECTION_TYPES = [
+    'Shelter Occupancy Report',
+    'Helpline Call Logs',
+    'Medico-Legal Unit Report',
+    'Psychosocial Support Stats',
+    'Police Women Desk Report',
+    'Legal Aid Services Log',
+    'Rehabilitation Center Report'
+];
+
+export const generateProtectionSubmissions = () => {
+    const statuses = ['Pending Review', 'Under Review', 'Approved', 'Returned', 'Needs Clarification'];
+    const provinces = ['Punjab', 'Sindh', 'KPK', 'Balochistan'];
+    const districts = {
+        'Punjab': ['Lahore', 'Faisalabad', 'Multan', 'Rawalpindi'],
+        'Sindh': ['Karachi', 'Hyderabad', 'Sukkur'],
+        'KPK': ['Peshawar', 'Mardan', 'Abbottabad'],
+        'Balochistan': ['Quetta', 'Gwadar']
+    };
+
+    return Array.from({ length: 20 }).map((_, i) => {
+        const province = provinces[i % provinces.length];
+        const districtList = districts[province as keyof typeof districts];
+        const district = districtList[i % districtList.length];
+        const status = statuses[i % statuses.length];
+        const reportType = PROTECTION_TYPES[i % PROTECTION_TYPES.length];
+
+        return {
+            id: `PRT-${PROVINCE_CODES[province] || province.substring(0, 2).toUpperCase()}-${district.substring(0, 3).toUpperCase()}-2401-${(4000 + i).toString().padStart(4, '0')}`,
+            title: `${reportType} - ${district}`,
+            type: reportType,
+            province,
+            district,
+            submittedBy: `${district} District Portal`,
+            submittedOn: `2024-01-${(4 + (i % 12)).toString().padStart(2, '0')}`,
+            status,
+            priority: i % 6 === 0 ? 'High' : 'Normal',
+            beneficiaries: (50 + (i * 20)) * (i % 4 + 1),
+            capacityUtilization: Math.min(100, Math.floor(40 + Math.random() * 50)),
+            completeness: Math.floor(70 + Math.random() * 30),
+            flags: i % 5 === 0 ? ['Capacity mismatch detected'] : [],
+            details: {
+                description: `Monthly submission for ${reportType} in ${district}.`,
+                facilityName: `${district} ${reportType.split(' ')[0]} Center`,
+                totalCasesHandled: Math.floor(20 + Math.random() * 100),
+                referralsGiven: Math.floor(5 + Math.random() * 30),
+                referralsReceived: Math.floor(10 + Math.random() * 40),
+                staffOnDuty: Math.floor(5 + Math.random() * 15),
+                keyChallenges: ['Staff shortage', 'Funding delay', 'Infrastructure repair needed'][i % 3],
+                fundingStatus: i % 2 === 0 ? 'Released' : 'Pending',
+                attachments: ['monthly_log.pdf'],
+                contactPerson: 'Director Services',
+                contactEmail: `protection.${district.toLowerCase()}@${province.toLowerCase()}.gov.pk`
             }
         };
     });

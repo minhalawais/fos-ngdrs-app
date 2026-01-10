@@ -15,14 +15,9 @@ export default function NCSWLayout({
                 {/* Top Header matching dashboard style */}
                 <header className="h-16 bg-white border-b border-brand-surface flex items-center justify-between px-6 sticky top-0 z-40 shadow-sm">
                     <div className="flex items-center gap-4">
-                        {/* Logos & Title */}
+                        {/* Logos & Title Removed as per request */}
                         <div className="flex items-center gap-4 mr-6">
-                            <img src="/GOP.png" alt="GOP Logo" className="h-14 w-auto object-contain" />
-                            <img src="/ncsw.png" alt="NCSW Logo" className="h-14 w-auto object-contain" />
-                            <div className="flex flex-col">
-                                <h1 className="text-lg font-bold text-brand-dark leading-tight">NCSW</h1>
-                                <p className="text-[10px] font-bold text-brand-teal uppercase tracking-widest">Government of Pakistan</p>
-                            </div>
+                            {/* Empty or just placeholder if needed, but request said remove */}
                         </div>
 
                         {/* Search Bar */}

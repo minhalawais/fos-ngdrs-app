@@ -44,6 +44,7 @@ import {
     generateDataUpdateRequests,
     generateCaseProgressRequests,
     generatePreventionSubmissions,
+    generateProtectionSubmissions,
     generateAwarenessSubmissions,
 } from "@/lib/ncsw-mock-data";
 import { FIELD_LABELS } from "@/lib/district-mock-data";
@@ -53,6 +54,7 @@ const submissions = generateProvincialSubmissions();
 const updateRequests = generateDataUpdateRequests();
 const initialCaseRequests = generateCaseProgressRequests();
 const initialPrevention = generatePreventionSubmissions();
+const initialProtection = generateProtectionSubmissions();
 const initialAwareness = generateAwarenessSubmissions();
 
 // Generate mock data for different tabs
@@ -141,22 +143,35 @@ const TABS = [
 export default function ProvincialSubmissionsPage() {
     const [caseRequests, setCaseRequests] = useState(initialCaseRequests);
     const [preventionSubmissions, setPreventionSubmissions] = useState(initialPrevention);
+    const [protectionSubmissions, setProtectionSubmissions] = useState(initialProtection);
     const [awarenessSubmissions, setAwarenessSubmissions] = useState(initialAwareness);
 
     // Modal State
     const [selectedItem, setSelectedItem] = useState<any>(null);
-    const [modalType, setModalType] = useState<'case' | 'prevention' | 'awareness' | null>(null);
+    const [modalType, setModalType] = useState<'case' | 'prevention' | 'protection' | 'awareness' | null>(null);
 
     const [activeTab, setActiveTab] = useState<TabType>('progress');
     const [searchTerm, setSearchTerm] = useState("");
     const [expandedStages, setExpandedStages] = useState<string[]>([]);
 
-    // Collapsible Sections State
+    // Collapsible Sections State (Deprecated for Tabbed Layout but kept for internal logic if needed)
     const [sectionsOpen, setSectionsOpen] = useState({
         cases: true,
         prevention: true,
+        protection: true,
         awareness: true
     });
+
+    // NEW: Main Tab State
+    type MainTab = 'cases' | 'prevention' | 'awareness' | 'protection';
+    const [activeMainTab, setActiveMainTab] = useState<MainTab>('cases');
+
+    const MAIN_TABS = [
+        { id: 'cases' as MainTab, label: 'Cases Submissions', icon: Scale, color: '#659CBF' },      // Primary
+        { id: 'prevention' as MainTab, label: 'Prevention Measures', icon: Shield, color: '#6EA969' }, // Secondary
+        { id: 'awareness' as MainTab, label: 'Awareness Measures', icon: BookOpen, color: '#D3A255' }, // Warning/Accent
+        { id: 'protection' as MainTab, label: 'Protection & Safety', icon: Stethoscope, color: '#BC5F75' } // Deep Accent
+    ];
 
     const toggleSection = (section: keyof typeof sectionsOpen) => {
         setSectionsOpen(prev => ({ ...prev, [section]: !prev[section] }));
@@ -182,11 +197,13 @@ export default function ProvincialSubmissionsPage() {
     const rejectedCount = caseRequests.filter(c => c.status === 'Rejected').length;
 
     // Status Handlers
-    const handleStatusChange = (id: string, newStatus: string, type: 'case' | 'prevention' | 'awareness') => {
+    const handleStatusChange = (id: string, newStatus: string, type: 'case' | 'prevention' | 'protection' | 'awareness') => {
         if (type === 'case') {
             setCaseRequests(prev => prev.map(c => c.id === id ? { ...c, status: newStatus } : c));
         } else if (type === 'prevention') {
             setPreventionSubmissions(prev => prev.map(p => p.id === id ? { ...p, status: newStatus } : p));
+        } else if (type === 'protection') {
+            setProtectionSubmissions(prev => prev.map(p => p.id === id ? { ...p, status: newStatus } : p));
         } else if (type === 'awareness') {
             setAwarenessSubmissions(prev => prev.map(a => a.id === id ? { ...a, status: newStatus } : a));
         }
@@ -198,7 +215,7 @@ export default function ProvincialSubmissionsPage() {
         setExpandedStages(prev => prev.includes(stageId) ? prev.filter(id => id !== stageId) : [...prev, stageId]);
     };
 
-    const openModal = (item: any, type: 'case' | 'prevention' | 'awareness') => {
+    const openModal = (item: any, type: 'case' | 'prevention' | 'protection' | 'awareness') => {
         setSelectedItem(item);
         setModalType(type);
         if (type === 'case') {
@@ -227,25 +244,45 @@ export default function ProvincialSubmissionsPage() {
                 </div>
             </div>
 
+            {/* TAB NAVIGATION */}
+            <div className="flex gap-4 p-1.5 bg-gray-100/50 rounded-2xl border border-white/50 backdrop-blur-sm">
+                {MAIN_TABS.map((tab) => (
+                    <button
+                        key={tab.id}
+                        onClick={() => setActiveMainTab(tab.id)}
+                        className={clsx(
+                            "flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-bold transition-all duration-300",
+                            activeMainTab === tab.id
+                                ? "bg-white shadow-md scale-[1.02]"
+                                : "text-gray-500 hover:bg-white/50 hover:text-gray-700"
+                        )}
+                        style={{
+                            color: activeMainTab === tab.id ? tab.color : undefined,
+                            borderTop: activeMainTab === tab.id ? `4px solid ${tab.color}` : '4px solid transparent'
+                        }}
+                    >
+                        <tab.icon size={18} className={clsx("transition-transform", activeMainTab === tab.id ? "scale-110" : "")} />
+                        {tab.label}
+                    </button>
+                ))}
+            </div>
+
             {/* SECTION 1: CASES SUBMISSION */}
-            <div className="bg-white rounded-3xl border border-brand-surface shadow-sm overflow-hidden">
-                <div
-                    className="p-6 border-b border-brand-surface flex justify-between items-center bg-gray-50/50 cursor-pointer"
-                    onClick={() => toggleSection('cases')}
-                >
-                    <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-full bg-brand-teal/10 flex items-center justify-center text-brand-teal">
-                            <Scale size={20} />
-                        </div>
-                        <div>
-                            <h2 className="text-lg font-bold text-brand-dark">Case Submissions</h2>
-                            <p className="text-xs text-gray-500">Manage individual GBV and TFGBV case files</p>
+            {/* SECTION 1: CASES SUBMISSION */}
+            {activeMainTab === 'cases' && (
+                <div className="bg-white rounded-3xl border border-brand-surface shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div className="p-6 border-b border-brand-surface flex justify-between items-center bg-[#659CBF]/5">
+                        <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-full bg-[#659CBF]/10 flex items-center justify-center text-[#659CBF]">
+                                <Scale size={20} />
+                            </div>
+                            <div>
+                                <h2 className="text-lg font-bold text-[#659CBF]">Case Submissions</h2>
+                                <p className="text-xs text-gray-500">Manage individual GBV and TFGBV case files</p>
+                            </div>
                         </div>
                     </div>
-                    {sectionsOpen.cases ? <ChevronUp className="text-gray-400" /> : <ChevronDown className="text-gray-400" />}
-                </div>
 
-                {sectionsOpen.cases && (
                     <div className="p-6 space-y-6">
                         {/* Stats as Tabs */}
                         <div className="grid grid-cols-4 gap-4">
@@ -402,30 +439,22 @@ export default function ProvincialSubmissionsPage() {
                             </table>
                         </div>
                     </div>
-                )}
-            </div>
-
-
-
-            {/* SECTION 3: PREVENTION SUBMISSION */}
-            <div className="bg-white rounded-3xl border border-brand-surface shadow-sm overflow-hidden">
-                <div
-                    className="p-6 border-b border-brand-surface flex justify-between items-center bg-gray-50/50 cursor-pointer"
-                    onClick={() => toggleSection('prevention')}
-                >
-                    <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
-                            <Shield size={20} />
-                        </div>
-                        <div>
-                            <h2 className="text-lg font-bold text-brand-dark">Prevention Measures Submission</h2>
-                            <p className="text-xs text-gray-500">Review community programs, training, and strategic initiatives</p>
+                </div>
+            )}      {/* SECTION 3: PREVENTION SUBMISSION */}
+            {activeMainTab === 'prevention' && (
+                <div className="bg-white rounded-3xl border border-brand-surface shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div className="p-6 border-b border-brand-surface flex justify-between items-center bg-[#6EA969]/5">
+                        <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-full bg-[#6EA969]/10 flex items-center justify-center text-[#6EA969]">
+                                <Shield size={20} />
+                            </div>
+                            <div>
+                                <h2 className="text-lg font-bold text-[#6EA969]">Prevention Measures Submission</h2>
+                                <p className="text-xs text-gray-500">Review community programs, training, and strategic initiatives</p>
+                            </div>
                         </div>
                     </div>
-                    {sectionsOpen.prevention ? <ChevronUp className="text-gray-400" /> : <ChevronDown className="text-gray-400" />}
-                </div>
 
-                {sectionsOpen.prevention && (
                     <div className="p-6 space-y-6">
                         {/* Prevention Stats */}
                         <div className="grid grid-cols-4 gap-4">
@@ -477,28 +506,93 @@ export default function ProvincialSubmissionsPage() {
                             </table>
                         </div>
                     </div>
-                )}
-            </div>
+                </div>
+            )}
 
-            {/* SECTION 4: AWARENESS SUBMISSION */}
-            <div className="bg-white rounded-3xl border border-brand-surface shadow-sm overflow-hidden">
-                <div
-                    className="p-6 border-b border-brand-surface flex justify-between items-center bg-gray-50/50 cursor-pointer"
-                    onClick={() => toggleSection('awareness')}
-                >
-                    <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-600">
-                            <BookOpen size={20} />
-                        </div>
-                        <div>
-                            <h2 className="text-lg font-bold text-brand-dark">Awareness Measures Submission</h2>
-                            <p className="text-xs text-gray-500">Review media campaigns, public service announcements, and events</p>
+            {/* SECTION 4: PROTECTION & SUPPORT SUBMISSION */}
+            {activeMainTab === 'protection' && (
+                <div className="bg-white rounded-3xl border border-brand-surface shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div className="p-6 border-b border-brand-surface flex justify-between items-center bg-[#BC5F75]/5">
+                        <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-full bg-[#BC5F75]/10 flex items-center justify-center text-[#BC5F75]">
+                                <Stethoscope size={20} />
+                            </div>
+                            <div>
+                                <h2 className="text-lg font-bold text-[#BC5F75]">Protection & Support Submission</h2>
+                                <p className="text-xs text-gray-500">Review shelters, helplines, and medico-legal reports</p>
+                            </div>
                         </div>
                     </div>
-                    {sectionsOpen.awareness ? <ChevronUp className="text-gray-400" /> : <ChevronDown className="text-gray-400" />}
-                </div>
 
-                {sectionsOpen.awareness && (
+                    <div className="p-6 space-y-6">
+                        {/* Protection Stats */}
+                        <div className="grid grid-cols-4 gap-4">
+                            {[
+                                { label: 'Total Reports', count: protectionSubmissions.length, icon: FileText, color: '#659CBF', bg: '#659CBF15' },
+                                { label: 'Verified', count: protectionSubmissions.filter(p => p.status === 'Approved').length, icon: CheckCircle, color: '#6EA969', bg: '#6EA96915' },
+                                { label: 'Under Review', count: protectionSubmissions.filter(p => p.status === 'Under Review').length, icon: Clock, color: '#D3A255', bg: '#D3A25515' },
+                                { label: 'Issues Flagged', count: protectionSubmissions.filter(p => p.status === 'Needs Clarification' || p.status === 'Returned').length, icon: AlertTriangle, color: '#EE8A7D', bg: '#EE8A7D15' },
+                            ].map((stat, idx) => (
+                                <div key={idx} className="bg-gray-50/50 rounded-2xl border border-brand-surface p-4 flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: stat.bg, color: stat.color }}><stat.icon size={20} /></div>
+                                    <div>
+                                        <p className="text-xl font-bold text-brand-dark">{stat.count}</p>
+                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{stat.label}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="rounded-2xl border border-brand-surface overflow-hidden">
+                            <table className="w-full text-left border-collapse">
+                                <thead className="bg-brand-surface/20 text-xs text-brand-dark/70 uppercase font-bold tracking-wider">
+                                    <tr>
+                                        <th className="px-6 py-4">ID</th>
+                                        <th className="px-6 py-4">Report Title</th>
+                                        <th className="px-6 py-4">Province / District</th>
+                                        <th className="px-6 py-4">Type</th>
+                                        <th className="px-6 py-4">Beneficiaries</th>
+                                        <th className="px-6 py-4">Status</th>
+                                        <th className="px-6 py-4 text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-brand-surface">
+                                    {protectionSubmissions.map((prot) => (
+                                        <tr key={prot.id} className="hover:bg-gray-50 transition-colors">
+                                            <td className="px-6 py-4 font-mono text-xs text-gray-500">{prot.id}</td>
+                                            <td className="px-6 py-4"><span className="font-medium text-brand-dark block max-w-xs truncate">{prot.title}</span></td>
+                                            <td className="px-6 py-4">
+                                                <div><span className="font-bold text-brand-dark">{prot.province}</span><p className="text-xs text-gray-400">{prot.district}</p></div>
+                                            </td>
+                                            <td className="px-6 py-4"><span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-600 uppercase">{prot.type.split(' ')[0]}</span></td>
+                                            <td className="px-6 py-4 text-sm text-gray-600">{prot.beneficiaries.toLocaleString()}</td>
+                                            <td className="px-6 py-4"><span className={clsx("px-2.5 py-1 rounded-md text-xs font-bold border", STATUS_STYLES[prot.status] || "bg-gray-100")}>{prot.status}</span></td>
+                                            <td className="px-6 py-4 text-right">
+                                                <button onClick={() => openModal(prot, 'protection')} className="p-2 hover:bg-brand-surface/50 rounded-lg text-brand-teal transition-colors"><Eye size={16} /></button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* SECTION 5: AWARENESS SUBMISSION */}
+            {activeMainTab === 'awareness' && (
+                <div className="bg-white rounded-3xl border border-brand-surface shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div className="p-6 border-b border-brand-surface flex justify-between items-center bg-[#D3A255]/5">
+                        <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-full bg-[#D3A255]/10 flex items-center justify-center text-[#D3A255]">
+                                <BookOpen size={20} />
+                            </div>
+                            <div>
+                                <h2 className="text-lg font-bold text-[#D3A255]">Awareness Measures Submission</h2>
+                                <p className="text-xs text-gray-500">Review media campaigns, public service announcements, and events</p>
+                            </div>
+                        </div>
+                    </div>
+
                     <div className="p-6 space-y-6">
                         {/* Awareness Stats */}
                         <div className="grid grid-cols-4 gap-4">
@@ -550,8 +644,8 @@ export default function ProvincialSubmissionsPage() {
                             </table>
                         </div>
                     </div>
-                )}
-            </div>
+                </div>
+            )}
 
             {/* UNIFIED MODAL */}
             <AnimatePresence>
@@ -584,6 +678,93 @@ export default function ProvincialSubmissionsPage() {
 
                             {/* Modal Content */}
                             <div className="flex-1 overflow-y-auto p-6 bg-brand-canvas space-y-6">
+                                {/* GENERIC CONTENT FOR NON-CASE TYPES */}
+                                {modalType !== 'case' && (
+                                    <div className="space-y-6">
+                                        <div className="bg-white p-6 rounded-3xl border border-brand-surface shadow-sm">
+                                            <h3 className="font-bold text-brand-dark uppercase tracking-widest text-xs mb-4 flex items-center gap-2">
+                                                <FileText size={16} className="text-brand-teal" />
+                                                Report Details
+                                            </h3>
+                                            <div className="grid grid-cols-2 gap-6">
+                                                <div>
+                                                    <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Submitted By</p>
+                                                    <p className="text-sm font-bold text-brand-dark">{selectedItem.submittedBy}</p>
+                                                    <p className="text-xs text-gray-500">{selectedItem.submittedOn}</p>
+                                                </div>
+                                                <div>
+                                                    <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Priority</p>
+                                                    <span className={clsx(
+                                                        "px-2 py-0.5 rounded text-[10px] font-bold uppercase",
+                                                        selectedItem.priority === 'High' ? "bg-red-100 text-red-600" : "bg-gray-100 text-gray-600"
+                                                    )}>{selectedItem.priority}</span>
+                                                </div>
+                                                {selectedItem.details && (
+                                                    <>
+                                                        <div className="col-span-2">
+                                                            <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Description</p>
+                                                            <p className="text-sm text-gray-700 leading-relaxed">{selectedItem.details.description}</p>
+                                                        </div>
+                                                        {selectedItem.details.metrics && (
+                                                            <div className="col-span-2 space-y-3">
+                                                                <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">Key Metrics</p>
+                                                                {selectedItem.details.metrics.map((m: any, idx: number) => (
+                                                                    <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+                                                                        <span className="text-xs font-bold text-gray-600">{m.name}</span>
+                                                                        <div className="flex items-center gap-2">
+                                                                            <span className="text-sm font-bold text-brand-dark">{m.current.toLocaleString()}</span>
+                                                                            <span className="text-[10px] text-gray-400">/ {m.target.toLocaleString()}</span>
+                                                                        </div>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        )}
+                                                        {/* Protection Specific Fields */}
+                                                        {modalType === 'protection' && (
+                                                            <>
+                                                                <div>
+                                                                    <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Facility Name</p>
+                                                                    <p className="text-sm font-bold text-brand-dark">{selectedItem.details.facilityName}</p>
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Total Cases</p>
+                                                                    <p className="text-lg font-black text-brand-dark">{selectedItem.details.totalCasesHandled}</p>
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Referrals In/Out</p>
+                                                                    <p className="text-sm font-bold text-gray-600">{selectedItem.details.referralsReceived} In / {selectedItem.details.referralsGiven} Out</p>
+                                                                </div>
+                                                            </>
+                                                        )}
+                                                    </>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* Review Actions */}
+                                        <div className="bg-white p-6 rounded-3xl border border-brand-surface shadow-sm sticky bottom-0">
+                                            <h3 className="font-bold text-brand-dark uppercase tracking-widest text-xs mb-4 flex items-center gap-2">
+                                                <CheckCircle size={16} className="text-brand-teal" />
+                                                Review Actions
+                                            </h3>
+                                            <div className="flex gap-3">
+                                                <button
+                                                    onClick={() => handleStatusChange(selectedItem.id, 'Approved', modalType as any)}
+                                                    className="flex-1 py-3 bg-brand-teal hover:bg-brand-dark text-white font-bold rounded-xl shadow-lg shadow-brand-teal/20 transition-all flex items-center justify-center gap-2"
+                                                >
+                                                    <CheckCircle size={18} /> Approve Submission
+                                                </button>
+                                                <button
+                                                    onClick={() => handleStatusChange(selectedItem.id, 'Needs Clarification', modalType as any)}
+                                                    className="flex-1 py-3 bg-white border border-brand-surface hover:bg-orange-50 text-brand-dark font-bold rounded-xl transition-all flex items-center justify-center gap-2"
+                                                >
+                                                    <AlertTriangle size={18} className="text-orange-500" /> Request Clarification
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
                                 {/* CONTENT FOR CASES */}
                                 {modalType === 'case' && (
                                     <div className="space-y-6">

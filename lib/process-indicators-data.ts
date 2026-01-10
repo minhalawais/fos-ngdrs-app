@@ -2,7 +2,7 @@
 export const generateProcessIndicatorsData = () => {
     return [
         {
-            category: "A. Prevention",
+            category: "A. Prevention Measures",
             items: [
                 { title: "Public Transport Harassment Prevention Drive", indicator: "Lahore Transport Company (LTC)", value: "11 Apr 2024", target: "Metro Bus Stations (Kalma Chowk & Shahdara), Lahore", color: "bg-teal-600", sub: "Prevention Drive", valueLabel: "Date", targetLabel: "Location" },
                 { title: "Cyberbullying Detection & Early Warning System", indicator: "Punjab School Education Dept", value: "Jan - Jun '24", target: "Govt Girls High School, Model Town, Peshawar", color: "bg-teal-600", sub: "Early Warning", valueLabel: "Duration", targetLabel: "Location" },

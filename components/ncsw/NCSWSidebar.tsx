@@ -34,7 +34,7 @@ export default function NCSWSidebar() {
         <aside className="w-64 bg-brand-dark text-white flex flex-col fixed inset-y-0 left-0 z-50 shadow-2xl">
             {/* Logo Section */}
             <div className="p-6 border-b border-white/10 flex items-center gap-3">
-                <div className="w-11 h-11 bg-white/10 rounded-xl flex items-center justify-center p-1.5 border border-white/10 shadow-lg">
+                <div className="w-11 h-11 bg-white rounded-xl flex items-center justify-center p-1.5 border border-white/10 shadow-lg">
                     <img src="/ncsw.png" alt="NCSW Logo" className="w-full h-full object-contain" />
                 </div>
                 <div>
