@@ -65,14 +65,21 @@ export const generatePlatformStats = () => [
 ];
 
 export const generateDistrictData = (): DistrictData[] => [
+    // Critical (>50) - Red
     { id: "d1", name: "Lahore", province: "Punjab", cases: 2500, population: 11000000, riskIndex: 85, redZone: true, lat: 31.5204, lng: 74.3587 },
-    { id: "d2", name: "Karachi Central", province: "Sindh", cases: 3200, population: 16000000, riskIndex: 92, redZone: true, lat: 24.8607, lng: 67.0011 },
+    { id: "d2", name: "Karachi Central", province: "Sindh", cases: 3200, population: 16000000, riskIndex: 72, redZone: true, lat: 24.8607, lng: 67.0011 },
     { id: "d3", name: "Peshawar", province: "KPK", cases: 1200, population: 4500000, riskIndex: 65, redZone: false, lat: 34.0151, lng: 71.5249 },
-    { id: "d4", name: "Quetta", province: "Balochistan", cases: 800, population: 2500000, riskIndex: 55, redZone: false, lat: 30.1798, lng: 66.9750 },
-    { id: "d5", name: "Islamabad", province: "Federal", cases: 450, population: 2000000, riskIndex: 40, redZone: false, lat: 33.6844, lng: 73.0479 },
-    { id: "d6", name: "Rawalpindi", province: "Punjab", cases: 1100, population: 5000000, riskIndex: 72, redZone: true, lat: 33.5651, lng: 73.0169 },
-    { id: "d7", name: "Faisalabad", province: "Punjab", cases: 1400, population: 7000000, riskIndex: 68, redZone: false, lat: 31.4504, lng: 73.1350 },
-    { id: "d8", name: "Multan", province: "Punjab", cases: 950, population: 4000000, riskIndex: 62, redZone: false, lat: 30.1575, lng: 71.5249 },
+    { id: "d4", name: "Rawalpindi", province: "Punjab", cases: 1100, population: 5000000, riskIndex: 55, redZone: false, lat: 33.5651, lng: 73.0169 },
+    // Warning (30-50) - Amber
+    { id: "d5", name: "Quetta", province: "Balochistan", cases: 600, population: 2500000, riskIndex: 48, redZone: false, lat: 30.1798, lng: 66.9750 },
+    { id: "d6", name: "Islamabad", province: "Federal", cases: 450, population: 2000000, riskIndex: 42, redZone: false, lat: 33.6844, lng: 73.0479 },
+    { id: "d7", name: "Faisalabad", province: "Punjab", cases: 500, population: 7000000, riskIndex: 38, redZone: false, lat: 31.4504, lng: 73.1350 },
+    { id: "d8", name: "Hyderabad", province: "Sindh", cases: 350, population: 3000000, riskIndex: 35, redZone: false, lat: 25.3960, lng: 68.3578 },
+    // Normal (<30) - Green
+    { id: "d9", name: "Multan", province: "Punjab", cases: 250, population: 4000000, riskIndex: 28, redZone: false, lat: 30.1575, lng: 71.5249 },
+    { id: "d10", name: "Sukkur", province: "Sindh", cases: 200, population: 1200000, riskIndex: 22, redZone: false, lat: 27.7052, lng: 68.8574 },
+    { id: "d11", name: "Bahawalpur", province: "Punjab", cases: 150, population: 800000, riskIndex: 18, redZone: false, lat: 29.3956, lng: 71.6836 },
+    { id: "d12", name: "Gilgit", province: "GB", cases: 80, population: 300000, riskIndex: 12, redZone: false, lat: 35.8819, lng: 74.4643 },
 ];
 
 export const generateFunnelData = () => [

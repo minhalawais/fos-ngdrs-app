@@ -61,15 +61,15 @@ export default function DashboardPage() {
     const [violenceType, setViolenceType] = useState("All Categories");
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-4">
             {/* Header & Filters Section */}
-            <div className="flex flex-col items-center justify-center text-center space-y-4 max-w-4xl mx-auto pt-8">
+            <div className="flex flex-col items-center justify-center text-center space-y-3 max-w-4xl mx-auto pt-4">
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <h1 className="text-4xl md:text-5xl font-heading font-black text-brand-dark tracking-tight mb-2" style={{ whiteSpace: 'nowrap' }}>
+                    <h1 className="text-4xl md:text-5xl font-heading font-black text-brand-dark tracking-tight mb-1" style={{ whiteSpace: 'nowrap' }}>
                         National GBV & TFGBV Monitoring Dashboard
                     </h1>
                 </motion.div>
@@ -134,11 +134,11 @@ export default function DashboardPage() {
             </div>
 
             {/* Main Content Sections */}
-            <div className="space-y-8 pb-12">
+            <div className="space-y-6 pb-8">
                 <OverviewSection />
                 <DemographicsSection />
-                <ProcessIndicatorsSection />
                 <GeospatialSection />
+                <ProcessIndicatorsSection />
                 <JusticeSection />
                 <ServicesSection />
                 <PlatformSection />

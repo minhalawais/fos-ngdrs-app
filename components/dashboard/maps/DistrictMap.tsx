@@ -1,11 +1,23 @@
 
 "use client";
 
+import { useMemo } from "react";
 import { MapContainer, TileLayer, CircleMarker, Popup, Tooltip as LeafletTooltip } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { generateDistrictData, DistrictData } from "@/lib/mock-data";
 
-const data = generateDistrictData();
+const baseData = generateDistrictData();
+
+// Simple hash function to create consistent but different values based on filter
+function hashCode(str: string): number {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash;
+    }
+    return Math.abs(hash);
+}
 
 export default function DistrictMap({ filter }: { filter?: string }) {
     const position: [number, number] = [30.3753, 69.3451]; // Centered on Pakistan
@@ -14,6 +26,26 @@ export default function DistrictMap({ filter }: { filter?: string }) {
         [23.6, 60.8], // Southwest
         [37.1, 77.9]  // Northeast
     ];
+
+    // Generate filtered data based on filter value
+    const data = useMemo(() => {
+        if (!filter || filter === 'all') return baseData;
+
+        return baseData.map((district, idx) => {
+            // Use filter string to create variation in data, but preserve risk distribution
+            const seed = hashCode(filter + district.id);
+            const multiplier = 0.7 + (seed % 60) / 100; // Range: 0.7 - 1.3 (preserves more variety)
+            const cases = Math.round(district.cases * multiplier);
+            const riskIndex = Math.min(100, Math.max(10, Math.round(district.riskIndex * multiplier)));
+
+            return {
+                ...district,
+                cases,
+                riskIndex,
+                redZone: riskIndex > 70
+            };
+        });
+    }, [filter]);
 
     return (
         <div className="h-[600px] w-full rounded-xl overflow-hidden border border-brand-surface shadow-md relative z-0">
@@ -35,7 +67,11 @@ export default function DistrictMap({ filter }: { filter?: string }) {
                         key={district.id}
                         center={[district.lat, district.lng]}
                         radius={Math.sqrt(district.cases) / 2} // Scale radius by cases
-                        fillColor={district.redZone ? "#ef4444" : district.riskIndex > 50 ? "#f59e0b" : "#1bd488"}
+                        fillColor={
+                            district.riskIndex > 50 ? "#ef4444" :  // Critical - Red
+                                district.riskIndex > 30 ? "#f59e0b" :  // Warning - Amber
+                                    "#10b981"                               // Normal - Emerald
+                        }
                         color={district.redZone ? "#b91c1c" : "#055b65"}
                         weight={1}
                         opacity={0.8}
@@ -72,12 +108,12 @@ export default function DistrictMap({ filter }: { filter?: string }) {
             </MapContainer>
 
             {/* Legend Override */}
-            <div className="absolute bottom-6 right-6 bg-white p-4 rounded-lg shadow-lg border border-brand-surface z-[1000] text-sm">
-                <h4 className="font-bold mb-2">Risk Levels</h4>
+            <div className="absolute bottom-20 right-6 bg-white/95 backdrop-blur-sm p-4 rounded-xl shadow-lg border border-brand-surface z-[1000] text-sm">
+                <h4 className="font-bold mb-3 text-brand-dark text-xs uppercase tracking-wider">Risk Levels</h4>
                 <div className="space-y-2">
-                    <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-red-500"></div> Critical (&gt;50/100k)</div>
-                    <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-amber-500"></div> Warning</div>
-                    <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-primary-500"></div> Normal</div>
+                    <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-red-500 shadow-sm"></div><span className="text-xs">Critical (&gt;50/100k)</span></div>
+                    <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-amber-500 shadow-sm"></div><span className="text-xs">Warning</span></div>
+                    <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-emerald-500 shadow-sm"></div><span className="text-xs">Normal</span></div>
                 </div>
             </div>
         </div>

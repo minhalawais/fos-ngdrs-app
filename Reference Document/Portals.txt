@@ -1,0 +1,54 @@
+1. District Level Portal (Operational & Intake)
+Primary Goal: Standardized case entry, immediate service referral, and local operational tracking. This is where the "digital punching" occurs (SOP 1).
+
+Case Intake & Registration Module
+Interactive Form: SOP 1-aligned input fields (Survivor Name/CNIC for local use, Unique Case_ID, Date, District, Location_Type).
+Universal Taxonomy Dropdowns: Direct mapping to codes (GB-PH to GB-FE for physical; TF-A1 to TF-A9 for digital).
+TFGBV Forensics Checklist: Upload/Log screenshots, metadata, URLs, and platform complaint numbers (SOP 2).
+Service Referral & Linkage Module
+Service Tracker: Log when a survivor is referred to Medico-legal, PSS, or Shelter.
+Chain-of-Custody Monitor: Tracking if digital evidence was accepted or rejected by the court (Format C).
+Operational Dashboard
+Lethality Index: Real-time identification of high-risk cases (Campbell Protocol).
+Pendency Watch: Tracking cases stuck between "Reported" and "FIR" (Attrition Monitoring).
+Reporting & Compliance
+Auto-Sheet Generator: One-click generation of Template A (District Consolidation) and Format B (Excel Worksheet).
+Data Triangulation Checklist: Tool for focal points to verify data against Police/Shelter records before submission (SOP 3).
+2. Provincial Level Portal (Aggregation & Coordination)
+Primary Goal: Monitoring province-wide trends, managing district performance, and coordinating with the Chief Secretary.
+
+Provincial Aggregation Dashboard
+District Leaderboard: Ranking districts on reporting compliance, response times, and conviction rates.
+Provincial GIS Heatmap: Aggregated risk mapping to identify district-border clusters.
+Compliance & Audit Module
+Submission Status Tracker: Monitoring the 10th of the month deadline for all districts.
+Automated Quality Flagging: System for sending missing/incorrect data back to districts within 72 hours (SOP 5).
+Institutional Capacity Module
+Specialized Units Directory: Status and SOP compliance of Provincial Women Development Depts and Cyber Crime units.
+Resource Gap Analysis: Identifying districts with service provision gaps (Format A, Field 122).
+Escalation Workflow
+Chief Secretary Briefing: Auto-generation of quarterly consolidated reports for the Provincial Cabinet.
+Red Zone Management: Monitoring the 72-hour emergency alerts for districts with >25% increase in violence.
+3. NCSW Governance Portal (Policy & Global Compliance)
+Primary Goal: National evidence-based policy, international treaty reporting (CEDAW, GSP+), and platform accountability.
+
+National Strategic Dashboard
+Outcome Indicators: National Femicide ratios, AI-enabled abuse prevalence, and Productivity loss (% GDP impact).
+Case Attrition Funnel: Visualizing the drop-off from Report → FIR → Prosecution → Conviction (National scale).
+Global Treaty Compliance Module
+CEDAW/SDG 5 Tracker: Mapping dashboard data directly to international reporting obligations.
+Institutional Framework Score: Scored review of GBV legal coverage (0–5) and specialized unit operationality.
+TFGBV Platform Accountability Module
+Platform Transparency Leaderboard: Comparative performance (Meta vs. TikTok vs. X) on takedown response times.
+Evidence Acceptance Analytics: Tracking national failure rates of digital evidence in courts.
+Strategic Prevention Tracker
+Education Impact: Monitoring the "Curriculum Alignment Index" and "Media Literacy Reach."
+Workforce Compliance: Tracking companies with anti-harassment systems (ILO 190).
+Public Transparency Engine
+Annual Report Generator: Automating the "Annual GBV & TFGBV Data Transparency Report" required by the circular.
+Data Governance & Security Architecture
+Layer	Data Privacy	Retention	Responsibility
+District	PII Enabled: Full survivor details for case management.	Active Case Life	District Focal Point
+Province	PII Masked: Only Year, District, and Case ID for auditing.	5 Years	Provincial WDD / WPC
+NCSW	Anonymized: Aggregate trends and pattern summaries only.	Permanent (Policy Use)	NCSW Data Unit
+[!IMPORTANT] Technical Implementation Note: All three portals should be connected via a secure API bridge that scrubs PII (Personally Identifiable Information) automatically as data moves from District to National levels, ensuring compliance with SOP 4.

@@ -33,20 +33,20 @@ const CATEGORY_THEMES = [
 
 const NewIndicatorCard = ({ item, themeColor }: { item: any, themeColor: string }) => {
     return (
-        <div className="group relative w-full h-[180px] rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col border"
+        <div className="group relative w-full h-[160px] rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col border"
             style={{ backgroundColor: PALETTE.lightest, borderColor: PALETTE.light }}>
 
             {/* Top Colored Ribbon - Slim Professional Look */}
             <div className="h-1.5 w-full relative" style={{ background: `linear-gradient(90deg, ${themeColor} 0%, ${themeColor}dd 100%)` }} />
 
             {/* Content Body */}
-            <div className="flex-1 px-5 py-4 flex flex-col justify-between pt-5">
+            <div className="flex-1 px-4 py-3 flex flex-col justify-between pt-4">
                 <div>
                     <h4 className="text-base font-bold text-brand-dark leading-tight mb-1">{item.title}</h4>
                     <p className="text-xs font-medium uppercase tracking-wide opacity-80" style={{ color: PALETTE.tealMedium }}>{item.indicator}</p>
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-2">
                     <div className="flex items-end justify-between border-b pb-2" style={{ borderColor: PALETTE.light }}>
                         <div className="flex flex-col">
                             <span className="text-[10px] font-semibold uppercase" style={{ color: PALETTE.muted }}>Current</span>
@@ -77,7 +77,7 @@ const NewIndicatorCard = ({ item, themeColor }: { item: any, themeColor: string 
 
 export default function ProcessIndicatorsSection() {
     return (
-        <section className="space-y-6 py-4">
+        <section className="space-y-4 py-2">
             <div className="flex items-center justify-between px-2">
                 <div className="flex items-center gap-3">
                     <div className="p-2.5 bg-gradient-to-br from-brand-dark to-brand-teal rounded-xl shadow-lg shadow-brand-teal/20">
@@ -90,30 +90,40 @@ export default function ProcessIndicatorsSection() {
                 </div>
             </div>
 
-            {/* Tight vertical stack with minimal gap */}
-            <div className="flex flex-col gap-1 px-2 pt-2">
+            {/* Overhauled Layout matching reference image */}
+            <div className="flex flex-col gap-4 px-2 pt-2">
                 {indicatorsData.map((category, idx) => {
                     const sectionColor = CATEGORY_THEMES[idx % CATEGORY_THEMES.length];
 
                     return (
-                        <div key={idx} className="flex gap-4 w-full relative">
-                            {/* Solid Vertical Side Strip */}
-                            <div className={clsx(
-                                "w-8 rounded-lg flex items-center justify-center relative overflow-hidden shrink-0 self-stretch"
-                            )} style={{ backgroundColor: sectionColor }}>
-                                <h3 className="text-xs font-black text-white whitespace-nowrap uppercase tracking-[0.15em] w-max vertical-text"
-                                    style={{ transform: "rotate(-90deg)" }}>
+                        <div key={idx} className="group relative w-full rounded-[32px] border border-brand-surface/80 bg-white shadow-sm overflow-hidden flex flex-col md:flex-row min-h-[220px]">
+                            {/* Vertical Category Strip - Left Side */}
+                            <div className="md:w-10 w-full md:h-auto h-8 flex items-center justify-center relative overflow-hidden shrink-0"
+                                style={{ backgroundColor: sectionColor }}>
+                                <h3 className="text-[10px] font-bold text-white whitespace-nowrap uppercase tracking-[0.2em] w-max"
+                                    style={{ transform: "rotate(-180deg)", writingMode: "vertical-rl" }}>
                                     {category.category.split(". ")[1]}
                                 </h3>
                             </div>
 
-                            {/* Cards Container - Grid Layout for 4 items per row */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 w-full py-2">
-                                {category.items.map((item, itemIdx) => (
-                                    <div key={itemIdx} className="w-full">
-                                        <NewIndicatorCard item={item} themeColor={sectionColor} />
-                                    </div>
-                                ))}
+                            {/* Cards Container with Grid Background */}
+                            <div className="flex-1 p-4 relative overflow-hidden bg-white">
+                                {/* Grid Background Pattern */}
+                                <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
+                                    style={{
+                                        backgroundImage: `linear-gradient(${sectionColor} 1px, transparent 1px), linear-gradient(90deg, ${sectionColor} 1px, transparent 1px)`,
+                                        backgroundSize: '30px 30px'
+                                    }}
+                                />
+
+                                {/* Header for the specific section if needed, or just the grid */}
+                                <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                                    {category.items.map((item, itemIdx) => (
+                                        <div key={itemIdx} className="w-full">
+                                            <NewIndicatorCard item={item} themeColor={sectionColor} />
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     );

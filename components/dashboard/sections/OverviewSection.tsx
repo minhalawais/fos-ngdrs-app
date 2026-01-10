@@ -26,7 +26,7 @@ function TrapezoidFunnel({ data }: { data: typeof funnelData }) {
     const height = 400;
     const width = 400; // ViewBox width
     const maxWidth = 380; // Actual max width of the funnel shape - Expanded to fill card
-    const gap = 8;
+    const gap = 4;
     const stageHeight = (height - (gap * (data.length - 1))) / data.length;
     const minWidth = 100;
 
@@ -45,7 +45,7 @@ function TrapezoidFunnel({ data }: { data: typeof funnelData }) {
     ];
 
     return (
-        <div className="w-full flex justify-center py-4 h-[480px]">
+        <div className="w-full flex justify-center h-[420px]">
             <svg width="100%" height="100%" viewBox={`0 0 ${width} ${height}`} className="max-w-2xl overflow-visible">
                 <defs>
                     <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
@@ -203,18 +203,18 @@ function InteractiveDonutChart({
 
     return (
         <div className="h-full flex flex-col">
-            <h4 className="text-xs font-bold text-brand-teal uppercase tracking-wider opacity-70 mb-2 shrink-0">{title}</h4>
+            <h4 className="text-xs font-bold text-brand-teal uppercase tracking-wider opacity-70 mb-1 shrink-0">{title}</h4>
             <div className="flex-1 flex items-center min-h-0">
                 {/* Chart */}
-                <div className="flex-1 h-[200px]">
+                <div className="flex-1 h-[220px]">
                     <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
                             <Pie
                                 data={visibleData}
                                 cx="50%"
                                 cy="50%"
-                                innerRadius={50}
-                                outerRadius={activeIndex !== null ? 85 : 75}
+                                innerRadius={60}
+                                outerRadius={activeIndex !== null ? 100 : 90}
                                 paddingAngle={2}
                                 dataKey="value"
                                 nameKey="label"
@@ -386,7 +386,7 @@ const CustomAxisTick = ({ x, y, payload }: any) => {
 };
 
 // Chart Card Wrapper Component - Reusable within this section or globally if exported
-export function ChartCard({ title, subtitle, children, className, padding = "p-6" }: { title: string; subtitle?: string; children: React.ReactNode; className?: string; padding?: string }) {
+export function ChartCard({ title, subtitle, children, className, padding = "p-4" }: { title: string; subtitle?: string; children: React.ReactNode; className?: string; padding?: string }) {
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -404,7 +404,7 @@ export function ChartCard({ title, subtitle, children, className, padding = "p-6
             <div className="h-0.5 bg-gradient-to-r from-primary-500/50 via-brand-teal/30 to-transparent shrink-0" />
 
             <div className={`${padding} flex-1 flex flex-col min-h-0`}>
-                <div className="flex items-start justify-between mb-6">
+                <div className="flex items-start justify-between mb-0">
                     <div>
                         <h3 className="text-lg font-bold text-brand-dark">{title}</h3>
                     </div>
@@ -433,9 +433,9 @@ export default function OverviewSection() {
     );
 
     return (
-        <section id="overview" className="space-y-8 scroll-mt-28">
+        <section id="overview" className="space-y-4 scroll-mt-28">
             {/* KPI Row */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {kpis.map((kpi, i) => {
                     // Custom Card for Conviction Rate
                     if (kpi.id === "kpi-2") {
@@ -451,7 +451,7 @@ export default function OverviewSection() {
                                 <div className="relative bg-white rounded-2xl border border-red-200 shadow-sm overflow-hidden h-full flex flex-col group hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                                     <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-500 to-red-400" />
 
-                                    <div className="p-5 flex flex-col">
+                                    <div className="p-4 flex flex-col">
                                         {/* Top Stats */}
                                         <div className="flex justify-between items-start mb-4">
                                             <div className="flex items-center gap-3">
@@ -500,7 +500,7 @@ export default function OverviewSection() {
                                 <div className="bg-white rounded-2xl border border-red-200 shadow-sm h-full overflow-hidden hover:shadow-md transition-shadow relative group">
                                     <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-600 to-red-400" />
 
-                                    <div className="p-5 flex flex-col">
+                                    <div className="p-4 flex flex-col">
                                         {/* Top Stats */}
                                         <div className="flex justify-between items-start mb-4">
                                             <div className="flex items-center gap-3">
@@ -555,7 +555,7 @@ export default function OverviewSection() {
                                 <div className="bg-white rounded-2xl border border-primary-200 shadow-sm h-full overflow-hidden hover:shadow-md transition-shadow relative group">
                                     <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-500 to-brand-teal" />
 
-                                    <div className="p-5 flex flex-col h-full">
+                                    <div className="p-4 flex flex-col h-full">
                                         {/* Top Stats */}
                                         <div className="flex justify-between items-start mb-3">
                                             <div className="flex items-center gap-3">
@@ -607,13 +607,13 @@ export default function OverviewSection() {
             </div>
 
             {/* Charts Row 1: Comparison & Reporting */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
                 {/* Detailed Dual-Pillar Analysis - Vertical Stack */}
                 <ChartCard title="Category Wise Breakdown" subtitle="GBV vs TFGBV Distribution" className="lg:col-span-1">
-                    <div className="flex flex-col gap-4 h-[600px]">
+                    <div className="flex flex-col gap-2 h-[450px]">
                         {/* GBV Donut Chart */}
-                        <div className="flex-1 border-b border-dashed border-gray-200 pb-2">
+                        <div className="flex-1 border-b border-dashed border-gray-200">
                             <InteractiveDonutChart
                                 data={detailedBreakdown.gbv}
                                 title="GBV Categories"
@@ -632,9 +632,9 @@ export default function OverviewSection() {
 
                 {/* Case Attrition Pipeline - Middle Column */}
                 <ChartCard title="Case Attrition Pipeline" subtitle="Justice System Drop-off" className="lg:col-span-1">
-                    <div className="flex flex-col h-[600px] justify-center items-center">
+                    <div className="flex flex-col h-[460px] justify-center items-center">
                         <TrapezoidFunnel data={generateFunnelData()} />
-                        <div className="mt-4 flex items-center gap-2 text-sm text-red-600 font-bold bg-red-50 px-4 py-2 rounded-xl border border-red-100 max-w-max">
+                        <div className="mt-2 flex items-center gap-2 text-sm text-red-600 font-bold bg-red-50 px-4 py-2 rounded-xl border border-red-100 max-w-max">
                             <AlertCircle size={16} />
                             Critical Drop-off
                         </div>
@@ -642,7 +642,7 @@ export default function OverviewSection() {
                 </ChartCard>
 
                 {/* Right Column: Reporting Channels & Social Media Stack */}
-                <div className="lg:col-span-1 flex flex-col gap-4 h-[705px]">
+                <div className="lg:col-span-1 flex flex-col gap-3 h-[557px]">
 
                     {/* Reporting Channels Card */}
                     <ChartCard title="Reporting Channels" subtitle="" className="flex-1" padding="p-3">

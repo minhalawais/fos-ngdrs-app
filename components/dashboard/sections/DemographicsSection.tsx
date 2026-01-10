@@ -70,9 +70,9 @@ function StackedBarCard({
             {/* Top Gradient Strip */}
             <div className="h-0.5 bg-gradient-to-r from-primary-500/50 via-brand-teal/30 to-transparent" />
 
-            <div className="p-5 flex-1 flex flex-col">
+            <div className="p-4 flex-1 flex flex-col">
                 {/* Header */}
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-xl bg-brand-surface/50 flex items-center justify-center text-brand-teal group-hover:bg-brand-teal group-hover:text-white transition-colors">
                             <Icon size={20} />
@@ -88,7 +88,7 @@ function StackedBarCard({
                 </div>
 
                 {/* Stacked Bar Chart */}
-                <div className="h-14 mb-4">
+                <div className="h-14 mb-3">
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart
                             data={stackedData}
@@ -153,7 +153,7 @@ function StackedBarCard({
                 </div>
 
                 {/* Legend - Center Aligned & Clickable */}
-                <div className="flex flex-wrap justify-center gap-x-3 gap-y-1.5">
+                <div className="flex flex-wrap justify-center gap-x-3 gap-y-1">
                     {data.map((item, idx) => {
                         const isHidden = hiddenItems.has(item.name);
                         return (
@@ -189,8 +189,8 @@ function StackedBarCard({
 
 export default function DemographicsSection() {
     return (
-        <section className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <section className="space-y-4">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 <StackedBarCard
                     data={perpetratorData}
                     title="Cases by Perpetrator Type"
