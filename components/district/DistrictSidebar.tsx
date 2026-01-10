@@ -29,8 +29,8 @@ export default function DistrictSidebar() {
             {/* Header / Logo */}
             <div className="h-20 flex items-center px-6 border-b border-white/10 bg-black/10">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-primary-500 flex items-center justify-center text-brand-dark shadow-lg shadow-primary-500/20">
-                        <Building2 size={24} strokeWidth={2.5} />
+                    <div className="w-11 h-11 bg-white rounded-xl flex items-center justify-center p-1.5 border border-white/10 shadow-lg">
+                        <img src="/ncsw.png" alt="NCSW Logo" className="w-full h-full object-contain" />
                     </div>
                     <div className="flex flex-col">
                         <span className="font-bold text-lg leading-tight tracking-tight text-white">District Portal</span>

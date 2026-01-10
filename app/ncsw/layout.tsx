@@ -26,9 +26,6 @@ export default function NCSWLayout({
                 <header className="h-16 bg-white border-b border-brand-surface flex items-center justify-between px-6 sticky top-0 z-40 shadow-sm">
                     <div className="flex items-center gap-4">
                         {/* Logos & Title Removed as per request */}
-                        <div className="flex items-center gap-4 mr-6">
-                            {/* Empty or just placeholder if needed, but request said remove */}
-                        </div>
 
                         {/* Search Bar */}
                         <div className="relative">

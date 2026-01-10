@@ -8,6 +8,8 @@ import { clsx } from "clsx";
 
 // Section Imports
 import OverviewSection from "@/components/dashboard/sections/OverviewSection";
+import AdvancedAnalyticsSection from "@/components/dashboard/sections/AdvancedAnalyticsSection";
+
 import DemographicsSection from "@/components/dashboard/sections/DemographicsSection";
 import ProcessIndicatorsSection from "@/components/dashboard/sections/ProcessIndicatorsSection";
 import GeospatialSection from "@/components/dashboard/sections/GeospatialSection";
@@ -249,10 +251,14 @@ export default function DashboardPage() {
             {/* Main Content Sections */}
             <div className="space-y-6 pb-8">
                 <OverviewSection />
+
+
                 <DemographicsSection />
                 <GeospatialSection />
                 <ProcessIndicatorsSection />
+                <AdvancedAnalyticsSection />
                 <JusticeSection />
+
                 <ServicesSection />
                 <PlatformSection />
                 <ComplianceSection />

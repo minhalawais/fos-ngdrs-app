@@ -9,19 +9,22 @@ function DashboardNavbar() {
         <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-brand-surface shadow-sm">
             <div className="container mx-auto px-4 md:px-8">
                 <div className="flex items-center justify-between h-20">
-                    {/* Logo & Brand */}
-                    <Link href="/dashboard" className="flex items-center gap-4">
-                        <img src="/GOP.png" alt="GOP Logo" className="h-16 w-auto object-contain" />
-                        <img src="/ncsw.png" alt="NCSW Logo" className="h-16 w-auto object-contain" />
-                        <div className="flex flex-col">
-                            <span className="font-heading font-bold text-xl leading-none text-brand-dark tracking-tight">
-                                NCSW
-                            </span>
-                            <span className="text-[11px] font-bold text-brand-teal uppercase tracking-widest">
-                                Government of Pakistan
-                            </span>
-                        </div>
-                    </Link>
+                    {/* Logo & Brand Removed as per request */}
+                    <div className="flex items-center gap-4">
+                        <Link href="/ncsw" className="flex items-center gap-3 group">
+                            <div className="relative w-12 h-12">
+                                <img src="/GOP.png" alt="GOP Logo" className="w-full h-full object-contain" />
+                            </div>
+                            <div className="w-px h-8 bg-brand-surface/80" />
+                            <div className="relative w-12 h-12">
+                                <img src="/ncsw.png" alt="NCSW Logo" className="w-full h-full object-contain" />
+                            </div>
+                            <div className="hidden lg:flex flex-col">
+                                <span className="text-xl font-heading font-black text-brand-dark tracking-tight leading-none group-hover:text-brand-primary transition-colors">NCSW</span>
+                                <span className="text-[10px] font-bold text-brand-teal uppercase tracking-widest leading-none mt-1">Govt of Pakistan</span>
+                            </div>
+                        </Link>
+                    </div>
 
                     {/* Center Navigation */}
                     <div className="hidden xl:flex items-center gap-1 bg-brand-surface/30 p-1.5 rounded-xl border border-brand-surface/50">

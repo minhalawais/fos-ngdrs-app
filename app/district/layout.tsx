@@ -19,12 +19,7 @@ export default function DistrictLayout({
                 {/* Top Header */}
                 <header className="h-20 bg-white border-b border-brand-surface sticky top-0 z-40 px-8 flex items-center justify-between shadow-sm">
                     <div className="flex items-center gap-4">
-                        <img src="/GOP.png" alt="GOP Logo" className="h-16 w-auto object-contain" />
-                        <img src="/ncsw.png" alt="NCSW Logo" className="h-16 w-auto object-contain" />
-                        <div className="flex flex-col">
-                            <h1 className="text-xl font-bold text-brand-dark">NCSW</h1>
-                            <p className="text-[11px] font-bold text-brand-teal uppercase tracking-widest">Government of Pakistan</p>
-                        </div>
+                        {/* Logos & Title Removed as per request */}
                     </div>
 
                     <div className="flex items-center gap-4">

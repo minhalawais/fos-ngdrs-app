@@ -34,8 +34,8 @@ export default function ProvincialSidebar() {
             {/* Header */}
             <div className="p-6 border-b border-white/10">
                 <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-teal to-primary-500 flex items-center justify-center shadow-lg">
-                        <Shield size={24} className="text-white" />
+                    <div className="w-11 h-11 bg-white rounded-xl flex items-center justify-center p-1.5 border border-white/10 shadow-lg">
+                        <img src="/ncsw.png" alt="NCSW Logo" className="w-full h-full object-contain" />
                     </div>
                     <div>
                         <h1 className="font-bold text-lg leading-tight">Provincial Portal</h1>

@@ -93,7 +93,7 @@ export default function FullTimelinePage() {
                             <div className="flex items-center gap-3 mb-1">
                                 <h1 className="text-xl font-bold text-gray-900 tracking-tight">Case Timeline</h1>
                                 <span className="px-3 py-1 rounded-full bg-emerald-100/50 text-emerald-700 text-xs font-bold border border-emerald-200/60 flex items-center gap-1.5 shadow-sm">
-                                    <CheckCircle size={12} weight="fill" />
+                                    <CheckCircle size={12} className="fill-current" />
                                     {idealCase.status}
                                 </span>
                             </div>
@@ -247,7 +247,7 @@ export default function FullTimelinePage() {
                                     </h3>
                                 </div>
 
-                                <div className="p-3 bg-white relative max-h-[calc(100vh-320px)] overflow-y-auto custom-scrollbar">
+                                <div className="p-3 bg-white relative max-h-[calc(100vh-320px)] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                                     {/* Timeline Vertical Line */}
                                     <div className="absolute left-[35px] top-6 bottom-6 w-[2px] bg-gray-100">
                                         {/* Dynamic Gradient Bar */}
