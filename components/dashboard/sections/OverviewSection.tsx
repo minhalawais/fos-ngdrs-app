@@ -408,9 +408,7 @@ export function ChartCard({ title, subtitle, children, className, padding = "p-4
                     <div>
                         <h3 className="text-lg font-bold text-brand-dark">{title}</h3>
                     </div>
-                    <div className="w-8 h-8 rounded-lg bg-brand-surface/50 flex items-center justify-center opacity-50 group-hover:opacity-100 transition-opacity">
-                        <Activity size={16} className="text-brand-teal" />
-                    </div>
+
                 </div>
                 {children}
             </div>
@@ -632,12 +630,8 @@ export default function OverviewSection() {
 
                 {/* Case Attrition Pipeline - Middle Column */}
                 <ChartCard title="Case Attrition Pipeline" subtitle="Justice System Drop-off" className="lg:col-span-1">
-                    <div className="flex flex-col h-[460px] justify-center items-center">
+                    <div className="flex flex-col h-[460px] justify-center items-center mt-8">
                         <TrapezoidFunnel data={generateFunnelData()} />
-                        <div className="mt-2 flex items-center gap-2 text-sm text-red-600 font-bold bg-red-50 px-4 py-2 rounded-xl border border-red-100 max-w-max">
-                            <AlertCircle size={16} />
-                            Critical Drop-off
-                        </div>
                     </div>
                 </ChartCard>
 

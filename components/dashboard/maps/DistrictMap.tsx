@@ -108,7 +108,7 @@ export default function DistrictMap({ filter }: { filter?: string }) {
             </MapContainer>
 
             {/* Legend Override */}
-            <div className="absolute bottom-20 right-6 bg-white/95 backdrop-blur-sm p-4 rounded-xl shadow-lg border border-brand-surface z-[1000] text-sm">
+            <div className="absolute bottom-32 right-6 bg-white/95 backdrop-blur-sm p-4 rounded-xl shadow-lg border border-brand-surface z-[1000] text-sm">
                 <h4 className="font-bold mb-3 text-brand-dark text-xs uppercase tracking-wider">Risk Levels</h4>
                 <div className="space-y-2">
                     <div className="flex items-center gap-2"><div className="w-4 h-4 rounded-full bg-red-500 shadow-sm"></div><span className="text-xs">Critical (&gt;50/100k)</span></div>

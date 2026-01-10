@@ -82,9 +82,7 @@ function StackedBarCard({
                             <p className="text-[10px] text-brand-teal/70">{total.toLocaleString()} Total Cases</p>
                         </div>
                     </div>
-                    <div className="w-8 h-8 rounded-lg bg-brand-surface/30 flex items-center justify-center opacity-50 group-hover:opacity-100 transition-opacity">
-                        <Activity size={14} className="text-brand-teal" />
-                    </div>
+
                 </div>
 
                 {/* Stacked Bar Chart */}

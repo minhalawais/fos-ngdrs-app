@@ -3,6 +3,39 @@
 
 import { generateCaseRepository } from './district-mock-data';
 
+// Province and District codes for Case ID generation
+const DISTRICT_CODES: Record<string, string> = {
+    'Lahore': 'LHR',
+    'Faisalabad': 'FSD',
+    'Multan': 'MLT',
+    'Rawalpindi': 'RWP',
+    'Gujranwala': 'GJW',
+    'Sialkot': 'SKT',
+    'Bahawalpur': 'BWP',
+    'Sargodha': 'SGD',
+    'Sheikhupura': 'SKP',
+    'Jhang': 'JHG',
+    'Dera Ghazi Khan': 'DGK',
+    'Rahim Yar Khan': 'RYK',
+    'Kasur': 'KSR',
+    'Okara': 'OKR',
+    'Sahiwal': 'SHW',
+    'Karachi': 'KHI',
+    'Hyderabad': 'HYD',
+    'Sukkur': 'SKR',
+    'Peshawar': 'PSH',
+    'Quetta': 'QTA'
+};
+
+// Helper function to generate proper Case ID (Punjab = PB)
+const generateCaseId = (caseType: string, district: string, sequence: number): string => {
+    const typePrefix = caseType === 'TFGBV' ? 'TFG' : 'GBV';
+    const distCode = DISTRICT_CODES[district] || district.substring(0, 3).toUpperCase();
+    const yearMonth = '2401'; // January 2024
+    const seqNumber = sequence.toString().padStart(4, '0');
+    return `${typePrefix}-PB-${distCode}-${yearMonth}-${seqNumber}`;
+};
+
 // ============================================
 // Provincial KPIs
 // ============================================
@@ -47,19 +80,23 @@ export const generatePendingVerifications = () => {
     const districts = ['Lahore', 'Faisalabad', 'Multan', 'Rawalpindi', 'Gujranwala'];
     const reviewers = ['Dr. Amna Malik', 'Sarah Khan', 'Fatima Zahra', 'Unassigned'];
 
-    return Array.from({ length: 25 }).map((_, i) => ({
-        id: `VER-2024-${(1000 + i).toString()}`,
-        caseId: `CASE-2024-${(100 + i).toString()}`,
-        district: districts[i % districts.length],
-        caseType: i % 3 === 0 ? 'TFGBV' : 'GBV',
-        category: ['Physical', 'Sexual', 'TFGBV', 'Economic'][i % 4],
-        submittedOn: `2024-01-${(5 + (i % 5)).toString().padStart(2, '0')}`,
-        status: statuses[i % statuses.length],
-        priority: i % 5 === 0 ? 'Urgent' : 'Normal',
-        assignedTo: reviewers[i % reviewers.length],
-        flags: i % 3 === 0 ? ['Missing Medical Exam', 'FIR Delay'] : i % 4 === 0 ? ['Incomplete Services'] : [],
-        completeness: Math.floor(70 + Math.random() * 30),
-    }));
+    return Array.from({ length: 25 }).map((_, i) => {
+        const district = districts[i % districts.length];
+        const caseType = i % 3 === 0 ? 'TFGBV' : 'GBV';
+        return {
+            id: `VER-2024-${(1000 + i).toString()}`,
+            caseId: generateCaseId(caseType, district, 100 + i),
+            district,
+            caseType,
+            category: ['Physical', 'Sexual', 'TFGBV', 'Economic'][i % 4],
+            submittedOn: `2024-01-${(5 + (i % 5)).toString().padStart(2, '0')}`,
+            status: statuses[i % statuses.length],
+            priority: i % 5 === 0 ? 'Urgent' : 'Normal',
+            assignedTo: reviewers[i % reviewers.length],
+            flags: i % 3 === 0 ? ['Missing Medical Exam', 'FIR Delay'] : i % 4 === 0 ? ['Incomplete Services'] : [],
+            completeness: Math.floor(70 + Math.random() * 30),
+        };
+    });
 };
 
 // ============================================
@@ -75,17 +112,21 @@ export const generateComplianceFlags = () => {
         'Timeline Inconsistency'
     ];
 
-    return Array.from({ length: 12 }).map((_, i) => ({
-        id: `FLAG-${(100 + i).toString()}`,
-        district: ['Lahore', 'Multan', 'Faisalabad', 'Rawalpindi'][i % 4],
-        caseId: `CASE-2024-${(100 + i).toString()}`,
-        issueType: issueTypes[i % issueTypes.length],
-        severity: i % 3 === 0 ? 'Critical' : i % 2 === 0 ? 'Warning' : 'Info',
-        raisedOn: `2024-01-${(8 - (i % 3)).toString().padStart(2, '0')}`,
-        status: i < 4 ? 'Open' : i < 8 ? 'In Progress' : 'Resolved',
-        daysOpen: i < 4 ? 2 + i : 0,
-        assignedTo: i % 2 === 0 ? 'District Focal Point' : 'Provincial WDD'
-    }));
+    return Array.from({ length: 12 }).map((_, i) => {
+        const district = ['Lahore', 'Multan', 'Faisalabad', 'Rawalpindi'][i % 4];
+        const caseType = i % 3 === 0 ? 'TFGBV' : 'GBV';
+        return {
+            id: `FLAG-${(100 + i).toString()}`,
+            district,
+            caseId: generateCaseId(caseType, district, 100 + i),
+            issueType: issueTypes[i % issueTypes.length],
+            severity: i % 3 === 0 ? 'Critical' : i % 2 === 0 ? 'Warning' : 'Info',
+            raisedOn: `2024-01-${(8 - (i % 3)).toString().padStart(2, '0')}`,
+            status: i < 4 ? 'Open' : i < 8 ? 'In Progress' : 'Resolved',
+            daysOpen: i < 4 ? 2 + i : 0,
+            assignedTo: i % 2 === 0 ? 'District Focal Point' : 'Provincial WDD'
+        };
+    });
 };
 
 // ============================================

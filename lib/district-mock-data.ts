@@ -1,6 +1,14 @@
 // Case Lifecycle Stage Templates
 // Based on NCSW Circular for Mandatory Data Reporting
 
+// Helper function to generate proper Case ID (Lahore District = PB-LHR)
+const generateCaseId = (caseType: string, sequence: number): string => {
+    const typePrefix = caseType === 'TFGBV' ? 'TFG' : 'GBV';
+    const yearMonth = '2401'; // January 2024
+    const seqNumber = sequence.toString().padStart(4, '0');
+    return `${typePrefix}-PB-LHR-${yearMonth}-${seqNumber}`; // Default to Lahore for district portal
+};
+
 // ============================================
 // GBV STAGES (Physical, Sexual, Femicide, etc.)
 // ============================================
@@ -320,7 +328,7 @@ export const generateCaseRepository = () => {
         }));
 
         return {
-            id: `CASE-2024-${(100 + i).toString()}`,
+            id: generateCaseId(caseType, 100 + i),
             caseType,
             crimeCode,
             survivor: ['Ayesha B.', 'Fatima Z.', 'Saima K.', 'Anonymous', 'Zainab M.'][i % 5],
