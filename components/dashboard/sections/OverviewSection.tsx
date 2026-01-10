@@ -444,39 +444,42 @@ export default function OverviewSection() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.3, delay: i * 0.1 }}
-                                className="h-[200px]"
+                                className="h-[210px]"
                             >
-                                <div className="relative bg-white rounded-2xl border border-red-200 shadow-sm overflow-hidden h-full flex flex-col group hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-500 to-red-400" />
+                                <div className="relative rounded-2xl shadow-sm overflow-hidden h-full flex flex-col group hover:shadow-xl hover:-translate-y-1 transition-all duration-300 bg-gradient-to-br from-rose-600 to-red-600">
+                                    {/* Glass Overlay */}
+                                    <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity" />
 
-                                    <div className="p-4 flex flex-col">
-                                        {/* Top Stats */}
-                                        <div className="flex justify-between items-start mb-4">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center text-red-600">
-                                                    <Activity size={20} />
-                                                </div>
-                                                <div>
-                                                    <span className="text-xs font-bold text-brand-teal uppercase tracking-wider block">{kpi.label}</span>
-                                                    <div className="flex items-baseline gap-2">
-                                                        <span className="text-2xl font-black text-brand-dark tracking-tight">{kpi.value}</span>
-                                                        <span className="text-[10px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded flex items-center gap-0.5">
-                                                            <TrendingDown size={10} /> {Math.abs(kpi.trend)}%
-                                                        </span>
-                                                    </div>
+                                    {/* Decor */}
+                                    <div className="absolute -right-8 -top-8 w-40 h-40 rounded-full bg-white/10 blur-3xl" />
+
+                                    <div className="p-5 flex flex-col h-full relative z-10">
+
+                                        {/* Header: Icon + Stats */}
+                                        <div className="flex items-center gap-4 mb-3">
+                                            <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white border border-white/10 shrink-0">
+                                                <Activity size={24} />
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <span className="text-xs font-bold text-white/90 uppercase tracking-widest leading-none mb-1">{kpi.label}</span>
+                                                <div className="flex items-baseline gap-2">
+                                                    <span className="text-3xl font-black text-white tracking-tight drop-shadow-sm leading-none">{kpi.value}</span>
+                                                    <span className="text-[10px] font-bold text-white bg-white/20 border border-white/10 px-1.5 py-0.5 rounded flex items-center gap-0.5 backdrop-blur-sm self-center">
+                                                        <TrendingDown size={10} /> {Math.abs(kpi.trend)}%
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
 
                                         {/* Divider */}
-                                        <div className="w-full h-px bg-brand-surface mb-3" />
+                                        <div className="w-full h-px bg-white/20 mb-3" />
 
                                         {/* Embedded Attrition List */}
-                                        <div className="space-y-2">
+                                        <div className="space-y-2 mt-auto">
                                             {closureReasons.slice(0, 3).map((r: { reason: string; count: number }, idx: number) => (
-                                                <div key={idx} className="flex justify-between items-center text-xs">
-                                                    <span className="text-brand-dark/70 font-medium truncate pr-2">{r.reason}</span>
-                                                    <span className="font-bold text-brand-dark bg-brand-surface/50 px-1.5 py-0.5 rounded-[4px] text-[10px] whitespace-nowrap">{r.count}</span>
+                                                <div key={idx} className="flex justify-between items-center text-xs text-white/90">
+                                                    <span className="font-medium truncate pr-2">{r.reason}</span>
+                                                    <span className="font-bold bg-white/20 px-1.5 py-0.5 rounded-[4px] text-[10px] whitespace-nowrap">{r.count}</span>
                                                 </div>
                                             ))}
                                         </div>
@@ -493,41 +496,44 @@ export default function OverviewSection() {
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ duration: 0.3, delay: i * 0.1 }}
-                                className="h-[200px]"
+                                className="h-[210px]"
                             >
-                                <div className="bg-white rounded-2xl border border-red-200 shadow-sm h-full overflow-hidden hover:shadow-md transition-shadow relative group">
-                                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-600 to-red-400" />
+                                <div className="relative rounded-2xl shadow-sm h-full overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative group bg-gradient-to-br from-orange-600 to-red-600">
+                                    {/* Glass Overlay */}
+                                    <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity" />
 
-                                    <div className="p-4 flex flex-col">
-                                        {/* Top Stats */}
-                                        <div className="flex justify-between items-start mb-4">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center text-red-600">
-                                                    <AlertCircle size={20} />
-                                                </div>
-                                                <div>
-                                                    <span className="text-xs font-bold text-brand-teal uppercase tracking-wider block">{kpi.label}</span>
-                                                    <div className="flex items-baseline gap-2">
-                                                        <span className="text-2xl font-black text-brand-dark tracking-tight">{kpi.value}</span>
-                                                        <span className="text-[10px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded flex items-center gap-0.5">
-                                                            <TrendingDown size={10} className="rotate-180" /> {Math.abs(kpi.trend)} {kpi.trendLabel}
-                                                        </span>
-                                                    </div>
+                                    {/* Decor */}
+                                    <div className="absolute -left-8 -bottom-8 w-40 h-40 rounded-full bg-white/10 blur-3xl" />
+
+                                    <div className="p-5 flex flex-col h-full relative z-10">
+
+                                        {/* Header: Icon + Stats */}
+                                        <div className="flex items-center gap-4 mb-3">
+                                            <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white border border-white/10 shrink-0">
+                                                <AlertCircle size={24} />
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <span className="text-xs font-bold text-white/90 uppercase tracking-widest leading-none mb-1">{kpi.label}</span>
+                                                <div className="flex items-baseline gap-2">
+                                                    <span className="text-3xl font-black text-white tracking-tight drop-shadow-sm leading-none">{kpi.value}</span>
+                                                    <span className="text-[10px] font-bold text-white bg-white/20 border border-white/10 px-1.5 py-0.5 rounded flex items-center gap-0.5 backdrop-blur-sm self-center">
+                                                        <TrendingDown size={10} className="rotate-180" /> {Math.abs(kpi.trend)} {kpi.trendLabel}
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
 
                                         {/* Divider */}
-                                        <div className="w-full h-px bg-brand-surface mb-3" />
+                                        <div className="w-full h-px bg-white/20 mb-3" />
 
                                         {/* Embedded District Hotspots */}
-                                        <div className="space-y-2">
+                                        <div className="space-y-2 mt-auto">
                                             {districtHotspots.map((h, idx) => (
-                                                <div key={idx} className="flex justify-between items-center text-xs">
-                                                    <span className="text-brand-dark/70 font-medium truncate pr-2">{h.category}</span>
+                                                <div key={idx} className="flex justify-between items-center text-xs text-white/90">
+                                                    <span className="font-medium truncate pr-2">{h.category}</span>
                                                     <div className="flex flex-wrap justify-end gap-1">
                                                         {h.districts.map((d, dIdx) => (
-                                                            <span key={dIdx} className="bg-red-50 text-red-700 px-1.5 py-0.5 rounded-[3px] text-[10px] border border-red-100 whitespace-nowrap">
+                                                            <span key={dIdx} className="bg-white/20 text-white px-1.5 py-0.5 rounded-[3px] text-[10px] whitespace-nowrap">
                                                                 {d}
                                                             </span>
                                                         ))}
@@ -548,39 +554,42 @@ export default function OverviewSection() {
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ duration: 0.3, delay: i * 0.1 }}
-                                className="h-[200px]"
+                                className="h-[210px]"
                             >
-                                <div className="bg-white rounded-2xl border border-primary-200 shadow-sm h-full overflow-hidden hover:shadow-md transition-shadow relative group">
-                                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-500 to-brand-teal" />
+                                <div className="relative rounded-2xl shadow-sm h-full overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative group bg-gradient-to-br from-blue-600 to-cyan-600">
+                                    {/* Glass Overlay */}
+                                    <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity" />
 
-                                    <div className="p-4 flex flex-col h-full">
-                                        {/* Top Stats */}
-                                        <div className="flex justify-between items-start mb-3">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-xl bg-primary-100 flex items-center justify-center text-primary-600">
-                                                    <HeartHandshake size={20} />
-                                                </div>
-                                                <div>
-                                                    <span className="text-xs font-bold text-brand-teal uppercase tracking-wider block">{kpi.label}</span>
-                                                    <div className="flex items-baseline gap-2">
-                                                        <span className="text-2xl font-black text-brand-dark tracking-tight">{kpi.value}</span>
-                                                        <span className="text-[10px] font-bold text-primary-600 bg-primary-50 px-1.5 py-0.5 rounded flex items-center gap-0.5">
-                                                            {kpi.trendLabel}
-                                                        </span>
-                                                    </div>
+                                    {/* Decor */}
+                                    <div className="absolute -right-8 -bottom-8 w-40 h-40 rounded-full bg-white/10 blur-3xl" />
+
+                                    <div className="p-5 flex flex-col h-full relative z-10">
+
+                                        {/* Header: Icon + Stats */}
+                                        <div className="flex items-center gap-4 mb-3">
+                                            <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white border border-white/10 shrink-0">
+                                                <HeartHandshake size={24} />
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <span className="text-xs font-bold text-white/90 uppercase tracking-widest leading-none mb-1">{kpi.label}</span>
+                                                <div className="flex items-baseline gap-2">
+                                                    <span className="text-3xl font-black text-white tracking-tight drop-shadow-sm leading-none">{kpi.value}</span>
+                                                    <span className="text-[10px] font-bold text-white bg-white/20 border border-white/10 px-1.5 py-0.5 rounded flex items-center gap-0.5 backdrop-blur-sm self-center">
+                                                        {kpi.trendLabel}
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
 
                                         {/* Divider */}
-                                        <div className="w-full h-px bg-brand-surface mb-2" />
+                                        <div className="w-full h-px bg-white/20 mb-2" />
 
                                         {/* Embedded Programs List */}
-                                        <div className="space-y-1.5 flex-1 overflow-auto">
+                                        <div className="space-y-1.5 flex-1 overflow-auto mt-auto">
                                             {shelterPrograms.map((p, idx) => (
-                                                <div key={idx} className="flex justify-between items-center text-xs">
-                                                    <span className="text-brand-dark/70 font-medium truncate pr-2">{p.name}</span>
-                                                    <span className="font-bold text-brand-dark bg-primary-50 px-1.5 py-0.5 rounded-[4px] text-[10px] whitespace-nowrap">{p.count}</span>
+                                                <div key={idx} className="flex justify-between items-center text-xs text-white/90">
+                                                    <span className="font-medium truncate pr-2">{p.name}</span>
+                                                    <span className="font-bold bg-white/20 px-1.5 py-0.5 rounded-[4px] text-[10px] whitespace-nowrap">{p.count}</span>
                                                 </div>
                                             ))}
                                         </div>
@@ -596,7 +605,7 @@ export default function OverviewSection() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.3, delay: i * 0.1 }}
-                            className="h-[200px]"
+                            className="h-[210px]"
                         >
                             <KPICard data={kpi} />
                         </motion.div>

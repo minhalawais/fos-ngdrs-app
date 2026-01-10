@@ -2,34 +2,52 @@
 
 @theme {
   /* Custom Colors */
-  --color-background: #fbfcfc;
-  --color-foreground: #055b65;
+  --color-background: #FBFBFB;
+  /* User request: Main app background */
+  --color-foreground: #233B4D;
+  /* Deep Blue from Primary 900 */
 
-  --color-primary-DEFAULT: #1bd488;
+  /* Primary (Brand) - #659CBF */
+  --color-primary-DEFAULT: #659CBF;
   --color-primary-foreground: #ffffff;
-  --color-primary-50: #eafbf3;
-  --color-primary-100: #cbf7df;
-  --color-primary-200: #9eeec5;
-  --color-primary-300: #65e0a6;
-  --color-primary-400: #1bd488;
-  --color-primary-500: #12b872;
-  --color-primary-600: #09955a;
-  --color-primary-700: #08774a;
-  --color-primary-800: #095e3d;
-  --color-primary-900: #084d34;
+  --color-primary-50: #F0F6FA;
+  --color-primary-100: #DCEAF4;
+  --color-primary-200: #BDD9EB;
+  --color-primary-300: #95C3DF;
+  --color-primary-400: #659CBF;
+  --color-primary-500: #4A85A8;
+  --color-primary-600: #36698A;
+  --color-primary-700: #2C546F;
+  --color-primary-800: #26465C;
+  --color-primary-900: #233B4D;
 
-  --color-brand-dark: #055b65;
-  --color-brand-teal: #45828b;
-  --color-brand-soft: #b2c9c5;
-  --color-brand-surface: #e0e5e9;
-  --color-brand-canvas: #fbfcfc;
+  /* Secondary (Growth/Success) - #6EA969 */
+  --color-secondary: #6EA969;
+  --color-secondary-foreground: #ffffff;
+
+  /* Semantics */
+  --color-brand-dark: #233B4D;
+  /* Replaces old dark teal */
+  --color-brand-teal: #659CBF;
+  /* Mapping old teal to new primary for compatibility */
+  --color-brand-soft: #95C3DF;
+  /* Primary 300 */
+  --color-brand-surface: #F0F6FA;
+  /* Primary 50 */
+  --color-brand-canvas: #FBFBFB;
+
+  /* Functional Colors */
+  --color-warning: #D3A255;
+  --color-error: #EE8A7D;
+  --color-surface-card: #EB9D84;
+  --color-accent-deep: #BC5F75;
 
   /* Fonts */
   --font-heading: var(--font-jakarta), sans-serif;
   --font-body: var(--font-inter), sans-serif;
 
   /* Backgrounds */
-  --image-subtle-grid: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23055b65' fill-opacity='0.03' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
+  --image-subtle-grid: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23659CBF' fill-opacity='0.03' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
 }
 
 /* Custom Scrollbar */

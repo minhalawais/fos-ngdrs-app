@@ -210,8 +210,8 @@ export const generateClosureReasons = () => [
 
 export const generateDistrictHotspots = () => [
     { category: "Domestic Violence", districts: ["Mardan", "Dera Ghazi Khan", "Jacobabad"] },
-    { category: "Cyber Harassment", districts: ["Swat", "Peshawar", "Islamabad"] },
-    { category: "Workplace", districts: ["Faisalabad", "Karachi Central"] }
+    { category: "Cyber Bullying", districts: ["Swat", "Peshawar", "Islamabad"] },
+    { category: "Workplace Harassment", districts: ["Faisalabad", "Karachi Central"] }
 ];
 
 export const generateShelterPrograms = () => [

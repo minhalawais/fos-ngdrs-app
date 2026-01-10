@@ -6,84 +6,71 @@ import type { KPI } from "@/lib/mock-data";
 export default function KPICard({ data }: { data: KPI }) {
     const isPositive = data.status === "up";
     const isNegative = data.status === "down";
-    const isNeutral = data.status === "neutral";
 
-    const trendColor = data.alert
-        ? "text-red-600 bg-red-100"
-        : isPositive ? "text-primary-700 bg-primary-100" : isNegative ? "text-red-700 bg-red-100" : "text-brand-teal bg-brand-surface";
-
-    // Icon background colors
-    const iconBg = data.alert
-        ? "bg-red-100 text-red-600"
-        : isPositive ? "bg-primary-100 text-primary-600" : isNegative ? "bg-red-100 text-red-600" : "bg-brand-surface text-brand-teal";
+    // Determine Gradient based on status or type
+    const gradientBg = data.alert
+        ? "bg-gradient-to-br from-red-600 to-rose-600"
+        : isPositive
+            ? "bg-gradient-to-br from-teal-600 to-emerald-600"
+            : "bg-gradient-to-br from-blue-600 to-cyan-600";
 
     return (
         <div className={clsx(
-            "relative bg-white rounded-2xl border shadow-sm transition-all duration-300 h-full flex flex-col",
-            "hover:shadow-xl hover:-translate-y-1 hover:border-primary-500/20",
-            "overflow-hidden group",
-            data.alert ? "border-red-200" : "border-brand-surface/80"
+            "relative rounded-2xl shadow-sm transition-all duration-300 h-full flex flex-col overflow-hidden group",
+            "hover:shadow-xl hover:-translate-y-1 hover:shadow-brand-teal/20",
+            gradientBg
         )}>
-            {/* Top Gradient Strip */}
-            <div className={clsx(
-                "absolute top-0 left-0 right-0 h-1 transition-all",
-                data.alert ? "bg-gradient-to-r from-red-500 to-red-400" : "bg-gradient-to-r from-primary-500 to-brand-teal"
-            )} />
+            {/* Glass effect overlay */}
+            <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity" />
 
-            {/* Subtle Glow on Hover */}
-            <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            {/* Decorative circles */}
+            <div className="absolute -right-6 -top-6 w-32 h-32 rounded-full bg-white/10 blur-2xl" />
+            <div className="absolute -left-6 -bottom-6 w-32 h-32 rounded-full bg-black/5 blur-2xl" />
 
-            <div className="p-6 relative z-10">
-                <div className="flex justify-between items-start mb-4">
-                    <div className="flex items-center gap-3">
-                        {/* Icon with Background */}
-                        <div className={clsx("w-10 h-10 rounded-xl flex items-center justify-center", iconBg)}>
-                            {isPositive && <TrendingUp size={18} />}
-                            {isNegative && <TrendingDown size={18} />}
-                            {isNeutral && <Minus size={18} />}
-                        </div>
-                        <span className="text-sm font-semibold text-brand-teal uppercase tracking-wider">{data.label}</span>
+            <div className="p-5 relative z-10 flex flex-col h-full justify-between">
+
+                {/* Header: Icon + Stats Side-by-Side */}
+                <div className="flex items-center gap-4 mb-2">
+                    {/* Icon with Glass Background */}
+                    <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white border border-white/10 shrink-0">
+                        {isPositive && <TrendingUp size={24} />}
+                        {isNegative && <TrendingDown size={24} />}
+                        {!isPositive && !isNegative && <Minus size={24} />}
                     </div>
-                    {data.alert && (
-                        <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
-                            <AlertTriangle size={16} className="text-red-500 animate-pulse" />
+
+                    <div className="flex flex-col">
+                        <span className="text-xs font-bold text-white/80 uppercase tracking-widest leading-none mb-1">{data.label}</span>
+                        <div className="flex items-baseline gap-2">
+                            <h3 className="text-3xl font-black text-white tracking-tight drop-shadow-sm leading-none">{data.value}</h3>
+                            {!data.subStats && (
+                                <span className="text-[10px] font-bold text-white bg-white/20 px-1.5 py-0.5 rounded flex items-center gap-0.5 backdrop-blur-sm self-center border border-white/10">
+                                    {isPositive && <TrendingUp size={8} />}
+                                    {isNegative && <TrendingDown size={8} />}
+                                    {data.trend > 0 ? "+" : ""}{data.trend}%
+                                </span>
+                            )}
                         </div>
-                    )}
+                    </div>
                 </div>
 
-                <div className="flex items-baseline gap-3 mb-4">
-                    <h3 className="text-4xl font-heading font-black text-brand-dark tracking-tight">{data.value}</h3>
-                </div>
-
+                {/* Sub Stats Grid - If exists */}
                 {data.subStats ? (
-                    <div className="grid grid-cols-2 gap-3 mt-4 pt-3 border-t border-brand-surface/60">
+                    <div className="grid grid-cols-2 gap-3 mt-auto pt-3 border-t border-white/20">
                         {data.subStats.map((stat, i) => (
                             <div key={i} className="relative pl-3">
-                                <div className={clsx(
-                                    "absolute left-0 top-1 bottom-1 w-1 rounded-full",
-                                    stat.color ? stat.color.replace('text-', 'bg-').replace('600', '500') : "bg-brand-teal"
-                                )} />
+                                <div className="absolute left-0 top-1 bottom-1 w-1 rounded-full bg-white/40" />
                                 <div className="flex flex-col">
-                                    <span className={clsx("text-lg font-black tracking-tight leading-none", stat.color || "text-brand-teal")}>
+                                    <span className="text-lg font-bold text-white tracking-tight leading-none">
                                         {stat.value}
                                     </span>
-                                    <span className="text-[10px] text-brand-teal/60 font-bold uppercase tracking-wider mt-1">{stat.label}</span>
+                                    <span className="text-[9px] text-white/70 font-bold uppercase tracking-wider mt-1">{stat.label}</span>
                                 </div>
                             </div>
                         ))}
                     </div>
                 ) : (
-                    <div className="flex items-center gap-3">
-                        <div className={clsx(
-                            "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold",
-                            trendColor
-                        )}>
-                            {isPositive && <TrendingUp size={12} />}
-                            {isNegative && <TrendingDown size={12} />}
-                            {isNeutral && <Minus size={12} />}
-                            <span>{data.trend > 0 ? "+" : ""}{data.trend}%</span>
-                        </div>
-                        <span className="text-xs text-brand-soft font-medium">{data.trendLabel}</span>
+                    <div className="mt-auto pt-2">
+                        <span className="text-xs text-white/70 font-medium block">{data.trendLabel}</span>
                     </div>
                 )}
             </div>

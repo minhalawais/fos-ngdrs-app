@@ -18,9 +18,13 @@ export default function DistrictLayout({
             <main className="flex-1 ml-72 flex flex-col min-h-screen">
                 {/* Top Header */}
                 <header className="h-20 bg-white border-b border-brand-surface sticky top-0 z-40 px-8 flex items-center justify-between shadow-sm">
-                    <div className="flex flex-col">
-                        <h1 className="text-xl font-bold text-brand-dark">District Administration Portal</h1>
-                        <p className="text-xs text-brand-teal font-medium">Monitoring & Response System v2.0</p>
+                    <div className="flex items-center gap-4">
+                        <img src="/GOP.png" alt="GOP Logo" className="h-16 w-auto object-contain" />
+                        <img src="/ncsw.png" alt="NCSW Logo" className="h-16 w-auto object-contain" />
+                        <div className="flex flex-col">
+                            <h1 className="text-xl font-bold text-brand-dark">NCSW</h1>
+                            <p className="text-[11px] font-bold text-brand-teal uppercase tracking-widest">Government of Pakistan</p>
+                        </div>
                     </div>
 
                     <div className="flex items-center gap-4">

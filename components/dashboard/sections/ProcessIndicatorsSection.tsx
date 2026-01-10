@@ -9,23 +9,27 @@ import { motion } from "framer-motion";
 const indicatorsData = generateProcessIndicatorsData();
 
 const PALETTE = {
-    lightest: "#fbfcfc",
-    light: "#e0e5e9",
-    muted: "#b2c9c5",
-    accent: "#1bd488",
-    tealMedium: "#45828b",
-    tealDark: "#055b65"
+    lightest: "#FBFBFB", // Background
+    light: "#DCEAF4",    // Primary 100
+    muted: "#95C3DF",    // Primary 300
+    accent: "#659CBF",   // Primary (Brand) for consistency or specific accents
+    tealMedium: "#4A85A8", // Primary 500
+    tealDark: "#36698A",   // Primary 600
+    secondary: "#6EA969",  // New Secondary (Green)
+    protection: "#e11d48", // Rose-600 for Protection & Support section
+    warning: "#D3A255",
+    error: "#EE8A7D"
 };
 
 const CATEGORY_THEMES = [
     PALETTE.tealDark,   // Prevention
-    PALETTE.tealMedium, // Protection
-    PALETTE.accent      // Justice
+    PALETTE.protection, // Protection (Rose/Red)
+    PALETTE.secondary   // Justice -> Awareness (Green for success/awareness)
 ];
 
 const NewIndicatorCard = ({ item, themeColor }: { item: any, themeColor: string }) => {
     return (
-        <div className="group relative w-full min-h-[190px] rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col border"
+        <div className="group relative w-full h-full min-h-[190px] rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col border"
             style={{ backgroundColor: PALETTE.lightest, borderColor: PALETTE.light }}>
 
             {/* Top Colored Ribbon - Slim Professional Look */}
@@ -34,28 +38,36 @@ const NewIndicatorCard = ({ item, themeColor }: { item: any, themeColor: string 
             {/* Content Body */}
             <div className="flex-1 px-4 py-3 flex flex-col justify-between pt-4">
                 <div>
-                    <h4 className="text-base font-bold text-brand-dark leading-tight mb-1">{item.title}</h4>
-                    <p className="text-xs font-medium uppercase tracking-wide opacity-80" style={{ color: PALETTE.tealMedium }}>{item.indicator}</p>
+                    <h4 className="text-lg font-extrabold text-brand-dark leading-snug mb-2">{item.title}</h4>
+                    <p className="text-[10px] font-bold uppercase tracking-wider opacity-70" style={{ color: PALETTE.tealMedium }}>{item.indicator}</p>
                 </div>
 
                 <div className="space-y-2">
                     <div className="flex items-end justify-between border-b pb-2" style={{ borderColor: PALETTE.light }}>
                         <div className="flex flex-col">
-                            <span className="text-[10px] font-semibold uppercase" style={{ color: PALETTE.muted }}>{item.valueLabel || 'Current'}</span>
-                            <span className="text-2xl font-black text-brand-dark">{item.value}</span>
+                            <span className="text-[9px] font-semibold uppercase" style={{ color: PALETTE.muted }}>{item.valueLabel || 'Current'}</span>
+                            <span className="text-sm font-bold text-brand-dark shrink-0">{item.value}</span>
                         </div>
-                        <div className="flex flex-col items-end text-right">
-                            <span className="text-[10px] font-semibold uppercase" style={{ color: PALETTE.muted }}>{item.targetLabel || 'Target'}</span>
-                            <span className="text-sm font-bold" style={{ color: themeColor }}>{item.target}</span>
+                        <div className="flex flex-col items-end text-right min-w-[50%]">
+                            <span className="text-[9px] font-semibold uppercase" style={{ color: PALETTE.muted }}>{item.targetLabel || 'Target'}</span>
+                            <span className="text-[10px] font-bold leading-tight" style={{ color: themeColor }}>{item.target}</span>
                         </div>
                     </div>
 
                     {/* Footer / Tag */}
-                    <div className="flex items-center justify-between text-[10px] font-semibold" style={{ color: PALETTE.tealMedium }}>
-                        {item.wef ? (
-                            <span className="px-2 py-1 rounded-md" style={{ backgroundColor: PALETTE.light }}>{item.wef}</span>
+                    <div className="flex flex-wrap gap-1.5 mt-auto pt-2">
+                        {item.sub && item.sub.includes("Support Provided:") ? (
+                            item.sub.replace("Support Provided: ", "").split(",").map((tag: string, i: number) => (
+                                <span key={i} className="px-2 py-1 rounded-md text-[10px] font-semibold whitespace-nowrap"
+                                    style={{ backgroundColor: PALETTE.light, color: PALETTE.tealMedium }}>
+                                    {tag.trim()}
+                                </span>
+                            ))
+                        ) : item.wef ? (
+                            <span className="px-2 py-1 rounded-md text-[10px] font-semibold" style={{ backgroundColor: PALETTE.light, color: PALETTE.tealMedium }}>{item.wef}</span>
                         ) : (
-                            <span className="px-2 py-1 rounded-md flex items-center gap-1" style={{ backgroundColor: PALETTE.light }}>
+                            <span className="px-2 py-1 rounded-md flex items-center gap-1 text-[10px] font-semibold"
+                                style={{ backgroundColor: PALETTE.light, color: PALETTE.tealMedium }}>
                                 <TrendingUp size={10} />
                                 {item.sub || "On Track"}
                             </span>
@@ -172,8 +184,7 @@ export default function ProcessIndicatorsSection() {
                         <TrendingUp className="text-white h-5 w-5" />
                     </div>
                     <div>
-                        <h2 className="text-2xl font-bold text-brand-dark">Process Indicators</h2>
-                        <p className="text-sm font-medium" style={{ color: PALETTE.tealMedium }}>State Action, Implementation & Due Diligence Monitoring</p>
+                        <h2 className="text-2xl font-bold text-brand-dark">State Action, Implementation & Due Diligence</h2>
                     </div>
                 </div>
             </div>
