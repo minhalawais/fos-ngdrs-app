@@ -121,69 +121,7 @@ export default function CompliancePage() {
                 </div>
             </div>
 
-            {/* Section 1: International Treaty Tracker */}
-            <motion.section
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-white rounded-2xl border border-brand-surface/80 shadow-sm overflow-hidden"
-            >
-                <div className="h-0.5 bg-gradient-to-r from-blue-500/50 via-brand-teal/30 to-transparent" />
-                <div className="p-6 border-b border-brand-surface flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
-                        <Globe size={20} />
-                    </div>
-                    <h2 className="text-xl font-bold text-brand-dark">Global Treaty Tracker</h2>
-                </div>
 
-                <div className="p-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-                        {complianceData.map((item, i) => (
-                            <motion.div
-                                key={i}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: i * 0.05 }}
-                                onClick={() => setSelectedIndicator(item)}
-                                className="bg-brand-canvas p-5 rounded-xl border border-brand-surface relative overflow-hidden group hover:shadow-lg transition-all cursor-pointer hover:border-primary-500/30 hover:-translate-y-1"
-                            >
-                                <div className={clsx("absolute top-0 right-0 w-20 h-20 opacity-10 rounded-bl-full transition-colors",
-                                    item.status === "Critical" ? "bg-red-500" : item.status === "Warning" ? "bg-amber-500" : "bg-primary-500"
-                                )} />
-
-                                <div className="absolute top-3 right-3 w-6 h-6 rounded-md bg-white/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
-                                    <Info size={14} className="text-brand-teal" />
-                                </div>
-
-                                <h3 className="text-sm font-bold text-brand-dark h-10 mb-3">{item.indicator}</h3>
-
-                                <div className="flex justify-between items-end mb-3">
-                                    <span className="text-3xl font-black text-brand-dark">{item.current}%</span>
-                                    <span className="text-xs text-brand-teal font-medium mb-1">Target: {item.target}%</span>
-                                </div>
-
-                                {/* Progress Bar */}
-                                <div className="w-full h-2.5 bg-brand-surface rounded-full overflow-hidden">
-                                    <motion.div
-                                        initial={{ width: 0 }}
-                                        animate={{ width: `${(item.current / (item.target > item.current ? item.target * 1.5 : item.current)) * 100}%` }}
-                                        transition={{ duration: 1, delay: i * 0.1 }}
-                                        className={clsx("h-full rounded-full",
-                                            item.status === "Critical" ? "bg-gradient-to-r from-red-500 to-red-400" : item.status === "Warning" ? "bg-gradient-to-r from-amber-500 to-amber-400" : "bg-gradient-to-r from-primary-500 to-primary-400"
-                                        )}
-                                    />
-                                </div>
-
-                                <div className="flex items-center gap-1.5 mt-4 text-xs font-bold">
-                                    {item.status === "Critical" ? <AlertTriangle size={12} className="text-red-500" /> : <FileCheck size={12} className="text-primary-500" />}
-                                    <span className={clsx(
-                                        item.status === "Critical" ? "text-red-600" : item.status === "Warning" ? "text-amber-600" : "text-primary-600"
-                                    )}>{item.status}</span>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </div>
-                </div>
-            </motion.section>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Section 2: AI & Emerging Threats */}
@@ -288,6 +226,69 @@ export default function CompliancePage() {
                     </div>
                 </motion.section>
             </div>
+            {/* Section 1: International Treaty Tracker */}
+            <motion.section
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-white rounded-2xl border border-brand-surface/80 shadow-sm overflow-hidden"
+            >
+                <div className="h-0.5 bg-gradient-to-r from-blue-500/50 via-brand-teal/30 to-transparent" />
+                <div className="p-6 border-b border-brand-surface flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                        <Globe size={20} />
+                    </div>
+                    <h2 className="text-xl font-bold text-brand-dark">Global Treaty Compliance</h2>
+                </div>
+
+                <div className="p-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                        {complianceData.map((item, i) => (
+                            <motion.div
+                                key={i}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: i * 0.05 }}
+                                onClick={() => setSelectedIndicator(item)}
+                                className="bg-brand-canvas p-5 rounded-xl border border-brand-surface relative overflow-hidden group hover:shadow-lg transition-all cursor-pointer hover:border-primary-500/30 hover:-translate-y-1"
+                            >
+                                <div className={clsx("absolute top-0 right-0 w-20 h-20 opacity-10 rounded-bl-full transition-colors",
+                                    item.status === "Critical" ? "bg-red-500" : item.status === "Warning" ? "bg-amber-500" : "bg-primary-500"
+                                )} />
+
+                                <div className="absolute top-3 right-3 w-6 h-6 rounded-md bg-white/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+                                    <Info size={14} className="text-brand-teal" />
+                                </div>
+
+                                <h3 className="text-sm font-bold text-brand-dark h-10 mb-3">{item.indicator}</h3>
+
+                                <div className="flex justify-between items-end mb-3">
+                                    <span className="text-3xl font-black text-brand-dark">{item.current}%</span>
+                                    <span className="text-xs text-brand-teal font-medium mb-1">Target: {item.target}%</span>
+                                </div>
+
+                                {/* Progress Bar */}
+                                <div className="w-full h-2.5 bg-brand-surface rounded-full overflow-hidden">
+                                    <motion.div
+                                        initial={{ width: 0 }}
+                                        animate={{ width: `${(item.current / (item.target > item.current ? item.target * 1.5 : item.current)) * 100}%` }}
+                                        transition={{ duration: 1, delay: i * 0.1 }}
+                                        className={clsx("h-full rounded-full",
+                                            item.status === "Critical" ? "bg-gradient-to-r from-red-500 to-red-400" : item.status === "Warning" ? "bg-gradient-to-r from-amber-500 to-amber-400" : "bg-gradient-to-r from-primary-500 to-primary-400"
+                                        )}
+                                    />
+                                </div>
+
+                                <div className="flex items-center gap-1.5 mt-4 text-xs font-bold">
+                                    {item.status === "Critical" ? <AlertTriangle size={12} className="text-red-500" /> : <FileCheck size={12} className="text-primary-500" />}
+                                    <span className={clsx(
+                                        item.status === "Critical" ? "text-red-600" : item.status === "Warning" ? "text-amber-600" : "text-primary-600"
+                                    )}>{item.status}</span>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                </div>
+            </motion.section>
         </div>
     );
 }

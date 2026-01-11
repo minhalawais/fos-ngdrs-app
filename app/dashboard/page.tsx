@@ -13,57 +13,28 @@ import AdvancedAnalyticsSection from "@/components/dashboard/sections/AdvancedAn
 import DemographicsSection from "@/components/dashboard/sections/DemographicsSection";
 import ProcessIndicatorsSection from "@/components/dashboard/sections/ProcessIndicatorsSection";
 import GeospatialSection from "@/components/dashboard/sections/GeospatialSection";
-import JusticeSection from "@/components/dashboard/sections/JusticeSection";
-import ServicesSection from "@/components/dashboard/sections/ServicesSection";
-import PlatformSection from "@/components/dashboard/sections/PlatformSection";
+
 import ComplianceSection from "@/components/dashboard/sections/ComplianceSection";
 
 // Reports Data
 const REPORTS = [
     {
-        id: 'RPT-2024-Q4',
-        title: 'Annual GBV & TFGBV Data Transparency Report',
-        subtitle: 'FY 2024 (Q1-Q4)',
-        status: 'Ready',
-        type: 'Annual',
-        pages: 124,
-        lastUpdated: '2024-01-15'
-    },
-    {
-        id: 'RPT-2024-Q3',
-        title: 'Quarterly Statistical Bulletin',
-        subtitle: 'Q3 2024 (Jul-Sep)',
-        status: 'Published',
-        type: 'Quarterly',
-        pages: 48,
-        lastUpdated: '2024-10-15'
+        id: 'RPT-2024-ANNUAL',
+        title: 'Annual Transparency Report',
     },
     {
         id: 'RPT-CEDAW-2024',
-        title: 'CEDAW Periodic Report Supplement',
-        subtitle: 'GBV Data Annex',
-        status: 'Draft',
-        type: 'Treaty',
-        pages: 32,
-        lastUpdated: '2024-01-10'
+        title: 'CEDAW Compliance Report',
     },
     {
-        id: 'RPT-SDG5-2024',
-        title: 'SDG 5 Progress Report',
-        subtitle: 'National Indicators',
-        status: 'Ready',
-        type: 'International',
-        pages: 28,
-        lastUpdated: '2024-01-12'
+        id: 'RPT-ILO-190',
+        title: 'ILO 190 Compliance Report',
+    },
+    {
+        id: 'RPT-GSP-PLUS',
+        title: 'EU GSP+ Compliance Report',
     },
 ];
-
-const REPORT_TYPE_COLORS: Record<string, string> = {
-    'Annual': 'bg-purple-100 text-purple-700',
-    'Quarterly': 'bg-blue-100 text-blue-700',
-    'Treaty': 'bg-green-100 text-green-700',
-    'International': 'bg-orange-100 text-orange-700',
-};
 
 function FilterDropdown({ label, icon: Icon, options, value, onChange }: any) {
     const [isOpen, setIsOpen] = useState(false);
@@ -219,18 +190,9 @@ export default function DashboardPage() {
                                     </div>
                                     <div className="max-h-[400px] overflow-y-auto">
                                         {REPORTS.map((report) => (
-                                            <div key={report.id} className="p-4 border-b border-brand-surface hover:bg-gray-50 transition-colors group cursor-pointer flex items-center justify-between">
-                                                <div className="flex-1">
-                                                    <div className="flex items-center gap-2 mb-1">
-                                                        <span className={clsx("px-2 py-0.5 rounded text-[10px] font-bold uppercase", REPORT_TYPE_COLORS[report.type])}>
-                                                            {report.type}
-                                                        </span>
-                                                        <span className="text-xs text-gray-400 font-mono">{report.lastUpdated}</span>
-                                                    </div>
-                                                    <p className="text-sm font-bold text-brand-dark group-hover:text-brand-teal transition-colors line-clamp-1" title={report.title}>{report.title}</p>
-                                                    <p className="text-xs text-gray-500">{report.subtitle} • {report.pages} pages</p>
-                                                </div>
-                                                <button className="p-2 text-gray-400 hover:text-brand-teal hover:bg-brand-teal/10 rounded-lg transition-colors">
+                                            <div key={report.id} className="p-4 border-b border-brand-surface hover:bg-brand-surface/20 transition-colors group cursor-pointer flex items-center justify-between">
+                                                <p className="text-sm font-bold text-brand-dark group-hover:text-brand-teal transition-colors" title={report.title}>{report.title}</p>
+                                                <button className="p-2 text-brand-teal bg-brand-surface rounded-lg transition-all group-hover:bg-brand-teal group-hover:text-white shadow-sm">
                                                     <Download size={18} />
                                                 </button>
                                             </div>
@@ -257,10 +219,8 @@ export default function DashboardPage() {
                 <GeospatialSection />
                 <ProcessIndicatorsSection />
                 <AdvancedAnalyticsSection />
-                <JusticeSection />
 
-                <ServicesSection />
-                <PlatformSection />
+
                 <ComplianceSection />
             </div>
         </div>

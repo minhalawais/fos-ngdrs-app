@@ -38,7 +38,7 @@ const NewIndicatorCard = ({ item, themeColor }: { item: any, themeColor: string 
             {/* Content Body */}
             <div className="flex-1 px-4 py-3 flex flex-col justify-between pt-4">
                 <div>
-                    <h4 className="text-lg font-extrabold text-brand-dark leading-snug mb-2">{item.title}</h4>
+                    <h5 className="text-md font-extrabold text-brand-dark leading-snug mb-2">{item.title}</h5>
                     <p className="text-[10px] font-bold uppercase tracking-wider opacity-70" style={{ color: PALETTE.tealMedium }}>{item.indicator}</p>
                 </div>
 
@@ -177,7 +177,7 @@ const CategorySlider = ({ category, sectionColor }: { category: any, sectionColo
 
 export default function ProcessIndicatorsSection() {
     return (
-        <section className="space-y-4 py-2">
+        <section id="state-actions" className="space-y-4 py-2 scroll-mt-28">
             <div className="flex items-center justify-between px-2">
                 <div className="flex items-center gap-3">
                     <div className="p-2.5 bg-gradient-to-br from-brand-dark to-brand-teal rounded-xl shadow-lg shadow-brand-teal/20">

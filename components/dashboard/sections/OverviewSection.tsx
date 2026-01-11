@@ -446,7 +446,7 @@ export default function OverviewSection() {
                                 transition={{ duration: 0.3, delay: i * 0.1 }}
                                 className="h-[210px]"
                             >
-                                <div className="relative rounded-2xl shadow-sm overflow-hidden h-full flex flex-col group hover:shadow-xl hover:-translate-y-1 transition-all duration-300 bg-gradient-to-br from-rose-600 to-red-600">
+                                <div className="relative rounded-2xl shadow-sm overflow-hidden h-full flex flex-col group hover:shadow-xl hover:-translate-y-1 transition-all duration-300 bg-gradient-to-br from-[#9f1239] to-[#881337]">
                                     {/* Glass Overlay */}
                                     <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity" />
 

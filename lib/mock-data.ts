@@ -83,12 +83,12 @@ export const generateDistrictData = (): DistrictData[] => [
 ];
 
 export const generateFunnelData = () => [
-    { name: "Reported", value: 1000, fill: "#b2c9c5" },
-    { name: "FIR Registered", value: 750, fill: "#45828b" },
-    { name: "Investigation", value: 500, fill: "#1bd488" },
-    { name: "Charge Sheet", value: 300, fill: "#12b872" },
-    { name: "Trial", value: 150, fill: "#055b65" },
-    { name: "Convicted", value: 45, fill: "#095e3d" },
+    { name: "Reported", value: 12450, fill: "#b2c9c5" },
+    { name: "FIR Registered", value: 9335, fill: "#45828b" },
+    { name: "Investigation", value: 6225, fill: "#1bd488" },
+    { name: "Charge Sheet", value: 3735, fill: "#12b872" },
+    { name: "Trial", value: 1865, fill: "#055b65" },
+    { name: "Convicted", value: 560, fill: "#095e3d" },
 ];
 
 export const generateServiceGaps = () => [

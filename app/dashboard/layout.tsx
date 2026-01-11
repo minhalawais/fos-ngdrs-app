@@ -28,15 +28,18 @@ function DashboardNavbar() {
 
                     {/* Center Navigation */}
                     <div className="hidden xl:flex items-center gap-1 bg-brand-surface/30 p-1.5 rounded-xl border border-brand-surface/50">
-                        {["Overview", "Geospatial", "Justice", "Services", "Platform", "Compliance"].map((item) => (
-                            <a
-                                key={item}
-                                href={`#${item.toLowerCase()}`}
-                                className="px-4 py-2 text-sm font-bold text-brand-dark/70 hover:text-brand-dark hover:bg-white hover:shadow-sm rounded-lg transition-all"
-                            >
-                                {item}
-                            </a>
-                        ))}
+                        {["Overview", "Geospatial", "State Actions", "Trends", "Compliance"].map((item) => {
+                            const href = item === "State Actions" ? "#state-actions" : `#${item.toLowerCase()}`;
+                            return (
+                                <a
+                                    key={item}
+                                    href={href}
+                                    className="px-4 py-2 text-sm font-bold text-brand-dark/70 hover:text-brand-dark hover:bg-white hover:shadow-sm rounded-lg transition-all"
+                                >
+                                    {item}
+                                </a>
+                            );
+                        })}
                     </div>
 
                     {/* Right Actions */}

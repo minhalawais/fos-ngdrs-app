@@ -127,12 +127,12 @@ export default function PlatformSection() {
                 </table>
             </motion.div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Response Time Chart */}
-                <ChartCard title="Average Response Time" subtitle="Hours to first action">
-                    <div className="h-[300px]">
+            <div className="grid grid-cols-1 gap-6">
+                {/* Response Time Chart - Expanded to full width */}
+                <ChartCard title="Average Response Time by Platform" subtitle="Hours to first action on content removal requests">
+                    <div className="h-[350px]">
                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={data} layout="vertical" margin={{ left: 40 }}>
+                            <BarChart data={data} layout="vertical" margin={{ left: 40, right: 40 }}>
                                 <defs>
                                     <linearGradient id="responseGradient" x1="0" y1="0" x2="1" y2="0">
                                         <stop offset="0%" stopColor={BRAND_COLORS.teal} stopOpacity={1} />
@@ -140,31 +140,10 @@ export default function PlatformSection() {
                                     </linearGradient>
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e5e7eb" />
-                                <XAxis type="number" tick={{ fontSize: 11 }} />
-                                <YAxis dataKey="name" type="category" width={100} tick={{ fontSize: 11 }} />
+                                <XAxis type="number" tick={{ fontSize: 11, fontWeight: 'bold' }} label={{ value: 'Hours', position: 'insideBottom', offset: -5, fontSize: 10, fontWeight: 'bold' }} />
+                                <YAxis dataKey="name" type="category" width={100} tick={{ fontSize: 12, fontWeight: 'bold', fill: '#055b65' }} />
                                 <Tooltip content={<CustomTooltip />} />
-                                <Bar dataKey="responseTime" fill="url(#responseGradient)" radius={[0, 8, 8, 0]} barSize={20} />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </div>
-                </ChartCard>
-
-                {/* Volume vs Success */}
-                <ChartCard title="Takedown Success Rate" subtitle="Percentage of successful content removals">
-                    <div className="h-[300px]">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={data}>
-                                <defs>
-                                    <linearGradient id="takedownGradient" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="0%" stopColor={BRAND_COLORS.primary} stopOpacity={1} />
-                                        <stop offset="100%" stopColor={BRAND_COLORS.primary} stopOpacity={0.6} />
-                                    </linearGradient>
-                                </defs>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-                                <XAxis dataKey="name" tick={{ fontSize: 10 }} interval={0} />
-                                <YAxis tick={{ fontSize: 11 }} />
-                                <Tooltip content={<CustomTooltip />} />
-                                <Bar dataKey="takedownPct" fill="url(#takedownGradient)" radius={[8, 8, 0, 0]} barSize={40} />
+                                <Bar dataKey="responseTime" name="Response Time (Hrs)" fill="url(#responseGradient)" radius={[0, 8, 8, 0]} barSize={25} />
                             </BarChart>
                         </ResponsiveContainer>
                     </div>

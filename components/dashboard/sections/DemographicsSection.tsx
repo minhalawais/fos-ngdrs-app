@@ -14,8 +14,8 @@ import {
 } from "@/lib/mock-data";
 
 // Data
-const perpetratorData = generatePerpetratorTypeData();
-const locationData = generateLocationTypeData();
+const perpetratorData = generatePerpetratorTypeData().filter(d => d.name !== 'Official');
+const locationData = generateLocationTypeData().filter(d => d.name !== 'Police Station' && d.name !== 'Court');
 const ageData = generateSurvivorAgeData();
 
 // Horizontal Stacked Bar Chart Card with Interactivity
