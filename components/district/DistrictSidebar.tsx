@@ -78,10 +78,10 @@ export default function DistrictSidebar() {
             <div className="p-4 border-t border-white/10 bg-black/20">
                 <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors cursor-pointer group">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white font-bold shadow-lg">
-                        JD
+                        FA
                     </div>
                     <div className="flex-1 min-w-0">
-                        <p className="text-sm font-bold text-white truncate">John Doe</p>
+                        <p className="text-sm font-bold text-white truncate">Fatima Ahmed</p>
                         <p className="text-[10px] text-white/50 truncate">District Focal Point</p>
                     </div>
                     <LogOut size={16} className="text-white/40 group-hover:text-red-400 transition-colors" />

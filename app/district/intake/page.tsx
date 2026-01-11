@@ -6,7 +6,8 @@ import {
     Scale, Shield, BookOpen, Stethoscope, User, FileText, Smartphone, MapPin,
     AlertCircle, Check, CheckCircle, Save, UploadCloud, Calendar, Users,
     Target, Megaphone, DollarSign, Clock, ChevronDown, Send, Plus, X,
-    File, Image as ImageIcon, Trash2, Phone, Home, CreditCard, Lock, Globe
+    File, Image as ImageIcon, Trash2, Phone, Home, CreditCard, Lock, Globe, Share2,
+    Mail, FileDown, MessageSquare
 } from "lucide-react";
 import { clsx } from "clsx";
 
@@ -52,6 +53,23 @@ const PLATFORMS = ['Facebook', 'TikTok', 'WhatsApp', 'X (Twitter)', 'Instagram',
 const PREVENTION_TYPES = ['Education Program', 'Community Outreach', 'Legal Aid Training', 'Economic Empowerment', 'Health Initiative', 'Media Campaign', 'Workplace Training', 'Youth Program'];
 const AWARENESS_CHANNELS = ['Social Media', 'TV', 'Radio', 'Community Event', 'Print Media', 'Web Portal'];
 const PROTECTION_TYPES = ['Shelter Services', 'Helpline', 'Psychosocial Support', 'Medico-Legal Aid', 'Digital Forensics', 'Legal Representation'];
+
+// Routing Channels for Form Distribution (Official API Routes)
+const OFFICIAL_ROUTES = [
+    { id: 'fia', name: 'FIA Cyber Crime Wing', icon: Globe, color: '#7c3aed', desc: 'Federal Investigation Agency Portal' },
+    { id: 'nccia', name: 'NCCIA Database', icon: Smartphone, color: '#dc2626', desc: 'National Cyber Crime Investigation Agency' },
+    { id: 'ncsw', name: 'NCSW Central Registry', icon: Users, color: '#059669', desc: 'National Commission on Status of Women' },
+    { id: 'provincial_wpc', name: 'Provincial WPC', icon: Home, color: '#d97706', desc: 'Women Protection Centers Network' },
+    { id: 'legal_aid', name: 'Legal Aid Authority', icon: Scale, color: '#0891b2', desc: 'Free Legal Aid Services' },
+    { id: 'shelter', name: 'Shelter Network', icon: Home, color: '#be185d', desc: 'Dar-ul-Aman & Safe Houses' },
+    { id: 'health', name: 'Health Department', icon: Stethoscope, color: '#16a34a', desc: 'Medico-Legal & Health Services' },
+];
+
+// Custom Routing Channels
+const CUSTOM_ROUTES = [
+    { id: 'email', name: 'Email Route', icon: Mail, color: '#3b82f6', desc: 'Send form summary via email' },
+    { id: 'sms_alert', name: 'SMS Alert', icon: MessageSquare, color: '#10b981', desc: 'Notify officers via SMS' },
+];
 
 
 // --- COMPONENT ---
@@ -118,6 +136,42 @@ export default function IntakePage() {
         totalCasesHandled: '', referralsReceived: '', referralsGiven: '',
         description: '', priority: 'Normal'
     });
+
+    // Routing Modal State
+    const [showRouteModal, setShowRouteModal] = useState(false);
+    const [selectedRoutes, setSelectedRoutes] = useState<Set<string>>(new Set());
+    const [isRouting, setIsRouting] = useState(false);
+    const [routeSuccess, setRouteSuccess] = useState(false);
+
+    // Enhanced Routing State
+    const [routeNotes, setRouteNotes] = useState('');
+    const [customEmail, setCustomEmail] = useState('');
+    const [activeRouteTab, setActiveRouteTab] = useState<'official' | 'custom'>('official');
+
+    const toggleRoute = (id: string) => {
+        const newRoutes = new Set(selectedRoutes);
+        if (newRoutes.has(id)) {
+            newRoutes.delete(id);
+        } else {
+            newRoutes.add(id);
+        }
+        setSelectedRoutes(newRoutes);
+    };
+
+    const handleRouteSubmit = async () => {
+        if (selectedRoutes.size === 0 && !customEmail) return;
+        setIsRouting(true);
+        await new Promise(r => setTimeout(r, 1500));
+        setIsRouting(false);
+        setRouteSuccess(true);
+        setTimeout(() => {
+            setShowRouteModal(false);
+            setRouteSuccess(false);
+            setSelectedRoutes(new Set());
+            setRouteNotes('');
+            setCustomEmail('');
+        }, 2000);
+    };
 
     const handleSubmit = async () => {
         setIsSubmitting(true);
@@ -283,14 +337,27 @@ export default function IntakePage() {
                                     <p className="text-xs text-gray-500 font-bold uppercase tracking-widest mt-0.5">District Entry Protocol v4.2</p>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-4 bg-white/50 p-2 rounded-2xl backdrop-blur-sm">
-                                <button className="px-4 py-2.5 text-xs font-bold text-gray-500 hover:text-gray-800 flex items-center gap-2 transition-colors">
-                                    <Save size={14} /> Drafts (2)
+                            <div className="flex items-center gap-3">
+                                {/* Route Form Button - Enhanced */}
+                                <button
+                                    onClick={() => setShowRouteModal(true)}
+                                    className="group relative px-5 py-3 rounded-2xl font-bold text-white shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2 overflow-hidden"
+                                    style={{ background: `linear-gradient(135deg, ${activeColor} 0%, ${activeColor}dd 100%)` }}
+                                >
+                                    <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                    <Share2 size={16} className="relative z-10" />
+                                    <span className="relative z-10 text-xs">Route Form</span>
+                                    <div className="relative z-10 w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[10px] font-black">→</div>
                                 </button>
-                                <div className="w-px h-6 bg-gray-200" />
-                                <button className="px-4 py-2.5 text-xs font-bold text-red-500 hover:bg-red-50 flex items-center gap-2 rounded-xl transition-all">
-                                    <Trash2 size={14} /> Reset Form
-                                </button>
+                                <div className="w-px h-8 bg-gray-200" />
+                                <div className="flex items-center gap-2 bg-white/50 p-1.5 rounded-xl backdrop-blur-sm">
+                                    <button className="px-3 py-2 text-xs font-bold text-gray-500 hover:text-gray-800 flex items-center gap-2 transition-colors rounded-lg hover:bg-white">
+                                        <Save size={14} /> Drafts (2)
+                                    </button>
+                                    <button className="px-3 py-2 text-xs font-bold text-red-500 hover:bg-red-50 flex items-center gap-2 rounded-lg transition-all">
+                                        <Trash2 size={14} /> Reset
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -517,6 +584,185 @@ export default function IntakePage() {
 
                                     <TextAreaField label="Observational Notes" value={protectionForm.description} onChange={(e: any) => setProtectionForm(p => ({ ...p, description: e.target.value }))} placeholder="Any relevant notes about the reporting period..." rows={4} />
                                 </motion.div>
+                            )}
+                        </AnimatePresence>
+
+                        {/* Route Form Modal */}
+                        <AnimatePresence>
+                            {showRouteModal && (
+                                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => !isRouting && setShowRouteModal(false)}>
+                                    <motion.div
+                                        initial={{ scale: 0.9, opacity: 0 }}
+                                        animate={{ scale: 1, opacity: 1 }}
+                                        exit={{ scale: 0.9, opacity: 0 }}
+                                        onClick={(e) => e.stopPropagation()}
+                                        className="bg-white rounded-[32px] shadow-2xl max-w-3xl w-full overflow-hidden max-h-[90vh] flex flex-col"
+                                    >
+                                        {routeSuccess ? (
+                                            <div className="p-10 flex flex-col items-center text-center bg-green-50">
+                                                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', damping: 12 }} className="w-20 h-20 rounded-full flex items-center justify-center mb-6 shadow-lg text-white bg-green-500">
+                                                    <Check size={40} />
+                                                </motion.div>
+                                                <h3 className="text-2xl font-black text-gray-900">Routed Successfully!</h3>
+                                                <p className="text-sm text-green-600 mt-2">Form data sent to {selectedRoutes.size + (customEmail ? 1 : 0)} destination(s)</p>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                {/* Modal Header */}
+                                                <div className="p-6 border-b border-gray-100 flex items-center justify-between" style={{ backgroundColor: `${activeColor}08` }}>
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg" style={{ backgroundColor: activeColor, color: 'white' }}>
+                                                            <Share2 size={24} />
+                                                        </div>
+                                                        <div>
+                                                            <h2 className="text-lg font-black text-gray-900">Route Form to Departments</h2>
+                                                            <p className="text-xs text-gray-500">Select official channels or custom routes</p>
+                                                        </div>
+                                                    </div>
+                                                    <button onClick={() => setShowRouteModal(false)} className="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 transition-colors">
+                                                        <X size={20} />
+                                                    </button>
+                                                </div>
+
+                                                {/* Tab Switcher */}
+                                                <div className="px-6 pt-4">
+                                                    <div className="flex gap-2 p-1 bg-gray-100 rounded-xl">
+                                                        <button
+                                                            onClick={() => setActiveRouteTab('official')}
+                                                            className={clsx("flex-1 px-4 py-2.5 rounded-lg text-xs font-bold transition-all",
+                                                                activeRouteTab === 'official' ? 'bg-white shadow text-[#055b65]' : 'text-gray-500 hover:text-gray-700'
+                                                            )}
+                                                        >
+                                                            <Shield size={14} className="inline mr-2" />
+                                                            Official Department Routes
+                                                        </button>
+                                                        <button
+                                                            onClick={() => setActiveRouteTab('custom')}
+                                                            className={clsx("flex-1 px-4 py-2.5 rounded-lg text-xs font-bold transition-all",
+                                                                activeRouteTab === 'custom' ? 'bg-white shadow text-[#055b65]' : 'text-gray-500 hover:text-gray-700'
+                                                            )}
+                                                        >
+                                                            <Mail size={14} className="inline mr-2" />
+                                                            Custom Routes
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                {/* Route Channels */}
+                                                <div className="p-6 max-h-[300px] overflow-y-auto flex-1">
+                                                    {activeRouteTab === 'official' ? (
+                                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                                            {OFFICIAL_ROUTES.map((channel) => {
+                                                                const isSelected = selectedRoutes.has(channel.id);
+                                                                const IconComp = channel.icon;
+                                                                return (
+                                                                    <button
+                                                                        key={channel.id}
+                                                                        onClick={() => toggleRoute(channel.id)}
+                                                                        className={clsx(
+                                                                            "p-4 rounded-2xl border-2 text-left transition-all duration-200 group",
+                                                                            isSelected ? "shadow-lg scale-[1.02]" : "border-gray-100 hover:border-gray-200 hover:bg-gray-50"
+                                                                        )}
+                                                                        style={isSelected ? { borderColor: channel.color, backgroundColor: `${channel.color}10` } : {}}
+                                                                    >
+                                                                        <div className="flex items-start gap-3">
+                                                                            <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white" style={{ backgroundColor: channel.color }}>
+                                                                                <IconComp size={18} />
+                                                                            </div>
+                                                                            <div className="flex-1">
+                                                                                <div className="flex items-center justify-between">
+                                                                                    <h4 className="font-bold text-sm text-gray-800">{channel.name}</h4>
+                                                                                    <div className={clsx("w-5 h-5 rounded-full border-2 flex items-center justify-center", isSelected ? "" : "border-gray-300")}
+                                                                                        style={isSelected ? { borderColor: channel.color, backgroundColor: channel.color } : {}}>
+                                                                                        {isSelected && <Check size={12} className="text-white" />}
+                                                                                    </div>
+                                                                                </div>
+                                                                                <p className="text-[10px] text-gray-500 mt-1">{channel.desc}</p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </button>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    ) : (
+                                                        <div className="space-y-4">
+                                                            {/* Custom Route Cards */}
+                                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                                                {CUSTOM_ROUTES.map((channel) => {
+                                                                    const isSelected = selectedRoutes.has(channel.id);
+                                                                    const IconComp = channel.icon;
+                                                                    return (
+                                                                        <button
+                                                                            key={channel.id}
+                                                                            onClick={() => toggleRoute(channel.id)}
+                                                                            className={clsx(
+                                                                                "p-4 rounded-2xl border-2 text-center transition-all duration-200",
+                                                                                isSelected ? "shadow-lg scale-[1.02]" : "border-gray-100 hover:border-gray-200 hover:bg-gray-50"
+                                                                            )}
+                                                                            style={isSelected ? { borderColor: channel.color, backgroundColor: `${channel.color}10` } : {}}
+                                                                        >
+                                                                            <div className="w-12 h-12 rounded-xl flex items-center justify-center text-white mx-auto mb-3" style={{ backgroundColor: channel.color }}>
+                                                                                <IconComp size={22} />
+                                                                            </div>
+                                                                            <h4 className="font-bold text-sm text-gray-800">{channel.name}</h4>
+                                                                            <p className="text-[10px] text-gray-500 mt-1">{channel.desc}</p>
+                                                                        </button>
+                                                                    );
+                                                                })}
+                                                            </div>
+
+                                                            {/* Email Input (if email route selected) */}
+                                                            {selectedRoutes.has('email') && (
+                                                                <div className="p-4 bg-blue-50 rounded-2xl border border-blue-100">
+                                                                    <label className="text-xs font-bold text-blue-700 uppercase tracking-wider mb-2 block">Email Recipients</label>
+                                                                    <input
+                                                                        type="email"
+                                                                        value={customEmail}
+                                                                        onChange={(e) => setCustomEmail(e.target.value)}
+                                                                        placeholder="Enter email addresses (comma separated)"
+                                                                        className="w-full px-4 py-3 rounded-xl border border-blue-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                                    />
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                {/* Route Notes */}
+                                                <div className="px-6 pb-4">
+                                                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">Route Notes (Optional)</label>
+                                                    <textarea
+                                                        value={routeNotes}
+                                                        onChange={(e) => setRouteNotes(e.target.value)}
+                                                        placeholder="Add any special instructions or notes for recipient departments..."
+                                                        rows={2}
+                                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-[#055b65] focus:bg-white resize-none"
+                                                    />
+                                                </div>
+
+                                                {/* Modal Footer */}
+                                                <div className="p-6 border-t border-gray-100 bg-gray-50 flex items-center justify-between gap-4">
+                                                    <div className="text-xs text-gray-500">
+                                                        <span className="font-bold text-gray-700">{selectedRoutes.size}</span> channel(s) selected
+                                                    </div>
+                                                    <div className="flex items-center gap-3">
+                                                        <button onClick={() => setShowRouteModal(false)} className="px-6 py-3 rounded-xl font-bold text-gray-500 border border-gray-200 bg-white hover:bg-gray-50 transition-all">
+                                                            Cancel
+                                                        </button>
+                                                        <button
+                                                            onClick={handleRouteSubmit}
+                                                            disabled={(selectedRoutes.size === 0 && !customEmail) || isRouting}
+                                                            className="px-8 py-3 rounded-xl font-black text-white shadow-lg hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                                            style={{ backgroundColor: activeColor }}
+                                                        >
+                                                            {isRouting ? 'Routing...' : <><Send size={16} /> Route Form</>}
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </>
+                                        )}
+                                    </motion.div>
+                                </div>
                             )}
                         </AnimatePresence>
                     </div>
