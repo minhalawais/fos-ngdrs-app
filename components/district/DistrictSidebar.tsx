@@ -18,7 +18,6 @@ const MENU_ITEMS = [
     { name: "Operational Dashboard", href: "/district", icon: LayoutDashboard },
     { name: "Intake & Registration", href: "/district/intake", icon: FilePlus },
     { name: "Case Repository", href: "/district/cases", icon: FolderOpen },
-    { name: "Compliance Reports", href: "/district/reports", icon: FileText },
 ];
 
 export default function DistrictSidebar() {
