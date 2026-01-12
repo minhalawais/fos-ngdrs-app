@@ -57,9 +57,18 @@ const initialPrevention = generatePreventionSubmissions();
 const initialProtection = generateProtectionSubmissions();
 const initialAwareness = generateAwarenessSubmissions();
 
-// Generate mock data for different tabs
-const generateNewCaseRequests = () => initialCaseRequests.filter(c => c.status === 'Pending Review').slice(0, 10);
-const generateReturnedCases = () => initialCaseRequests.filter(c => c.status === 'Returned' || c.status === 'Needs Clarification');
+// Brand Colors synced with National Dashboard
+const BRAND_COLORS = {
+    primary: "#1bd488",
+    teal: "#45828b",
+    dark: "#055b65",
+    soft: "#b2c9c5",
+    red: "#ef4444",
+    amber: "#f59e0b",
+    blue: "#3b82f6",
+    purple: "#8b5cf6",
+    surface: "#f8fafb"
+};
 
 const STATUS_STYLES: Record<string, string> = {
     'Pending': 'bg-gray-100 text-gray-700 border-gray-200',
@@ -67,7 +76,7 @@ const STATUS_STYLES: Record<string, string> = {
     'Under Review': 'bg-blue-50 text-blue-700 border-blue-200',
     'Verified': 'bg-green-50 text-green-700 border-green-200',
     'Approved': 'bg-green-50 text-green-700 border-green-200',
-    'Needs Clarification': 'bg-orange-50 text-orange-700 border-orange-200',
+    'Needs Clarification': 'bg-amber-50 text-amber-700 border-amber-200',
     'Rejected': 'bg-red-50 text-red-700 border-red-200',
     'Returned': 'bg-red-50 text-red-700 border-red-200',
     'Awaiting Data': 'bg-purple-50 text-purple-700 border-purple-200',
@@ -134,10 +143,10 @@ const getStageCategoryColor = (stageCode: string) => {
 type TabType = 'progress' | 'new' | 'returned' | 'data-update';
 
 const TABS = [
-    { id: 'progress' as TabType, label: 'Case Progress Submissions', icon: Clock, color: '#659CBF' },
-    { id: 'new' as TabType, label: 'New Case Submissions', icon: Plus, color: '#6EA969' },
-    { id: 'returned' as TabType, label: 'Returned Cases Submissions', icon: RotateCcw, color: '#D3A255' },
-    { id: 'data-update' as TabType, label: 'Data Update Requests', icon: FileWarning, color: '#BC5F75' },
+    { id: 'progress' as TabType, label: 'Case Progress Submissions', icon: Clock, color: BRAND_COLORS.teal },
+    { id: 'new' as TabType, label: 'New Case Submissions', icon: Plus, color: BRAND_COLORS.primary },
+    { id: 'returned' as TabType, label: 'Returned Cases Submissions', icon: RotateCcw, color: BRAND_COLORS.amber },
+    { id: 'data-update' as TabType, label: 'Data Update Requests', icon: FileWarning, color: BRAND_COLORS.red },
 ];
 
 export default function ProvincialSubmissionsPage() {
@@ -167,10 +176,10 @@ export default function ProvincialSubmissionsPage() {
     const [activeMainTab, setActiveMainTab] = useState<MainTab>('cases');
 
     const MAIN_TABS = [
-        { id: 'cases' as MainTab, label: 'Cases Submissions', icon: Scale, color: '#659CBF' },      // Primary
-        { id: 'prevention' as MainTab, label: 'Prevention Measures', icon: Shield, color: '#6EA969' }, // Secondary
-        { id: 'awareness' as MainTab, label: 'Awareness Measures', icon: BookOpen, color: '#D3A255' }, // Warning/Accent
-        { id: 'protection' as MainTab, label: 'Protection & Safety', icon: Stethoscope, color: '#BC5F75' } // Deep Accent
+        { id: 'cases' as MainTab, label: 'Cases Submissions', icon: Scale, color: BRAND_COLORS.teal },
+        { id: 'prevention' as MainTab, label: 'Prevention Measures', icon: Shield, color: BRAND_COLORS.primary },
+        { id: 'awareness' as MainTab, label: 'Awareness Measures', icon: BookOpen, color: BRAND_COLORS.amber },
+        { id: 'protection' as MainTab, label: 'Protection & Safety', icon: Stethoscope, color: BRAND_COLORS.purple }
     ];
 
     const toggleSection = (section: keyof typeof sectionsOpen) => {
@@ -235,9 +244,6 @@ export default function ProvincialSubmissionsPage() {
                     <p className="text-sm text-brand-teal">Review case submissions, manage requests, and track data updates</p>
                 </div>
                 <div className="flex gap-3">
-                    <Link href="/ncsw/timeline-demo" className="px-5 py-2 bg-white text-brand-dark hover:bg-gray-50 border border-gray-200 font-bold rounded-xl text-sm shadow-sm transition-all flex items-center gap-2">
-                        <Eye size={16} /> full Timeline Demo
-                    </Link>
                     <button className="px-5 py-2 bg-brand-dark hover:bg-brand-teal text-white font-bold rounded-xl text-sm shadow-md transition-all flex items-center gap-2">
                         <Send size={16} /> Publish All Approved
                     </button>
@@ -270,15 +276,15 @@ export default function ProvincialSubmissionsPage() {
             {/* SECTION 1: CASES SUBMISSION */}
             {/* SECTION 1: CASES SUBMISSION */}
             {activeMainTab === 'cases' && (
-                <div className="bg-white rounded-3xl border border-brand-surface shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <div className="p-6 border-b border-brand-surface flex justify-between items-center bg-[#659CBF]/5">
+                <div className="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                         <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-full bg-[#659CBF]/10 flex items-center justify-center text-[#659CBF]">
+                            <div className="w-10 h-10 rounded-full bg-brand-teal/10 flex items-center justify-center text-brand-teal">
                                 <Scale size={20} />
                             </div>
                             <div>
-                                <h2 className="text-lg font-bold text-[#659CBF]">Case Submissions</h2>
-                                <p className="text-xs text-gray-500">Manage individual GBV and TFGBV case files</p>
+                                <h2 className="text-lg font-bold text-brand-dark">Case Submissions</h2>
+                                <p className="text-xs text-brand-teal">Manage individual GBV and TFGBV case files</p>
                             </div>
                         </div>
                     </div>
@@ -292,46 +298,46 @@ export default function ProvincialSubmissionsPage() {
                                     label: 'Case Progress Submissions',
                                     count: progressCount,
                                     icon: Clock,
-                                    color: '#659CBF',
-                                    bg: '#659CBF15',
-                                    borderColor: '#659CBF'
+                                    color: BRAND_COLORS.teal,
+                                    bg: BRAND_COLORS.teal + '30',
+                                    borderColor: BRAND_COLORS.teal
                                 },
                                 {
                                     id: 'new',
                                     label: 'New Case Submissions',
                                     count: newCount,
                                     icon: Plus,
-                                    color: '#6EA969',
-                                    bg: '#6EA96915',
-                                    borderColor: '#6EA969'
+                                    color: BRAND_COLORS.primary,
+                                    bg: BRAND_COLORS.primary + '30',
+                                    borderColor: BRAND_COLORS.primary
                                 },
                                 {
                                     id: 'returned',
                                     label: 'Returned Cases Submissions',
                                     count: returnedCount,
                                     icon: RotateCcw,
-                                    color: '#D3A255',
-                                    bg: '#D3A25515',
-                                    borderColor: '#D3A255'
+                                    color: BRAND_COLORS.amber,
+                                    bg: BRAND_COLORS.amber + '30',
+                                    borderColor: BRAND_COLORS.amber
                                 },
                                 {
                                     id: 'data-update',
                                     label: 'Data Update Requests',
                                     count: rejectedCount,
                                     icon: FileWarning,
-                                    color: '#BC5F75',
-                                    bg: '#BC5F7515',
-                                    borderColor: '#BC5F75'
+                                    color: BRAND_COLORS.red,
+                                    bg: BRAND_COLORS.red + '30',
+                                    borderColor: BRAND_COLORS.red
                                 },
                             ].map((stat) => (
                                 <div
                                     key={stat.id}
                                     onClick={() => setActiveTab(stat.id as TabType)}
                                     className={clsx(
-                                        "rounded-2xl border p-4 shadow-sm cursor-pointer transition-all duration-300 group relative",
+                                        "rounded-2xl border p-4 shadow-sm cursor-pointer transition-all duration-300 group relative overflow-hidden",
                                         activeTab === stat.id
-                                            ? "bg-white ring-1 ring-black/5"
-                                            : "border-brand-surface bg-gray-50/30 hover:bg-white hover:shadow-md"
+                                            ? "bg-white ring-1 ring-inset"
+                                            : "border-gray-200 bg-gray-50 hover:bg-white hover:border-gray-300 hover:shadow-md"
                                     )}
                                     style={{
                                         borderColor: activeTab === stat.id ? stat.borderColor : undefined,
@@ -367,11 +373,11 @@ export default function ProvincialSubmissionsPage() {
                         </div>
 
                         {/* Cases Table */}
-                        <div className="rounded-2xl border border-brand-surface overflow-hidden">
+                        <div className="rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
                             <table className="w-full text-left border-collapse">
-                                <thead className="bg-brand-surface/20 text-xs text-brand-dark/70 uppercase font-bold tracking-wider">
+                                <thead className="bg-gray-50 text-xs text-gray-500 uppercase font-bold tracking-wider border-b border-gray-200">
                                     <tr>
-                                        <th className="px-6 py-4">Case ID</th>
+                                        <th className="px-6 py-4 font-semibold">Case ID</th>
                                         <th className="px-6 py-4">Province / District</th>
                                         <th className="px-6 py-4">Type</th>
                                         <th className="px-6 py-4">Submitted</th>
@@ -442,15 +448,15 @@ export default function ProvincialSubmissionsPage() {
                 </div>
             )}      {/* SECTION 3: PREVENTION SUBMISSION */}
             {activeMainTab === 'prevention' && (
-                <div className="bg-white rounded-3xl border border-brand-surface shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <div className="p-6 border-b border-brand-surface flex justify-between items-center bg-[#6EA969]/5">
+                <div className="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                         <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-full bg-[#6EA969]/10 flex items-center justify-center text-[#6EA969]">
+                            <div className="w-10 h-10 rounded-full bg-brand-teal/10 flex items-center justify-center text-brand-teal">
                                 <Shield size={20} />
                             </div>
                             <div>
-                                <h2 className="text-lg font-bold text-[#6EA969]">Prevention Measures Submission</h2>
-                                <p className="text-xs text-gray-500">Review community programs, training, and strategic initiatives</p>
+                                <h2 className="text-lg font-bold text-brand-dark">Prevention Measures</h2>
+                                <p className="text-xs text-brand-teal">Review community programs, training, and strategic initiatives</p>
                             </div>
                         </div>
                     </div>
@@ -459,12 +465,12 @@ export default function ProvincialSubmissionsPage() {
                         {/* Prevention Stats */}
                         <div className="grid grid-cols-4 gap-4">
                             {[
-                                { label: 'Total Projects', count: preventionSubmissions.length, icon: Target, color: '#659CBF', bg: '#659CBF15' },
-                                { label: 'Active/Approved', count: preventionSubmissions.filter(p => p.status === 'Approved').length, icon: CheckCircle, color: '#6EA969', bg: '#6EA96915' },
-                                { label: 'Review Pending', count: preventionSubmissions.filter(p => p.status.includes('Review')).length, icon: Clock, color: '#D3A255', bg: '#D3A25515' },
-                                { label: 'Submissions Req', count: preventionSubmissions.filter(p => p.status === 'Needs Clarification').length, icon: AlertTriangle, color: '#EE8A7D', bg: '#EE8A7D15' },
+                                { label: 'Total Projects', count: preventionSubmissions.length, icon: Target, color: BRAND_COLORS.teal, bg: BRAND_COLORS.teal + '30' },
+                                { label: 'Active/Approved', count: preventionSubmissions.filter(p => p.status === 'Approved').length, icon: CheckCircle, color: BRAND_COLORS.primary, bg: BRAND_COLORS.primary + '30' },
+                                { label: 'Review Pending', count: preventionSubmissions.filter(p => p.status.includes('Review')).length, icon: Clock, color: BRAND_COLORS.amber, bg: BRAND_COLORS.amber + '30' },
+                                { label: 'Submissions Req', count: preventionSubmissions.filter(p => p.status === 'Needs Clarification').length, icon: AlertTriangle, color: BRAND_COLORS.red, bg: BRAND_COLORS.red + '30' },
                             ].map((stat, idx) => (
-                                <div key={idx} className="bg-gray-50/50 rounded-2xl border border-brand-surface p-4 flex items-center gap-3">
+                                <div key={idx} className="bg-gray-50 rounded-2xl border border-gray-200 p-4 flex items-center gap-3">
                                     <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: stat.bg, color: stat.color }}><stat.icon size={20} /></div>
                                     <div>
                                         <p className="text-xl font-bold text-brand-dark">{stat.count}</p>
@@ -473,11 +479,11 @@ export default function ProvincialSubmissionsPage() {
                                 </div>
                             ))}
                         </div>
-                        <div className="rounded-2xl border border-brand-surface overflow-hidden">
+                        <div className="rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
                             <table className="w-full text-left border-collapse">
-                                <thead className="bg-brand-surface/20 text-xs text-brand-dark/70 uppercase font-bold tracking-wider">
+                                <thead className="bg-gray-50 text-xs text-gray-500 uppercase font-bold tracking-wider border-b border-gray-200">
                                     <tr>
-                                        <th className="px-6 py-4">ID</th>
+                                        <th className="px-6 py-4 font-semibold">ID</th>
                                         <th className="px-6 py-4">Program Title</th>
                                         <th className="px-6 py-4">Province / District</th>
                                         <th className="px-6 py-4">Type</th>
@@ -511,15 +517,15 @@ export default function ProvincialSubmissionsPage() {
 
             {/* SECTION 4: PROTECTION & SUPPORT SUBMISSION */}
             {activeMainTab === 'protection' && (
-                <div className="bg-white rounded-3xl border border-brand-surface shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <div className="p-6 border-b border-brand-surface flex justify-between items-center bg-[#BC5F75]/5">
+                <div className="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                         <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-full bg-[#BC5F75]/10 flex items-center justify-center text-[#BC5F75]">
+                            <div className="w-10 h-10 rounded-full bg-brand-teal/10 flex items-center justify-center text-brand-teal">
                                 <Stethoscope size={20} />
                             </div>
                             <div>
-                                <h2 className="text-lg font-bold text-[#BC5F75]">Protection & Support Submission</h2>
-                                <p className="text-xs text-gray-500">Review shelters, helplines, and medico-legal reports</p>
+                                <h2 className="text-lg font-bold text-brand-dark">Protection & Support</h2>
+                                <p className="text-xs text-brand-teal">Review shelters, helplines, and medico-legal reports</p>
                             </div>
                         </div>
                     </div>
@@ -528,12 +534,12 @@ export default function ProvincialSubmissionsPage() {
                         {/* Protection Stats */}
                         <div className="grid grid-cols-4 gap-4">
                             {[
-                                { label: 'Total Reports', count: protectionSubmissions.length, icon: FileText, color: '#659CBF', bg: '#659CBF15' },
-                                { label: 'Verified', count: protectionSubmissions.filter(p => p.status === 'Approved').length, icon: CheckCircle, color: '#6EA969', bg: '#6EA96915' },
-                                { label: 'Under Review', count: protectionSubmissions.filter(p => p.status === 'Under Review').length, icon: Clock, color: '#D3A255', bg: '#D3A25515' },
-                                { label: 'Issues Flagged', count: protectionSubmissions.filter(p => p.status === 'Needs Clarification' || p.status === 'Returned').length, icon: AlertTriangle, color: '#EE8A7D', bg: '#EE8A7D15' },
+                                { label: 'Total Reports', count: protectionSubmissions.length, icon: FileText, color: BRAND_COLORS.teal, bg: BRAND_COLORS.teal + '30' },
+                                { label: 'Verified', count: protectionSubmissions.filter(p => p.status === 'Approved').length, icon: CheckCircle, color: BRAND_COLORS.primary, bg: BRAND_COLORS.primary + '30' },
+                                { label: 'Under Review', count: protectionSubmissions.filter(p => p.status === 'Under Review').length, icon: Clock, color: BRAND_COLORS.amber, bg: BRAND_COLORS.amber + '30' },
+                                { label: 'Issues Flagged', count: protectionSubmissions.filter(p => p.status === 'Needs Clarification' || p.status === 'Returned').length, icon: AlertTriangle, color: BRAND_COLORS.red, bg: BRAND_COLORS.red + '30' },
                             ].map((stat, idx) => (
-                                <div key={idx} className="bg-gray-50/50 rounded-2xl border border-brand-surface p-4 flex items-center gap-3">
+                                <div key={idx} className="bg-gray-50 rounded-2xl border border-gray-200 p-4 flex items-center gap-3">
                                     <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: stat.bg, color: stat.color }}><stat.icon size={20} /></div>
                                     <div>
                                         <p className="text-xl font-bold text-brand-dark">{stat.count}</p>
@@ -542,11 +548,11 @@ export default function ProvincialSubmissionsPage() {
                                 </div>
                             ))}
                         </div>
-                        <div className="rounded-2xl border border-brand-surface overflow-hidden">
+                        <div className="rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
                             <table className="w-full text-left border-collapse">
-                                <thead className="bg-brand-surface/20 text-xs text-brand-dark/70 uppercase font-bold tracking-wider">
+                                <thead className="bg-gray-50 text-xs text-gray-500 uppercase font-bold tracking-wider border-b border-gray-200">
                                     <tr>
-                                        <th className="px-6 py-4">ID</th>
+                                        <th className="px-6 py-4 font-semibold">ID</th>
                                         <th className="px-6 py-4">Report Title</th>
                                         <th className="px-6 py-4">Province / District</th>
                                         <th className="px-6 py-4">Type</th>
@@ -580,15 +586,15 @@ export default function ProvincialSubmissionsPage() {
 
             {/* SECTION 5: AWARENESS SUBMISSION */}
             {activeMainTab === 'awareness' && (
-                <div className="bg-white rounded-3xl border border-brand-surface shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <div className="p-6 border-b border-brand-surface flex justify-between items-center bg-[#D3A255]/5">
+                <div className="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                         <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-full bg-[#D3A255]/10 flex items-center justify-center text-[#D3A255]">
+                            <div className="w-10 h-10 rounded-full bg-brand-teal/10 flex items-center justify-center text-brand-teal">
                                 <BookOpen size={20} />
                             </div>
                             <div>
-                                <h2 className="text-lg font-bold text-[#D3A255]">Awareness Measures Submission</h2>
-                                <p className="text-xs text-gray-500">Review media campaigns, public service announcements, and events</p>
+                                <h2 className="text-lg font-bold text-brand-dark">Awareness Measures</h2>
+                                <p className="text-xs text-brand-teal">Review media campaigns, public service announcements, and events</p>
                             </div>
                         </div>
                     </div>
@@ -597,12 +603,12 @@ export default function ProvincialSubmissionsPage() {
                         {/* Awareness Stats */}
                         <div className="grid grid-cols-4 gap-4">
                             {[
-                                { label: 'Total Campaigns', count: awarenessSubmissions.length, icon: Megaphone, color: '#659CBF', bg: '#659CBF15' },
-                                { label: 'Certified', count: awarenessSubmissions.filter(a => a.status === 'Approved').length, icon: CheckCircle, color: '#6EA969', bg: '#6EA96915' },
-                                { label: 'Under Review', count: awarenessSubmissions.filter(a => a.status === 'Under Review').length, icon: Clock, color: '#D3A255', bg: '#D3A25515' },
-                                { label: 'Rejected/Returned', count: awarenessSubmissions.filter(a => a.status === 'Rejected' || a.status === 'Returned').length, icon: XCircle, color: '#EE8A7D', bg: '#EE8A7D15' },
+                                { label: 'Total Campaigns', count: awarenessSubmissions.length, icon: Megaphone, color: BRAND_COLORS.teal, bg: BRAND_COLORS.teal + '30' },
+                                { label: 'Certified', count: awarenessSubmissions.filter(a => a.status === 'Approved').length, icon: CheckCircle, color: BRAND_COLORS.primary, bg: BRAND_COLORS.primary + '30' },
+                                { label: 'Under Review', count: awarenessSubmissions.filter(a => a.status === 'Under Review').length, icon: Clock, color: BRAND_COLORS.amber, bg: BRAND_COLORS.amber + '30' },
+                                { label: 'Rejected/Returned', count: awarenessSubmissions.filter(a => a.status === 'Rejected' || a.status === 'Returned').length, icon: XCircle, color: BRAND_COLORS.red, bg: BRAND_COLORS.red + '30' },
                             ].map((stat, idx) => (
-                                <div key={idx} className="bg-gray-50/50 rounded-2xl border border-brand-surface p-4 flex items-center gap-3">
+                                <div key={idx} className="bg-gray-50 rounded-2xl border border-gray-200 p-4 flex items-center gap-3">
                                     <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: stat.bg, color: stat.color }}><stat.icon size={20} /></div>
                                     <div>
                                         <p className="text-xl font-bold text-brand-dark">{stat.count}</p>
@@ -611,11 +617,11 @@ export default function ProvincialSubmissionsPage() {
                                 </div>
                             ))}
                         </div>
-                        <div className="rounded-2xl border border-brand-surface overflow-hidden">
+                        <div className="rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
                             <table className="w-full text-left border-collapse">
-                                <thead className="bg-brand-surface/20 text-xs text-brand-dark/70 uppercase font-bold tracking-wider">
+                                <thead className="bg-gray-50 text-xs text-gray-500 uppercase font-bold tracking-wider border-b border-gray-200">
                                     <tr>
-                                        <th className="px-6 py-4">ID</th>
+                                        <th className="px-6 py-4 font-semibold">ID</th>
                                         <th className="px-6 py-4">Campaign Title</th>
                                         <th className="px-6 py-4">Province / District</th>
                                         <th className="px-6 py-4">Type</th>
