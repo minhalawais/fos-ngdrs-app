@@ -42,6 +42,19 @@ const preventionProjects = generatePreventionSubmissions();
 const awarenessCampaigns = generateAwarenessSubmissions();
 const detailedCases = generateCaseRepository(); // For timeline view
 
+// Brand Colors synced with National Dashboard
+const BRAND_COLORS = {
+    primary: "#1bd488",
+    teal: "#45828b",
+    dark: "#055b65",
+    soft: "#b2c9c5",
+    red: "#ef4444",
+    amber: "#f59e0b",
+    blue: "#3b82f6",
+    purple: "#8b5cf6",
+    surface: "#f8fafb"
+};
+
 const STATUS_STYLES: Record<string, string> = {
     'Reported': 'bg-gray-100 text-gray-700',
     'FIR Registered': 'bg-blue-50 text-blue-700',
@@ -176,26 +189,26 @@ export default function CaseExplorerPage() {
     const getStats = () => {
         if (activeTab === 'cases') {
             return [
-                { label: 'Total Cases', value: nationalCases.length, icon: Search, color: '#659CBF' },
-                { label: 'Published', value: nationalCases.filter((c: any) => c.verificationStatus === 'Published').length, icon: CheckCircle, color: '#6EA969' },
-                { label: 'Pending', value: nationalCases.filter((c: any) => c.verificationStatus === 'Pending').length, icon: Clock, color: '#D3A255' },
-                { label: 'Critical', value: nationalCases.filter((c: any) => c.risk === 'Critical').length, icon: AlertTriangle, color: '#EE8A7D' },
+                { label: 'Total Cases', value: nationalCases.length, icon: Search, color: BRAND_COLORS.teal },
+                { label: 'Published', value: nationalCases.filter((c: any) => c.verificationStatus === 'Published').length, icon: CheckCircle, color: BRAND_COLORS.primary },
+                { label: 'Pending', value: nationalCases.filter((c: any) => c.verificationStatus === 'Pending').length, icon: Clock, color: BRAND_COLORS.amber },
+                { label: 'Critical', value: nationalCases.filter((c: any) => c.risk === 'Critical').length, icon: AlertTriangle, color: BRAND_COLORS.red },
             ];
         } else if (activeTab === 'prevention') {
             const totalBeneficiaries = preventionProjects.reduce((acc, curr) => acc + curr.targetBeneficiaries, 0);
             return [
-                { label: 'Total Projects', value: preventionProjects.length, icon: Briefcase, color: '#659CBF' },
-                { label: 'Beneficiaries', value: totalBeneficiaries.toLocaleString(), icon: Users, color: '#6EA969' },
-                { label: 'Approved', value: preventionProjects.filter(p => p.status === 'Approved').length, icon: CheckCircle, color: '#D3A255' },
-                { label: 'Under Review', value: preventionProjects.filter(p => p.status === 'Under Review').length, icon: Clock, color: '#BC5F75' },
+                { label: 'Total Projects', value: preventionProjects.length, icon: Briefcase, color: BRAND_COLORS.teal },
+                { label: 'Beneficiaries', value: totalBeneficiaries.toLocaleString(), icon: Users, color: BRAND_COLORS.primary },
+                { label: 'Approved', value: preventionProjects.filter(p => p.status === 'Approved').length, icon: CheckCircle, color: BRAND_COLORS.primary },
+                { label: 'Under Review', value: preventionProjects.filter(p => p.status === 'Under Review').length, icon: Clock, color: BRAND_COLORS.amber },
             ];
         } else {
             const totalReach = awarenessCampaigns.reduce((acc, curr) => acc + curr.reachEstimate, 0);
             return [
-                { label: 'Total Campaigns', value: awarenessCampaigns.length, icon: Megaphone, color: '#659CBF' },
-                { label: 'Est. Reach', value: `${(totalReach / 1000000).toFixed(1)}M+`, icon: Users, color: '#6EA969' },
-                { label: 'Approved', value: awarenessCampaigns.filter((a: any) => a.status === 'Approved').length, icon: CheckCircle, color: '#D3A255' },
-                { label: 'Media Channels', value: new Set(awarenessCampaigns.map((c: any) => c.type)).size, icon: Tv, color: '#BC5F75' },
+                { label: 'Total Campaigns', value: awarenessCampaigns.length, icon: Megaphone, color: BRAND_COLORS.teal },
+                { label: 'Est. Reach', value: `${(totalReach / 1000000).toFixed(1)}M+`, icon: Users, color: BRAND_COLORS.primary },
+                { label: 'Approved', value: awarenessCampaigns.filter((a: any) => a.status === 'Approved').length, icon: CheckCircle, color: BRAND_COLORS.primary },
+                { label: 'Media Channels', value: new Set(awarenessCampaigns.map((c: any) => c.type)).size, icon: Tv, color: BRAND_COLORS.purple },
             ];
         }
     };
@@ -221,7 +234,7 @@ export default function CaseExplorerPage() {
                     </h1>
                     <p className="text-sm text-brand-teal">Search and audit cases, prevention measures, and awareness campaigns</p>
                 </div>
-                <button className="px-5 py-2 bg-white border border-brand-surface hover:bg-gray-50 text-brand-dark font-bold rounded-xl text-sm shadow-sm transition-all flex items-center gap-2">
+                <button className="px-5 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-brand-dark font-bold rounded-xl text-sm shadow-sm transition-all flex items-center gap-2">
                     <Download size={16} /> Export Registry
                 </button>
             </div>
@@ -257,8 +270,8 @@ export default function CaseExplorerPage() {
             {/* Stats Bar */}
             <div className="grid grid-cols-4 gap-4">
                 {getStats().map((stat, idx) => (
-                    <div key={idx} className="bg-white rounded-2xl border border-brand-surface p-5 shadow-sm flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${stat.color}15`, color: stat.color }}>
+                    <div key={idx} className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow">
+                        <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${stat.color}30`, color: stat.color }}>
                             <stat.icon size={24} />
                         </div>
                         <div>
@@ -270,19 +283,19 @@ export default function CaseExplorerPage() {
             </div>
 
             {/* Filters Bar */}
-            <div className="flex flex-col md:flex-row gap-4 bg-white p-4 rounded-2xl border border-brand-surface shadow-sm">
+            <div className="flex flex-col md:flex-row gap-4 bg-white p-4 rounded-2xl border border-gray-200 shadow-sm">
                 <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                     <input
                         type="text"
                         placeholder={`Search ${activeTab}...`}
-                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-brand-surface focus:outline-none focus:ring-2 focus:ring-brand-teal/50 focus:border-brand-teal transition-all"
+                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-teal/50 focus:border-brand-teal transition-all"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
                 <select
-                    className="px-4 py-2 rounded-xl border border-brand-surface focus:outline-none focus:ring-2 focus:ring-brand-teal/50 bg-white min-w-[160px]"
+                    className="px-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-teal/50 bg-white min-w-[160px]"
                     value={provinceFilter}
                     onChange={(e) => setProvinceFilter(e.target.value)}
                 >
@@ -293,7 +306,7 @@ export default function CaseExplorerPage() {
                     <option value="Balochistan">Balochistan</option>
                 </select>
                 <select
-                    className="px-4 py-2 rounded-xl border border-brand-surface focus:outline-none focus:ring-2 focus:ring-brand-teal/50 bg-white min-w-[160px]"
+                    className="px-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-teal/50 bg-white min-w-[160px]"
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
                 >
@@ -315,11 +328,11 @@ export default function CaseExplorerPage() {
             </div>
 
             {/* Main Table */}
-            <div className="bg-white rounded-2xl border border-brand-surface shadow-sm overflow-hidden min-h-[400px]">
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden min-h-[400px]">
                 <table className="w-full text-left border-collapse">
-                    <thead className="bg-brand-surface/20 text-xs text-brand-dark/70 uppercase font-bold tracking-wider">
+                    <thead className="bg-gray-50 text-xs text-gray-500 uppercase font-bold tracking-wider border-b border-gray-200">
                         <tr>
-                            <th className="px-6 py-4">ID</th>
+                            <th className="px-6 py-4 font-semibold">ID</th>
                             <th className="px-6 py-4">
                                 {activeTab === 'cases' ? 'District' : activeTab === 'prevention' ? 'Program Title' : 'Campaign Title'}
                             </th>
@@ -444,7 +457,7 @@ export default function CaseExplorerPage() {
                                 {modalType === 'cases' && (
                                     <div className="space-y-6">
                                         {/* Case Life-cycle Header */}
-                                        <div className="bg-white p-6 rounded-3xl border border-brand-surface shadow-sm">
+                                        <div className="bg-white p-6 rounded-3xl border border-gray-200 shadow-sm">
                                             <div className="flex items-center justify-between mb-6">
                                                 <div>
                                                     <h3 className="font-bold text-brand-dark uppercase tracking-widest text-xs flex items-center gap-2">
@@ -611,20 +624,20 @@ export default function CaseExplorerPage() {
                                 {modalType === 'prevention' && (
                                     <div className="space-y-6">
                                         <div className="grid grid-cols-2 gap-4">
-                                            <div className="bg-white p-4 rounded-2xl border border-brand-surface text-center">
+                                            <div className="bg-white p-4 rounded-2xl border border-gray-200 text-center">
                                                 <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Beneficiaries</p>
                                                 <p className="text-2xl font-bold text-brand-dark">{selectedItem.targetBeneficiaries?.toLocaleString()}</p>
                                             </div>
-                                            <div className="bg-white p-4 rounded-2xl border border-brand-surface text-center">
+                                            <div className="bg-white p-4 rounded-2xl border border-gray-200 text-center">
                                                 <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Duration</p>
                                                 <p className="text-sm font-bold text-brand-dark">{selectedItem.startDate} - {selectedItem.endDate}</p>
                                             </div>
                                         </div>
-                                        <div className="bg-white p-5 rounded-2xl border border-brand-surface">
+                                        <div className="bg-white p-5 rounded-2xl border border-gray-200">
                                             <h3 className="font-bold text-sm text-brand-dark uppercase tracking-widest mb-3">Project Description</h3>
                                             <p className="text-sm text-gray-600 leading-relaxed">{selectedItem.details.description}</p>
                                         </div>
-                                        <div className="bg-white p-5 rounded-2xl border border-brand-surface">
+                                        <div className="bg-white p-5 rounded-2xl border border-gray-200">
                                             <h3 className="font-bold text-sm text-brand-dark uppercase tracking-widest mb-3">Objectives</h3>
                                             <ul className="space-y-2">
                                                 {selectedItem.details.objectives.map((obj: string, i: number) => (
@@ -641,20 +654,20 @@ export default function CaseExplorerPage() {
                                 {modalType === 'awareness' && (
                                     <div className="space-y-6">
                                         <div className="grid grid-cols-2 gap-4">
-                                            <div className="bg-white p-4 rounded-2xl border border-brand-surface text-center">
+                                            <div className="bg-white p-4 rounded-2xl border border-gray-200 text-center">
                                                 <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Est. Reach</p>
                                                 <p className="text-2xl font-bold text-brand-dark">{selectedItem.reachEstimate?.toLocaleString()}</p>
                                             </div>
-                                            <div className="bg-white p-4 rounded-2xl border border-brand-surface text-center">
+                                            <div className="bg-white p-4 rounded-2xl border border-gray-200 text-center">
                                                 <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Schedule</p>
                                                 <p className="text-sm font-bold text-brand-dark">{selectedItem.startDate} - {selectedItem.endDate}</p>
                                             </div>
                                         </div>
-                                        <div className="bg-white p-5 rounded-2xl border border-brand-surface">
+                                        <div className="bg-white p-5 rounded-2xl border border-gray-200">
                                             <h3 className="font-bold text-sm text-brand-dark uppercase tracking-widest mb-3">Campaign Archive</h3>
                                             <p className="text-sm text-gray-600 leading-relaxed">{selectedItem.details.description}</p>
                                         </div>
-                                        <div className="bg-white p-5 rounded-2xl border border-brand-surface">
+                                        <div className="bg-white p-5 rounded-2xl border border-gray-200">
                                             <h3 className="font-bold text-sm text-brand-dark uppercase tracking-widest mb-3">Media Channels</h3>
                                             <div className="flex flex-wrap gap-2">
                                                 {selectedItem.details.mediaChannels?.map((ch: string, i: number) => (

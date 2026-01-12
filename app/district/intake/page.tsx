@@ -334,7 +334,7 @@ export default function IntakePage() {
                                 </div>
                                 <div>
                                     <h2 className="text-xl font-black tracking-tight" style={{ color: activeColor }}>{MAIN_TABS.find(t => t.id === activeMainTab)?.label}</h2>
-                                    <p className="text-xs text-gray-500 font-bold uppercase tracking-widest mt-0.5">District Entry Protocol v4.2</p>
+                                    <p className="text-xs text-gray-500 font-bold uppercase tracking-widest mt-0.5">District Entry</p>
                                 </div>
                             </div>
                             <div className="flex items-center gap-3">
