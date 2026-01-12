@@ -74,10 +74,29 @@ export default function FullTimelinePage() {
         }
     };
 
+    // Helper to format dates to readable format
+    const formatDate = (dateStr: string) => {
+        if (!dateStr || dateStr === 'N/A') return dateStr;
+        try {
+            const date = new Date(dateStr);
+            if (isNaN(date.getTime())) return dateStr;
+            return date.toLocaleDateString('en-US', {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric'
+            });
+        } catch (e) {
+            return dateStr;
+        }
+    };
+
     // Helper to safely extract field from any stage in timeline
     const getField = (key: string) => {
         const foundStage = idealCase.timeline.find((s: any) => s.details && s.details[key]);
-        return foundStage ? foundStage.details[key] : 'N/A';
+        const val = foundStage ? foundStage.details[key] : 'N/A';
+        // Auto-format if it's a date field
+        if (key.toLowerCase().includes('date')) return formatDate(val);
+        return val;
     };
 
     return (
@@ -148,16 +167,16 @@ export default function FullTimelinePage() {
                                 </h2>
                                 <div className="text-gray-700 leading-relaxed text-sm md:text-base space-y-4">
                                     <p>
-                                        The story of this case began when {idealCase.survivor} arrived at {getField('intakeChannel') || 'the reporting center'} on {idealCase.date} to share a painful account of {idealCase.crimeCode.split('(')[1]?.replace(')', '') || idealCase.category}. She described how {getField('perpetratorType')?.toLowerCase() || 'a perpetrator'} had committed {getField('violenceType')?.split('(')[0]?.trim().toLowerCase() || 'an act of violence'} against her at {getField('incidentLocation')?.toLowerCase() || 'a specific location'}.
+                                        On {formatDate(idealCase.date)}, {idealCase.survivor} sought justice at {getField('intakeChannel') || 'the reporting center'} ({getField('policeStation')}) in {idealCase.district}, {idealCase.province}, reporting a distressing incident of {idealCase.crimeCode.split('(')[1]?.replace(')', '') || idealCase.category}. She provided a detailed account of how {getField('perpetratorType')?.toLowerCase() || 'a perpetrator'} perpetrated {getField('violenceType')?.split('(')[0]?.trim().toLowerCase() || 'an offense'} at {getField('incidentLocation')?.toLowerCase() || 'a specific location'}.
                                     </p>
                                     <p>
-                                        Following her account, the police took immediate action, responding {getField('policeResponseTime')?.toLowerCase() || 'within the required timeframe'}. The authorities at {getField('policeStation')} formally documented the police side of the story by registering FIR Number {getField('firNo')} under sections {getField('sections')} on {getField('firDate')}. The investigation was then entrusted to {getField('ioAssigned')}, who began the process of gathering evidence and statements to build a legal case.
+                                        Following the initial report, the law enforcement team at {getField('policeStation')} moved swiftly, responding {getField('policeResponseTime')?.toLowerCase() || 'promptly'}. To formalize the state's narrative, FIR Number {getField('firNo')} was registered under sections {getField('sections')} on {getField('firDate')}. The investigation, led by {getField('ioAssigned')}, focused on consolidating the survivor's testimony with forensic evidence.
                                     </p>
                                     <p>
-                                        Crucial evidence was secured when {idealCase.survivor} was taken to {getField('hospital')} for a medical examination on {getField('examDate')}. There, {getField('mloName')} documented the physical findings, and a DNA report was processed with the status being {getField('dnaReport')?.toLowerCase()}. With the investigation intensifying, the police successfully apprehended the accused on {getField('arrestDate')}, who was then placed under {getField('remandType')?.toLowerCase()} at {getField('jailLocation')} after {getField('bailStatus')?.toLowerCase()}.
+                                        Medical verification was promptly conducted at {getField('hospital')} on {getField('examDate')}, where {getField('mloName')} meticulously documented all physical evidence. The subsequent DNA analysis ({getField('dnaReport')?.toLowerCase()}) provided critical scientific backing to the case. As the investigation reached its peak, the police executed the arrest of the accused on {getField('arrestDate')}, subsequent to which the individual was placed under {getField('remandType')?.toLowerCase()} at {getField('jailLocation')}.
                                     </p>
                                     <p>
-                                        The final chapter of the story unfolded in the courtroom of {getField('judgeName')}. After a thorough review of the survivor's testimony and the evidence presented by the police, the court reached a definitive conclusion. The judge delivered a verdict of {idealCase.status.toLowerCase()}, sentencing the accused to {getField('sentenceDetail')}. This brought the case to a resolution with {idealCase.completeness}% adherence to the national GBV reporting framework.
+                                        The pursuit of justice culminated in the court of {getField('judgeName')}. Upon weighing the survivor's courageous testimony against the police's evidential findings, the court delivered a verdict of {idealCase.status.toLowerCase()}. The case concluded with a sentence of {getField('sentenceDetail')}, ensuring accountability and achieving a {idealCase.completeness}% success rate according to the national GBV reporting framework.
                                     </p>
                                 </div>
                             </div>
@@ -189,7 +208,7 @@ export default function FullTimelinePage() {
                             data: [
                                 { label: 'Type', val: idealCase.crimeCode },
                                 { label: 'Location', val: getField('incidentLocation') },
-                                { label: 'Date', val: idealCase.date },
+                                { label: 'Date', val: formatDate(idealCase.date) },
                                 { label: 'Police Resp.', val: getField('policeResponseTime') }
                             ]
                         },
@@ -378,7 +397,7 @@ export default function FullTimelinePage() {
                                                     <h3 className={clsx("text-lg font-bold transition-colors", isActive ? "text-gray-900" : "text-gray-700")}>{stage.stage}</h3>
                                                     <p className={clsx("text-xs font-medium flex items-center gap-1 mt-0.5", isActive ? color.text : "text-gray-500")}>
                                                         {isActive && <CheckCircle size={12} />}
-                                                        <span className="text-gray-500">Reported:</span> {stage.date}
+                                                        <span className="text-gray-500">Reported:</span> {formatDate(stage.date)}
                                                     </p>
                                                 </div>
                                             </div>

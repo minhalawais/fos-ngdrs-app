@@ -290,18 +290,36 @@ export const generateCaseRepository = () => {
             const isCompleted = isIdeal || idx < 3 + (i % 4);
             const isInProgress = !isIdeal && idx === 3 + (i % 4);
 
+            // Calculate a logical base date for this stage (roughly 2-3 days apart)
+            const stageBaseDate = new Date(2024, 0, 10 + (idx * 2));
+            const dateStr = stageBaseDate.toISOString().split('T')[0];
+
             return {
                 id: `stage-${i}-${idx}`,
                 stageCode: stage.code,
                 stage: stage.name,
                 description: (stage as any).description,
                 status: isCompleted ? 'Completed' : (isInProgress ? 'In Progress' : 'Pending'),
-                date: isCompleted ? `2024-01-${(10 + idx).toString().padStart(2, '0')}` : 'N/A',
+                date: isCompleted ? dateStr : 'N/A',
                 order: stage.order,
-                details: stage.fields.reduce((acc, field) => ({
-                    ...acc,
-                    [field]: getMockFieldValue(field, i, idx)
-                }), {}),
+                details: stage.fields.reduce((acc, field) => {
+                    let val = getMockFieldValue(field, i, idx);
+
+                    // Force internal date fields to be logically consistent with the stage date
+                    if (field.toLowerCase().includes('date') && field !== 'reportingDate') {
+                        // For fields like firDate, examDate, etc., use the stage date or offset it slightly
+                        const fieldDate = new Date(stageBaseDate);
+                        if (field === 'firDate' || field === 'examDate' || field === 'arrestDate') {
+                            fieldDate.setDate(fieldDate.getDate() + 1); // FIR usually 1 day after stage start in this mock
+                        }
+                        val = fieldDate.toISOString().split('T')[0];
+                    } else if (field === 'reportingDate') {
+                        // Reporting date should match the first stage date
+                        val = '2024-01-10';
+                    }
+
+                    return { ...acc, [field]: val };
+                }, {}),
                 attachments: isCompleted ? [
                     { name: `${stage.name} Document.pdf`, type: 'pdf', url: '#' },
                     { name: `Evidence_Snapshot_${idx + 1}.jpg`, type: 'image', url: '#' }
