@@ -33,7 +33,7 @@ export const GBV_STAGES = [
         required: true,
         order: 2,
         description: 'A comprehensive risk assessment is conducted to determine the severity and type of violence. If a criminal offense is identified, the complaint is formally routed to the relevant Police Station. This stage includes verifying jurisdiction, documenting the initial narrative, and ensuring immediate safety measures are activated for high-risk cases.',
-        fields: ['riskLevel', 'urgentProtection', 'violenceType', 'complaintNo', 'policeStation', 'referralType', 'recurrence', 'previousIncidents']
+        fields: ['riskLevel', 'urgentProtection', 'violenceType', 'incidentLocation', 'complaintNo', 'policeStation', 'referralType', 'recurrence', 'previousIncidents']
     },
     {
         code: 'MEDICAL_EXAM',
@@ -95,7 +95,7 @@ export const TFGBV_STAGES = [
         required: true,
         order: 2,
         description: 'The reported content is assessed for violations under the Prevention of Electronic Crimes Act (PECA). High-priority cases involving immediate threats or leakage of intimate material are flagged for urgent processing. The complaint is formally forwarded to the FIA Cyber Crime Wing for technical verification.',
-        fields: ['riskLevel', 'urgentProtection', 'tfgbvType', 'platformComplaintNo', 'reportingUnit', 'referralType']
+        fields: ['riskLevel', 'urgentProtection', 'tfgbvType', 'incidentLocation', 'platformComplaintNo', 'reportingUnit', 'referralType']
     },
     {
         code: 'MEDICAL_EXAM',

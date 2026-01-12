@@ -142,14 +142,24 @@ export default function FullTimelinePage() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="space-y-2">
+                            <div className="space-y-3">
                                 <h2 className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-brand-dark to-brand-teal flex items-center gap-2">
                                     AI Case Summary
-
                                 </h2>
-                                <p className="text-gray-600 leading-relaxed text-sm md:text-base">
-                                    This case follows a <span className="font-bold text-emerald-600">standard fast-track trajectory</span> with all critical evidence submitted within 48 hours. The timeline indicates high adherence to SOPs, though a minor delay was noted in the forensic report generation. The current status suggests a <span className="font-bold text-gray-900">high probability of resolution</span> in the upcoming hearing.
-                                </p>
+                                <div className="text-gray-700 leading-relaxed text-sm md:text-base space-y-4">
+                                    <p>
+                                        The story of this case began when {idealCase.survivor} arrived at {getField('intakeChannel') || 'the reporting center'} on {idealCase.date} to share a painful account of {idealCase.crimeCode.split('(')[1]?.replace(')', '') || idealCase.category}. She described how {getField('perpetratorType')?.toLowerCase() || 'a perpetrator'} had committed {getField('violenceType')?.split('(')[0]?.trim().toLowerCase() || 'an act of violence'} against her at {getField('incidentLocation')?.toLowerCase() || 'a specific location'}.
+                                    </p>
+                                    <p>
+                                        Following her account, the police took immediate action, responding {getField('policeResponseTime')?.toLowerCase() || 'within the required timeframe'}. The authorities at {getField('policeStation')} formally documented the police side of the story by registering FIR Number {getField('firNo')} under sections {getField('sections')} on {getField('firDate')}. The investigation was then entrusted to {getField('ioAssigned')}, who began the process of gathering evidence and statements to build a legal case.
+                                    </p>
+                                    <p>
+                                        Crucial evidence was secured when {idealCase.survivor} was taken to {getField('hospital')} for a medical examination on {getField('examDate')}. There, {getField('mloName')} documented the physical findings, and a DNA report was processed with the status being {getField('dnaReport')?.toLowerCase()}. With the investigation intensifying, the police successfully apprehended the accused on {getField('arrestDate')}, who was then placed under {getField('remandType')?.toLowerCase()} at {getField('jailLocation')} after {getField('bailStatus')?.toLowerCase()}.
+                                    </p>
+                                    <p>
+                                        The final chapter of the story unfolded in the courtroom of {getField('judgeName')}. After a thorough review of the survivor's testimony and the evidence presented by the police, the court reached a definitive conclusion. The judge delivered a verdict of {idealCase.status.toLowerCase()}, sentencing the accused to {getField('sentenceDetail')}. This brought the case to a resolution with {idealCase.completeness}% adherence to the national GBV reporting framework.
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
